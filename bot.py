@@ -19,4 +19,4 @@ def emojify(text):
     return out
 
 client = MyClient()
-client.run(bot_token.token())
+client.run(bot_token.token() or process.env.BOT_TOKEN)
