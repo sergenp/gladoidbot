@@ -1,8 +1,13 @@
 import discord
 import bot_token
 from discord.ext import commands
+from util import send_embed_message
 
 bot = commands.Bot(command_prefix="h!")
+
+@bot.event
+async def on_ready():
+    print(f"Connected! \n{bot.user.name}\nId: {bot.user.id}\n")
 
 @bot.command()
 async def emojify(ctx, *args):
@@ -25,7 +30,6 @@ async def synonym(ctx, arg):
         if i['word'] == arg:
             wrd = i['word']
             syn = i['syn']
-    
-    await ctx.send('Another word for ' + wrd + ' is ' + syn + '.')
+    await send_embed_message(ctx, 'Another word for ' + wrd + ' is ' + syn + '.')
 
 bot.run(bot_token.token() or process.env.BOT_TOKEN)
