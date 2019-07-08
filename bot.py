@@ -2,6 +2,7 @@ import discord
 import bot_token
 from discord.ext import commands
 from util import send_embed_message
+from util import search_youtube
 
 bot = commands.Bot(command_prefix="h!")
 
@@ -31,5 +32,15 @@ async def synonym(ctx, arg):
             wrd = i['word']
             syn = i['syn']
     await send_embed_message(ctx, 'Another word for ' + wrd + ' is ' + syn + '.')
+
+@bot.command()
+async def ysearch(ctx, *searchStr):
+    searchStr = ' '.join(map(str, searchStr))
+    await ctx.send(f"Searching  \'{searchStr}\' on youtube...")
+    video_link = search_youtube(searchStr)
+    if video_link != None:
+        await ctx.send(f"Found : {video_link}")
+    else:
+        await ctx.send("I couldn't find anything")
 
 bot.run(bot_token.token() or process.env.BOT_TOKEN)
