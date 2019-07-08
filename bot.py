@@ -1,22 +1,31 @@
 import discord
 import bot_token
+from discord.ext import commands
 
-class MyClient(discord.Client):
-    async def on_ready(self):
-        print('Logged on as {0}!'.format(self.user))
+bot = commands.Bot(command_prefix="h!")
 
-    async def on_message(self, message):
-        if (message.content[0:2] == 'h!'):
-            args = message.content[2:].split(' ')
-            if (args[0] == 'emojify'):
-                del args[0]
-                await message.channel.send(emojify(args))
-
-def emojify(text):
+@bot.command()
+async def emojify(ctx, *args):
     out = ''
-    for i in text[0]:
-        out += ':regional_indicator_' + i + ': '
-    return out
+    for i in args:
+        for l in i:
+            out += ':regional_indicator_' + l.lower() + ': '
+        out += '    '
+    await ctx.send(out)
+    
+@bot.command()
+async def synonym(ctx, arg):
+    for i in [
+        {'word': 'krizzle', 'syn': 'Korean gay'},
+        {'word': 'inubakkari', 'syn': 'The Lord of Us All'},
+        {'word': 'sergenp', 'syn': 'Third World Genius'},
+        {'word': 'marquitos', 'syn': 'mosquito'},
+        {'word': 'iara', 'syn': 'hmm'}
+    ]:
+        if i['word'] == arg:
+            wrd = i['word']
+            syn = i['syn']
+    
+    await ctx.send('Another word for ' + wrd + ' is ' + syn + '.')
 
-client = MyClient()
-client.run(bot_token.token() or process.env.BOT_TOKEN)
+bot.run(bot_token.token() or process.env.BOT_TOKEN)
