@@ -1,9 +1,10 @@
 import discord
 import bot_token
 from discord.ext import commands
-from util import send_embed_message
-from util import search_youtube
+from util import send_embed_message, search_youtube
+from googletrans import Translator
 
+TRANSLATOR = Translator()
 bot = commands.Bot(command_prefix="h!")
 
 @bot.event
@@ -42,5 +43,18 @@ async def ysearch(ctx, *searchStr):
         await ctx.send(f"Found : {video_link}")
     else:
         await ctx.send("I couldn't find anything")
+
+@bot.command(pass_context=True, description="Example usage:\n h!translate \'I love you\' german")
+async def translate(ctx, toTranslate: str = "", toTranslateLanguage: str = "turkish"):
+        if toTranslate == "":
+            await send_embed_message(ctx, "Gimme something to translate")
+        try:
+            detect_language = TRANSLATOR.detect(toTranslate).lang
+            print(f"Language detected from {toTranslate}, {detect_language}")
+            translated = TRANSLATOR.translate(toTranslate, src=detect_language, dest=toTranslateLanguage).text
+            await send_embed_message(ctx, f"Word : {toTranslate.upper()} means {translated.upper()} "
+                                          f"in {toTranslateLanguage.upper()} ")
+        except ValueError:
+            await send_embed_message(ctx, "Error, type h!help translate")
 
 bot.run(bot_token.token() or process.env.BOT_TOKEN)
