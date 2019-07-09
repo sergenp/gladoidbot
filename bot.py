@@ -2,7 +2,7 @@ import discord
 try:
 	import bot_token
 except ModuleNotFoundError:
-	pass
+	import os 
 from discord.ext import commands
 from util import send_embed_message, search_youtube
 from googletrans import Translator
@@ -62,4 +62,5 @@ async def translate(ctx, toTranslate: str = "", toTranslateLanguage: str = "turk
 try:
 	bot.run(bot_token.token())
 except NameError:
-	bot.run(process.env.BOT_TOKEN)
+	bot.run(os.environ['BOT_TOKEN']
+
