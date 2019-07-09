@@ -62,5 +62,5 @@ async def translate(ctx, toTranslate: str = "", toTranslateLanguage: str = "turk
 try:
 	bot.run(bot_token.token())
 except NameError:
-	bot.run(os.environ['BOT_TOKEN']
+	bot.run(os.environ['BOT_TOKEN'])
 
