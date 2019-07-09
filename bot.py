@@ -1,5 +1,8 @@
 import discord
-import bot_token
+try:
+	import bot_token
+except ModuleNotFoundError:
+	pass
 from discord.ext import commands
 from util import send_embed_message, search_youtube
 from googletrans import Translator
