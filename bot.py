@@ -59,5 +59,7 @@ async def translate(ctx, toTranslate: str = "", toTranslateLanguage: str = "turk
                                           f"in {toTranslateLanguage.upper()} ")
         except ValueError:
             await send_embed_message(ctx, "Error, type h!help translate")
-
-bot.run(bot_token.token() or process.env.BOT_TOKEN)
+try:
+	bot.run(bot_token.token())
+except NameError:
+	bot.run(process.env.BOT_TOKEN)
