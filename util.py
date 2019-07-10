@@ -10,5 +10,7 @@ async def send_embed_message(ctx, content = "", title = "", colour = 0x0080c0, l
 def search_youtube(searchStr):
 	command = f"youtube-dl -e --get-id \"ytsearch1:{searchStr}\""
 	a = subprocess.check_output(command, shell=True).decode("utf-8").split("\n")
-	video_link = "https://www.youtube.com/watch?v=" + a[1] or None
-	return video_link
+	try:
+		return f"https://www.youtube.com/watch?v={a[1]}"
+	except ValueError:
+		return None

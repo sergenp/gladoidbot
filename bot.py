@@ -1,8 +1,8 @@
 import discord
 try:
-	import bot_token
+    import bot_token
 except ModuleNotFoundError:
-	import os 
+    import os 
 from discord.ext import commands
 from util import send_embed_message, search_youtube
 from googletrans import Translator
@@ -53,14 +53,14 @@ async def translate(ctx, toTranslate: str = "", toTranslateLanguage: str = "turk
             await send_embed_message(ctx, "Gimme something to translate")
         try:
             detect_language = TRANSLATOR.detect(toTranslate).lang
-            print(f"Language detected from {toTranslate}, {detect_language}")
+            print(f"Language detected from {toTranslate}, {detect_language}")a
             translated = TRANSLATOR.translate(toTranslate, src=detect_language, dest=toTranslateLanguage).text
             await send_embed_message(ctx, f"Word : {toTranslate.upper()} means {translated.upper()} "
                                           f"in {toTranslateLanguage.upper()} ")
         except ValueError:
             await send_embed_message(ctx, "Error, type h!help translate")
 try:
-	bot.run(bot_token.token())
+    bot.run(bot_token.token())
 except NameError:
-	bot.run(os.environ['BOT_TOKEN'])
+    bot.run(os.environ['BOT_TOKEN'])
 
