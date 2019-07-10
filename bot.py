@@ -53,7 +53,7 @@ async def translate(ctx, toTranslate: str = "", toTranslateLanguage: str = "turk
             await send_embed_message(ctx, "Gimme something to translate")
         try:
             detect_language = TRANSLATOR.detect(toTranslate).lang
-            print(f"Language detected from {toTranslate}, {detect_language}")a
+            print(f"Language detected from {toTranslate}, {detect_language}")
             translated = TRANSLATOR.translate(toTranslate, src=detect_language, dest=toTranslateLanguage).text
             await send_embed_message(ctx, f"Word : {toTranslate.upper()} means {translated.upper()} "
                                           f"in {toTranslateLanguage.upper()} ")
