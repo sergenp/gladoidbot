@@ -47,10 +47,11 @@ async def ysearch(ctx, *searchStr):
     else:
         await ctx.send("I couldn't find anything")
 
-@bot.command(pass_context=True, description="Example usage:\n h!translate \'I love you\' german")
+@bot.command(pass_context=True, description="Example usage:\n h!translate \"I love you\" german")
 async def translate(ctx, toTranslate: str = "", toTranslateLanguage: str = "english"):
         if toTranslate == "":
             await send_embed_message(ctx, "Gimme something to translate")
+            return
         try:
             detect_language = TRANSLATOR.detect(toTranslate).lang
             print(f"Language detected from {toTranslate}, {detect_language}")
