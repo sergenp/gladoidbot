@@ -2,5 +2,4 @@ youtube-dl
 discord
 cowpy==1.0.3
 googletrans
-discord.ext
 sqlalchemy

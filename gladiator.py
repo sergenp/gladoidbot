@@ -8,7 +8,10 @@ class Gladiator(commands.Cog):
 
     @commands.command()
     async def challenge(self, ctx, userToChallenge: discord.Member = None):
-        await ctx.send(f"{ctx.message.author.mention} has challenged you {userToChallenge.mention} to a gladiator match")
+        if userToChallenge:
+            await ctx.send(f"{ctx.message.author.mention} has challenged you {userToChallenge.mention} to a gladiator match")
+        else:
+            await ctx.send(f"{ctx.message.author.mention} you need to @ the people you wanna challenge")
 
 
 def setup(bot):
