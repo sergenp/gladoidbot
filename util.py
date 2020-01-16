@@ -12,5 +12,5 @@ def search_youtube(searchStr):
 	a = subprocess.check_output(command, shell=True).decode("utf-8").split("\n")
 	try:
 		return f"https://www.youtube.com/watch?v={a[1]}"
-	except ValueError:
+	except IndexError:
 		return None
