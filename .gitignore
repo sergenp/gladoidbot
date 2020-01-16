@@ -122,3 +122,10 @@ dmypy.json
 # Pyre type checker
 .pyre/
 bot_token.py
+
+
+# ignore vscode
+.vscode/
+
+# ignore test gladiator matches
+.testmatches/
