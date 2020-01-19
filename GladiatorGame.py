@@ -54,6 +54,6 @@ class GladiatorGame:
                 debuff = GladiatorBuff(event_buffs)
                 player_to_be_affected.buff(debuff)
                 event_info += str(debuff)
-            return "**" + event_info + "**"
+            return "*************************\n" + event_info + "\n*************************"
 
         return ""
