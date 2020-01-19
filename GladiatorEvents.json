@@ -4,7 +4,8 @@
         "event_text": "{} found a sword in the corner of the arena!",
         "event_buffs": {
             "Attack Chance": 20,
-            "Attack Damage": 2
+            "Attack Min. Damage": 2,
+            "Attack Max. Damage": 2
         },
         "event_type": "sword_equipment"
     },
@@ -21,7 +22,7 @@
         "id": 3,
         "event_text": "The crowd hates the show! They are throwing rocks at {}",
         "event_buffs": {
-            "health": 5
+            "Health": -5
         },
         "event_type": "debuff"
     },
@@ -30,7 +31,7 @@
         "event_text": "{} went berserk!",
         "event_buffs": {
             "Armor": -3,
-            "Critical Damage Chance": 20,
+            "Critical Damage Chance": 30,
             "Critical Damage Boost": 0.5
         },
         "event_type": "buff"

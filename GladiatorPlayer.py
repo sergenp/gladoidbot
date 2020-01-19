@@ -12,53 +12,57 @@ class AttackTypes(Enum):
 
 
 class GladiatorPlayer:
-    def __init__(self, name):
-        self.name = name
+    def __init__(self, member):
+        self.Member = member
+        self.id = self.Member.id
         self.stats = GladiatorStats()
         self.sword_equipped = None
         self.armor_equipped = None
+        self.dead = False
 
     def take_damage(self, damage):
         # check if the damage is blocked
         roll = random.randint(0, 100)
         if self.stats["Block Chance"] > roll:
-            return f"{self.name} has blocked the damage"
+            return f"**{self} has blocked the damage**"
         # damage the player
         dmg = damage - math.ceil(self.stats["Armor"])
         if dmg < 0:
             dmg = 0
         self.stats["Health"] -= damage - math.ceil(self.stats["Armor"])
-        if self.stats["Health"] < 0:
+        if self.stats["Health"] <= 0:
             return self.die()
         # return info
-        return f"{self.name} took {damage - math.ceil(self.stats['Armor'])} damage, {self.name} has {self.stats['Health']} HP remaining"
+        return f"{self} took **{damage - math.ceil(self.stats['Armor'])} damage**, {self} has **{self.stats['Health']} HP** remaining"
 
     def damageEnemy(self, otherGladiator):
         # roll to see if attack hit
         roll = random.randint(0, 100)
         if self.stats["Attack Chance"] < roll:
-            return f"{otherGladiator.name} has dodged your attack!"
+            return f"**{otherGladiator} has dodged your attack!**"
 
         # roll for critical damage
         roll = random.randint(0, 100)
+        # roll for damage
+        dmg = math.ceil(random.randint(
+            self.stats["Attack Min. Damage"], self.stats["Attack Max. Damage"]))
         if self.stats["Critical Damage Chance"] > roll:
-            crit_dmg = math.ceil(self.stats["Attack Damage"] *
-                                 self.stats["Critical Damage Boost"])
-            return "It is a CRITICAL hit " + otherGladiator.take_damage(crit_dmg)
+            crit_dmg = math.ceil(dmg * self.stats["Critical Damage Boost"])
+            return "It is a **CRITICAL** hit " + otherGladiator.take_damage(crit_dmg)
         else:
-            return otherGladiator.take_damage(
-                math.ceil(self.stats["Attack Damage"]))
+            return otherGladiator.take_damage(dmg)
 
     def attack(self, otherGladiator, attack_type=AttackTypes.Thrust):
         if not isinstance(otherGladiator, GladiatorPlayer):
             raise ValueError(
                 "otherGladiator must be an instance of GladiatorPlayer")
         thrustBuff = GladiatorBuff({"Attack Chance": 10})
-        slashBuff = GladiatorBuff({"Attack Chance": -10, "Attack Damage": 1})
+        slashBuff = GladiatorBuff(
+            {"Attack Chance": -10, "Attack Min. Damage": 1, "Attack Max. Damage": 1})
         defensiveBuff = GladiatorBuff(
             {"Critical Damage Chance": 30, "Critical Damage Boost": -0.2, "Attack Chance": -10})
         flurryBuff = GladiatorBuff(
-            {"Attack Chance": -40, "Attack Damage": 4, "Critical Damage Boost": 0.2})
+            {"Attack Chance": -40, "Attack Min. Damage": 4, "Attack Max. Damage": 4, "Critical Damage Boost": 0.2})
         inf = ""
         if attack_type is AttackTypes.Thrust:
             self.buff(thrustBuff)
@@ -83,7 +87,8 @@ class GladiatorPlayer:
         return inf
 
     def die(self):
-        return "You have been defeated"
+        self.dead = True
+        return f"**{self} has died**"
 
     def equip_sword(self, sword: GladiatorSword):
         if not self.sword_equipped:
@@ -108,6 +113,8 @@ class GladiatorPlayer:
             self.stats += buff
         elif buff_type == "debuff":
             self.stats -= buff
+            if self.stats["Health"] <= 0:
+                self.die()
 
     def __repr__(self):
-        return f"Your stats:\n{str(self.stats)}"
+        return f"<@{self.id}>"
