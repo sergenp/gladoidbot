@@ -15,21 +15,37 @@ class GladiatorStats:
             }
 
     def __add__(self, otherStat):
-        for k in otherStat.stats.keys():
-            try:
-                self.stats[k] += otherStat.stats[k]
-            except KeyError:
-                self.stats[k] = otherStat.stats[k]
+        if isinstance(otherStat, dict):
+            for k in otherStat.keys():
+                try:
+                    self.stats[k] += otherStat[k]
+                except KeyError:
+                    self.stats[k] = otherStat[k]
+
+        elif isinstance(otherStat, GladiatorStats):
+            for k in otherStat.stats.keys():
+                try:
+                    self.stats[k] += otherStat.stats[k]
+                except KeyError:
+                    self.stats[k] = otherStat.stats[k]
 
         return GladiatorStats(self.stats)
 
     def __sub__(self, otherStat):
-        for k in otherStat.stats.keys():
-            try:
-                self.stats[k] -= otherStat.stats[k]
-            except KeyError:
-                self.stats[k] = otherStat.stats[k]
+        if isinstance(otherStat, dict):
+            for k in otherStat.keys():
+                try:
+                    self.stats[k] -= otherStat[k]
+                except KeyError:
+                    self.stats[k] = otherStat[k]
 
+        elif isinstance(otherStat, GladiatorStats):
+            for k in otherStat.stats.keys():
+                try:
+                    self.stats[k] -= otherStat.stats[k]
+                except KeyError:
+                    self.stats[k] = otherStat.stats[k]
+                    
         return GladiatorStats(self.stats)
 
     def __repr__(self):
