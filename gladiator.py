@@ -14,10 +14,6 @@ class Gladiator(commands.Cog):
         self.Game = None
 
     @commands.command()
-    async def test(self, ctx):
-        await ctx.send('<@314800228480057355>')
-
-    @commands.command()
     async def challenge(self, ctx, userToChallenge: discord.Member = None):
         if self.game_started:
             await ctx.send("A game is already commencing")

@@ -36,24 +36,24 @@ class GladiatorGame:
             player_to_be_affected = random.choice([self.player1, self.player2])
             event_text = event["event_text"].format(player_to_be_affected)
             event_buffs = event["event_buffs"]
-            event_info = event_text
+            event_info = event_text + "\n"
 
             if event["event_type"] == "buff":
                 buff = GladiatorBuff(event_buffs)
                 player_to_be_affected.buff(buff)
-                event_info += "\n" + str(buff)
+                event_info += str(buff)
             elif event["event_type"] == "sword_equipment":
                 sword_equipment = GladiatorSword(event_buffs)
                 player_to_be_affected.equip_sword(sword_equipment)
-                event_info += "\n" + str(sword_equipment)
+                event_info += str(sword_equipment)
             elif event["event_type"] == "armor_equipment":
                 armor_equipment = GladiatorArmor(event_buffs)
                 player_to_be_affected.equip_armor(armor_equipment)
-                event_info += "\n" + str(armor_equipment)
+                event_info += str(armor_equipment)
             elif event["event_type"] == "debuff":
                 debuff = GladiatorBuff(event_buffs)
                 player_to_be_affected.buff(debuff)
-                event_info += "\n" + str(debuff)
-            return event_info
+                event_info += str(debuff)
+            return "**" + event_info + "**"
 
         return ""
