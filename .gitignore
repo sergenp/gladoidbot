@@ -129,3 +129,6 @@ bot_token.py
 
 # ignore test gladiator matches
 .testmatches/
+
+#ignore test.py
+test.py

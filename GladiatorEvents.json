@@ -1,0 +1,38 @@
+[
+    {
+        "id": 1,
+        "event_text": "{} found a sword in the corner of the arena!",
+        "event_buffs": {
+            "Attack Chance": 20,
+            "Attack Damage": 2
+        },
+        "event_type": "sword_equipment"
+    },
+    {
+        "id": 2,
+        "event_text": "{} found an armor lying in the arena!",
+        "event_buffs": {
+            "Armor": 1,
+            "Block Chance": 10
+        },
+        "event_type": "armor_equipment"
+    },
+    {
+        "id": 3,
+        "event_text": "The crowd hates the show! They are throwing rocks at {}",
+        "event_buffs": {
+            "health": 5
+        },
+        "event_type": "debuff"
+    },
+    {
+        "id": 4,
+        "event_text": "{} went berserk!",
+        "event_buffs": {
+            "Armor": -3,
+            "Critical Damage Chance": 20,
+            "Critical Damage Boost": 0.5
+        },
+        "event_type": "buff"
+    }
+]
