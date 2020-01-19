@@ -1,7 +1,7 @@
 [
     {
         "id": 1,
-        "event_text": "{} found a sword in the corner of the arena!",
+        "event_text": "**{} found a sword in the corner of the arena!**",
         "event_buffs": {
             "Attack Chance": 20,
             "Attack Min. Damage": 2,
@@ -11,7 +11,7 @@
     },
     {
         "id": 2,
-        "event_text": "{} found an armor lying in the arena!",
+        "event_text": "**{} found an armor lying in the arena!**",
         "event_buffs": {
             "Armor": 1,
             "Block Chance": 10
@@ -20,7 +20,7 @@
     },
     {
         "id": 3,
-        "event_text": "The crowd hates the show! They are throwing rocks at {}",
+        "event_text": "**The crowd hates the show! They are throwing rocks at {}**",
         "event_buffs": {
             "Health": -5
         },
@@ -28,7 +28,7 @@
     },
     {
         "id": 4,
-        "event_text": "{} went berserk!",
+        "event_text": "**{} went berserk!**",
         "event_buffs": {
             "Armor": -3,
             "Critical Damage Chance": 30,
