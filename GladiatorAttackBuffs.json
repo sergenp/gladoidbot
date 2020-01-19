@@ -1,0 +1,37 @@
+[
+    {
+        "id": 0,
+        "name": "Thrust",
+        "buffs": {
+            "Attack Chance": 10
+        }
+    },
+    {
+        "id": 1,
+        "name": "Slash",
+        "buffs": {
+            "Attack Chance": -10,
+            "Attack Min. Damage": 1,
+            "Attack Max. Damage": 1
+        }
+    },
+    {
+        "id": 2,
+        "name": "Defensive",
+        "buffs": {
+            "Critical Damage Chance": 35,
+            "Critical Damage Boost": -0.3,
+            "Attack Chance": -10
+        }
+    },
+    {
+        "id": 3,
+        "name": "Flurry",
+        "buffs": {
+            "Attack Chance": -40,
+            "Attack Min. Damage": 4,
+            "Attack Max. Damage": 4,
+            "Critical Damage Boost": 0.2
+        }
+    }
+]

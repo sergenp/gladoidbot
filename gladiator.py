@@ -57,7 +57,7 @@ class Gladiator(commands.Cog):
 
     async def gladiator_game_loop(self, ctx):
         if self.Game.next_turn():
-            attack_msg = await send_embed_message(ctx, f"It is {self.Game.current_player.Member.mention}'s turn\n"
+            attack_msg = await send_embed_message(ctx, f"It is {self.Game.current_player}'s turn\n"
                                                   "What kind of attack do you want to do? \n"
                                                   "Thrust = :one:\n"
                                                   "Slash = :two:\n"
@@ -94,7 +94,7 @@ class Gladiator(commands.Cog):
                 self.Game = None
                 self.game_started = False
         else:
-            await ctx.send(f"{self.Game.current_player.Member.mention} is dead! Game is over. Get fucked {self.Game.current_player.Member.mention}")
+            await ctx.send(f"{self.Game.current_player} is dead! Game is over. Get fucked {self.Game.current_player}")
             self.Game = None
             self.game_started = False
 

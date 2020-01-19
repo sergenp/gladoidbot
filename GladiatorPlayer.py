@@ -2,13 +2,14 @@ import random
 import math
 from GladiatorStats import GladiatorStats, GladiatorArmor, GladiatorSword, GladiatorBuff
 from enum import Enum
+import json
 
 
 class AttackTypes(Enum):
-    Thrust = 1
-    Slash = 2
-    Defensive = 3
-    Flurry = 4
+    Thrust = 0
+    Slash = 1
+    Defensive = 2
+    Flurry = 3
 
 
 class GladiatorPlayer:
@@ -19,6 +20,8 @@ class GladiatorPlayer:
         self.sword_equipped = None
         self.armor_equipped = None
         self.dead = False
+        with open("GladiatorAttackBuffs.json") as f:
+            self.attack_types = json.load(f)
 
     def take_damage(self, damage):
         # check if the damage is blocked
@@ -65,24 +68,28 @@ class GladiatorPlayer:
             {"Attack Chance": -40, "Attack Min. Damage": 4, "Attack Max. Damage": 4, "Critical Damage Boost": 0.2})
         inf = ""
         if attack_type is AttackTypes.Thrust:
-            self.buff(thrustBuff)
+            self.buff(self.attack_types[AttackTypes.Thrust.value]["buffs"])
             inf = self.damageEnemy(otherGladiator)
-            self.buff(thrustBuff, buff_type="debuff")
+            self.buff(
+                self.attack_types[AttackTypes.Thrust.value]["buffs"], buff_type="debuff")
 
         elif attack_type is AttackTypes.Slash:
-            self.buff(slashBuff)
+            self.buff(self.attack_types[AttackTypes.Slash.value]["buffs"])
             inf = self.damageEnemy(otherGladiator)
-            self.buff(slashBuff, buff_type="debuff")
+            self.buff(
+                self.attack_types[AttackTypes.Slash.value]["buffs"], buff_type="debuff")
 
         elif attack_type is AttackTypes.Defensive:
-            self.buff(defensiveBuff)
+            self.buff(self.attack_types[AttackTypes.Defensive.value]["buffs"])
             inf = self.damageEnemy(otherGladiator)
-            self.buff(defensiveBuff, buff_type="debuff")
+            self.buff(
+                self.attack_types[AttackTypes.Defensive.value]["buffs"], buff_type="debuff")
 
         elif attack_type is AttackTypes.Flurry:
-            self.buff(flurryBuff)
+            self.buff(self.attack_types[AttackTypes.Flurry.value]["buffs"])
             inf = self.damageEnemy(otherGladiator)
-            self.buff(flurryBuff, buff_type="debuff")
+            self.buff(
+                self.attack_types[AttackTypes.Flurry.value]["buffs"], buff_type="debuff")
 
         return inf
 
