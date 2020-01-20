@@ -1,4 +1,4 @@
-from GladiatorPlayer import GladiatorPlayer, AttackTypes
+from GladiatorPlayer import GladiatorPlayer
 from GladiatorStats import GladiatorArmor, GladiatorSword, GladiatorBuff
 import random
 import json
@@ -14,6 +14,7 @@ class GladiatorGame:
         self.players = collections.deque([self.player1, self.player2])
         with open("GladiatorEvents.json") as file:
             self.events = json.load(file)
+        self.game_continues = True
 
     def next_turn(self):
         # switch the current players
@@ -21,14 +22,17 @@ class GladiatorGame:
         self.current_player = self.players[0]
         # return if the current_player is dead
         if self.current_player.dead:
-            return False
+            self.game_continues = False
+            return self.game_continues
         # return true because we successfully went to the other round
-        return True
+        return self.game_continues
 
-    def attack(self, attackType: AttackTypes):
-        return self.players[0].attack(self.players[1], attackType)
+    def attack(self, attackType_id):
+        return self.players[0].attack(self.players[1], attackType_id)
 
     def random_event(self):
+        if not self.game_continues:
+            return ""
         roll = random.randint(0, 100)
         event_happened = self.random_event_chance > roll
         if event_happened:
