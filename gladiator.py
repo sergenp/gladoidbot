@@ -56,10 +56,10 @@ class Gladiator(commands.Cog):
                         await send_embed_message(ctx, f"** THE GLADIATOR GAMES HAVE BEGUN **\n")
                         await self.gladiator_game_loop(ctx)
 
-                    elif reaction.emoji == '👎':
+                    else:
+                        await msg.delete()
                         await ctx.send(f"{user.mention} has declined the challenge. Pussy.", delete_after=10)
 
-                    return
                 except asyncio.TimeoutError:
                     pass
                 else:
