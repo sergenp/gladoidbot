@@ -2,9 +2,16 @@ import discord
 from discord.ext import commands
 import asyncio
 from GladiatorGame import GladiatorGame
-from GladiatorPlayer import AttackTypes
 from util import send_embed_message
 from discord import Member
+from enum import Enum
+
+
+class AttackTypes(Enum):
+    Thrust = 0
+    Slash = 1
+    Defensive = 2
+    Flurry = 3
 
 
 class Gladiator(commands.Cog):
@@ -76,13 +83,13 @@ class Gladiator(commands.Cog):
                 reaction, _ = await self.bot.wait_for('reaction_add', timeout=30.0, check=check)
                 if reaction.emoji in ['1️⃣', '2️⃣', '3️⃣', '4️⃣']:
                     if reaction.emoji == '1️⃣':
-                        await send_embed_message(ctx, self.Game.attack(AttackTypes.Thrust))
+                        await send_embed_message(ctx, self.Game.attack(AttackTypes.Thrust.value))
                     elif reaction.emoji == '2️⃣':
-                        await send_embed_message(ctx, self.Game.attack(AttackTypes.Slash))
+                        await send_embed_message(ctx, self.Game.attack(AttackTypes.Slash.value))
                     elif reaction.emoji == '3️⃣':
-                        await send_embed_message(ctx, self.Game.attack(AttackTypes.Defensive))
+                        await send_embed_message(ctx, self.Game.attack(AttackTypes.Defensive.value))
                     elif reaction.emoji == '4️⃣':
-                        await send_embed_message(ctx, self.Game.attack(AttackTypes.Flurry))
+                        await send_embed_message(ctx, self.Game.attack(AttackTypes.Flurry.value))
 
                     rand_ev = self.Game.random_event()
                     if rand_ev:

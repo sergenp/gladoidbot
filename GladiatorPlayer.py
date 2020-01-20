@@ -4,14 +4,6 @@ from GladiatorStats import GladiatorStats, GladiatorArmor, GladiatorSword, Gladi
 from enum import Enum
 import json
 
-
-class AttackTypes(Enum):
-    Thrust = 0
-    Slash = 1
-    Defensive = 2
-    Flurry = 3
-
-
 class GladiatorPlayer:
     def __init__(self, member):
         self.Member = member
@@ -55,42 +47,14 @@ class GladiatorPlayer:
         else:
             return otherGladiator.take_damage(dmg)
 
-    def attack(self, otherGladiator, attack_type=AttackTypes.Thrust):
+    def attack(self, otherGladiator, attack_type_id=0):
         if not isinstance(otherGladiator, GladiatorPlayer):
             raise ValueError(
                 "otherGladiator must be an instance of GladiatorPlayer")
-        thrustBuff = GladiatorBuff({"Attack Chance": 10})
-        slashBuff = GladiatorBuff(
-            {"Attack Chance": -10, "Attack Min. Damage": 1, "Attack Max. Damage": 1})
-        defensiveBuff = GladiatorBuff(
-            {"Critical Damage Chance": 30, "Critical Damage Boost": -0.2, "Attack Chance": -10})
-        flurryBuff = GladiatorBuff(
-            {"Attack Chance": -40, "Attack Min. Damage": 4, "Attack Max. Damage": 4, "Critical Damage Boost": 0.2})
-        inf = ""
-        if attack_type is AttackTypes.Thrust:
-            self.buff(self.attack_types[AttackTypes.Thrust.value]["buffs"])
-            inf = self.damageEnemy(otherGladiator)
-            self.buff(
-                self.attack_types[AttackTypes.Thrust.value]["buffs"], buff_type="debuff")
-
-        elif attack_type is AttackTypes.Slash:
-            self.buff(self.attack_types[AttackTypes.Slash.value]["buffs"])
-            inf = self.damageEnemy(otherGladiator)
-            self.buff(
-                self.attack_types[AttackTypes.Slash.value]["buffs"], buff_type="debuff")
-
-        elif attack_type is AttackTypes.Defensive:
-            self.buff(self.attack_types[AttackTypes.Defensive.value]["buffs"])
-            inf = self.damageEnemy(otherGladiator)
-            self.buff(
-                self.attack_types[AttackTypes.Defensive.value]["buffs"], buff_type="debuff")
-
-        elif attack_type is AttackTypes.Flurry:
-            self.buff(self.attack_types[AttackTypes.Flurry.value]["buffs"])
-            inf = self.damageEnemy(otherGladiator)
-            self.buff(
-                self.attack_types[AttackTypes.Flurry.value]["buffs"], buff_type="debuff")
-
+        self.buff(self.attack_types[attack_type_id]["buffs"])
+        inf = self.damageEnemy(otherGladiator)
+        self.buff(self.attack_types[attack_type_id]
+                  ["buffs"], buff_type="debuff")
         return inf
 
     def die(self):
