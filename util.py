@@ -1,4 +1,4 @@
-from discord import Embed
+from discord import Embed, DMChannel
 import subprocess
 
 
@@ -6,7 +6,10 @@ async def send_embed_message(ctx, content="", title="", colour=0x0080c0, link=""
     em = Embed(title=title, description=content, colour=colour)
     em.set_thumbnail(url=link)
     em.set_author(name=name, icon_url=ikon_link)
-    return await ctx.message.channel.send(embed=em)
+    if isinstance(ctx, DMChannel):
+        return await ctx.send(embed=em)
+    else:
+        return await ctx.message.channel.send(embed=em)
 
 
 def search_youtube(searchStr):

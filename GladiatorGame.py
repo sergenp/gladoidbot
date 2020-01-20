@@ -32,12 +32,30 @@ class GladiatorGame:
     def attack(self, attackType_id):
         return self.players[0].attack(self.players[1], attackType_id)
 
+    @staticmethod
+    def construct_information_message():
+        information_text = "**Every Gladiator starts the game with these stats:\n**"
+        settings = None
+        attack_types = None
+        with open("GladiatorGameSettings.json") as f:
+            settings = json.load(f)
+        with open("GladiatorAttackBuffs.json") as f:
+            attack_types = json.load(f)
+        for k in settings["Gladiator_initial_stats"].keys():
+            information_text += f"{k}={settings['Gladiator_initial_stats'][k]}\n"
+
+        information_text += f"**There are {len(attack_types)} attacks available to each gladiator. Each gives you following bonuses:**\n"
+        for i in attack_types:
+            information_text += f"{i['name']} gives:\n"
+            for k in i["buffs"].keys():
+                information_text += f"**{k} : {i['buffs'][k]}**\n"
+        return information_text
+
     def random_event(self):
         if not self.game_continues:
             return ""
         roll = random.randint(0, 100)
-        event_happened = self.random_event_chance > roll
-        if event_happened:
+        if self.random_event_chance > roll:
             event = random.choice(self.events)
             player_to_be_affected = random.choice([self.player1, self.player2])
             event_text = event["event_text"].format(player_to_be_affected)
@@ -60,6 +78,6 @@ class GladiatorGame:
                 debuff = GladiatorBuff(event_buffs)
                 player_to_be_affected.buff(debuff)
                 event_info += str(debuff)
-            return "*************************\n" + event_info + "\n*************************"
-
-        return ""
+            return "*--------------------------\n" + event_info + "\n--------------------------*"
+        else:
+            return ""

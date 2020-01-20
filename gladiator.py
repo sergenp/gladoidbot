@@ -21,6 +21,11 @@ class Gladiator(commands.Cog):
         self.Game = None
 
     @commands.command()
+    async def gamerules(self, ctx):
+        channel = await ctx.message.author.create_dm()
+        await send_embed_message(channel, GladiatorGame.construct_information_message())
+
+    @commands.command()
     async def challenge(self, ctx, userToChallenge: discord.Member = None):
         if self.game_started:
             await ctx.send("A game is already commencing")
@@ -30,7 +35,9 @@ class Gladiator(commands.Cog):
             if userToChallenge.bot:
                 await ctx.send(f"{ctx.message.author.mention} has been killed by the power of AI. Dont mess with robots.")
             else:
-                msg = await ctx.send(f"{ctx.message.author.mention} has challenged you {userToChallenge.mention} to a gladiator match\nTo accept react this message with 👍 to decline, 👎\nYou have 30 seconds to decide", delete_after=30)
+                msg = await ctx.send(f"{ctx.message.author.mention} has challenged you {userToChallenge.mention} to a"
+                                     f"gladiator match\nTo accept react this message with 👍 to decline, 👎\nYou have 45 seconds to decide\n"
+                                     f"(Note Use the command **h!gamerules** to recieve a DM containing information about how the game is played)", delete_after=45)
                 await msg.add_reaction('👍')
                 await msg.add_reaction('👎')
 
@@ -38,7 +45,7 @@ class Gladiator(commands.Cog):
                     return user == userToChallenge and reaction.message.id == msg.id
 
                 try:
-                    reaction, user = await self.bot.wait_for('reaction_add', timeout=30.0, check=check)
+                    reaction, user = await self.bot.wait_for('reaction_add', timeout=45.0, check=check)
                     if reaction.emoji == '👍':
                         self.game_started = True
                         if self.Game == None:
@@ -46,12 +53,11 @@ class Gladiator(commands.Cog):
                                 ctx.message.author, userToChallenge)
 
                         await msg.delete()
-                        await send_embed_message(ctx, f"**THE GLADIATOR GAMES HAVE BEGUN**")
+                        await send_embed_message(ctx, f"** THE GLADIATOR GAMES HAVE BEGUN **\n")
                         await self.gladiator_game_loop(ctx)
 
                     elif reaction.emoji == '👎':
-                        await ctx.send(f"{user.mention} has declined the challenge. Pussy.")
-                        await msg.delete()
+                        await ctx.send(f"{user.mention} has declined the challenge. Pussy.", delete_after=10)
 
                     return
                 except asyncio.TimeoutError:
@@ -64,6 +70,9 @@ class Gladiator(commands.Cog):
 
     async def gladiator_game_loop(self, ctx):
         if self.Game.next_turn():
+            rand_ev = self.Game.random_event()
+            if rand_ev:
+                await send_embed_message(ctx, rand_ev)
             attack_msg = await send_embed_message(ctx, f"It is {self.Game.current_player}'s turn\n"
                                                   "What kind of attack do you want to do? \n"
                                                   "Thrust = :one:\n"
@@ -90,12 +99,13 @@ class Gladiator(commands.Cog):
                         await send_embed_message(ctx, self.Game.attack(AttackTypes.Defensive.value))
                     elif reaction.emoji == '4️⃣':
                         await send_embed_message(ctx, self.Game.attack(AttackTypes.Flurry.value))
-
-                    rand_ev = self.Game.random_event()
-                    if rand_ev:
-                        await send_embed_message(ctx, rand_ev)
                     await attack_msg.delete()
                     await self.gladiator_game_loop(ctx)
+                else:
+                    await send_embed_message(ctx, self.Game.attack(AttackTypes.Thrust.value))
+                    await attack_msg.delete()
+                    await self.gladiator_game_loop(ctx)
+
             except asyncio.TimeoutError:
                 await ctx.send(f"Game has ended via timeout, winner is {self.Game.players[1]}")
                 self.Game = None
