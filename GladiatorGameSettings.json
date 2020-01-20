@@ -1,0 +1,13 @@
+{
+    "random_event_chance": 40,
+    "Gladiator_initial_stats": {
+        "Health": 20,
+        "Attack Chance": 85,
+        "Attack Min. Damage": 4,
+        "Attack Max. Damage": 6,
+        "Armor": 2,
+        "Block Chance": 5,
+        "Critical Damage Chance": 5,
+        "Critical Damage Boost": 1.5
+    }
+}

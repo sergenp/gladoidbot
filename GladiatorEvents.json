@@ -3,7 +3,7 @@
         "id": 0,
         "event_text": "**{} found a sword in the corner of the arena!**",
         "event_buffs": {
-            "Attack Chance": 20,
+            "Attack Chance": 10,
             "Attack Min. Damage": 2,
             "Attack Max. Damage": 2
         },

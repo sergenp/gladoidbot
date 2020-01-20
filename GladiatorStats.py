@@ -1,18 +1,13 @@
+import json
+
+
 class GladiatorStats:
     def __init__(self, stats={}):
         if len(stats.items()) > 0:
             self.stats = stats
         else:
-            self.stats = {
-                "Health": 20,
-                "Attack Chance": 90,
-                "Attack Min. Damage": 3,
-                "Attack Max. Damage": 7,
-                "Armor": 2,
-                "Block Chance": 5,
-                "Critical Damage Chance": 5,
-                "Critical Damage Boost": 1.5,
-            }
+            with open("GladiatorGameSettings.json") as f:
+                self.stats = json.load(f)["Gladiator_initial_stats"]
 
     def __add__(self, otherStat):
         if isinstance(otherStat, dict):
@@ -45,7 +40,7 @@ class GladiatorStats:
                     self.stats[k] -= otherStat.stats[k]
                 except KeyError:
                     self.stats[k] = otherStat.stats[k]
-                    
+
         return GladiatorStats(self.stats)
 
     def __repr__(self):

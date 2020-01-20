@@ -9,9 +9,11 @@ class GladiatorGame:
     def __init__(self, player1, player2):
         self.player1 = GladiatorPlayer(player1)
         self.player2 = GladiatorPlayer(player2)
-        self.random_event_chance = 40  # percent of random event chance
         self.current_player = self.player1
         self.players = collections.deque([self.player1, self.player2])
+        with open("GladiatorGameSettings.json") as f:
+            self.random_event_chance = json.load(
+                f)["random_event_chance"]  # percent of random event chance
         with open("GladiatorEvents.json") as file:
             self.events = json.load(file)
         self.game_continues = True
