@@ -35,5 +35,12 @@
             "Critical Damage Boost": 0.5
         },
         "event_type": "buff"
+    },
+    {
+        "id": 4,
+        "attack_id": 4,
+        "event_text": "**{} found a fireball scrool in the arena!**",
+        "event_buffs": {},
+        "event_type": "unlock_attack_type"
     }
 ]

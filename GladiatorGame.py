@@ -33,17 +33,19 @@ class GladiatorGame:
 
     @staticmethod
     def construct_information_message():
-        information_text = "**Every Gladiator starts the game with these stats:\n**"
         settings = None
         attack_types = None
         with open("GladiatorGameSettings.json") as f:
             settings = json.load(f)
         with open("GladiatorAttackBuffs.json") as f:
             attack_types = json.load(f)
+
+        information_text = settings["game_information_texts"][0]["text"]
         for k in settings["Gladiator_initial_stats"].keys():
             information_text += f"{k}={settings['Gladiator_initial_stats'][k]}\n"
 
-        information_text += f"**There are {len(attack_types)} attacks available to each gladiator. Each gives you following bonuses:**\n"
+        information_text += settings["game_information_texts"][1]["text"].format(
+            len(attack_types))
         for i in attack_types:
             information_text += f"{i['name']} gives:\n"
             for k in i["buffs"].keys():
@@ -73,6 +75,8 @@ class GladiatorGame:
                 armor_equipment = GladiatorArmor(event_buffs)
                 player_to_be_affected.equip_armor(armor_equipment)
                 event_info += str(armor_equipment)
+            elif event["event_type"] == "unlock_attack_type":
+                player_to_be_affected.unlock_attack_type(event["attack_id"])
 
             return "*--------------------------\n" + event_info + "\n--------------------------*"
         else:

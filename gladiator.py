@@ -74,12 +74,12 @@ class Gladiator(commands.Cog):
             attack_msg_text = f"It is {self.Game.current_player}'s turn\n"
             f"What kind of attack do you want to do? \n"
 
-            for i in self.attack_types:
+            for i in self.Game.current_player.permitted_attacks:
                 attack_msg_text += f"{i['name']} : {i['reaction_emoji']}\n"
 
             attack_msg = await send_embed_message(ctx, attack_msg_text)
 
-            for i in self.attack_types:
+            for i in self.Game.current_player.permitted_attacks:
                 await attack_msg.add_reaction(i["reaction_emoji"])
 
             def check(reaction, user):
@@ -87,7 +87,7 @@ class Gladiator(commands.Cog):
 
             try:
                 reaction, _ = await self.bot.wait_for('reaction_add', timeout=30.0, check=check)
-                for i in self.attack_types:
+                for i in self.Game.current_player.permitted_attacks:
                     if i["reaction_emoji"] == reaction.emoji:
                         await send_embed_message(ctx, self.Game.attack(i["id"]))
                         break

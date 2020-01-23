@@ -38,5 +38,16 @@
             "Critical Damage Boost": 0.2
         },
         "reaction_emoji": "\u0034\u20E3"
+    },
+    {
+        "id": 4,
+        "name": "Fireball",
+        "buffs": {
+            "Attack Chance": -25,
+            "Attack Min. Damage": 2,
+            "Attack Max. Damage": 1,
+            "Critical Damage Chance": 25
+        },
+        "reaction_emoji": "\uD83D\uDD25"
     }
 ]

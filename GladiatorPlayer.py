@@ -4,6 +4,7 @@ from GladiatorStats import GladiatorStats, GladiatorArmor, GladiatorSword, Gladi
 from enum import Enum
 import json
 
+
 class GladiatorPlayer:
     def __init__(self, member):
         self.Member = member
@@ -14,6 +15,8 @@ class GladiatorPlayer:
         self.dead = False
         with open("GladiatorAttackBuffs.json") as f:
             self.attack_types = json.load(f)
+
+        self.permitted_attacks = self.attack_types[:4]
 
     def take_damage(self, damage):
         # check if the damage is blocked
@@ -51,9 +54,9 @@ class GladiatorPlayer:
         if not isinstance(otherGladiator, GladiatorPlayer):
             raise ValueError(
                 "otherGladiator must be an instance of GladiatorPlayer")
-        self.buff(self.attack_types[attack_type_id]["buffs"])
+        self.buff(self.permitted_attacks[attack_type_id]["buffs"])
         inf = self.damageEnemy(otherGladiator)
-        self.buff(self.attack_types[attack_type_id]
+        self.buff(self.permitted_attacks[attack_type_id]
                   ["buffs"], buff_type="debuff")
         return inf
 
@@ -86,6 +89,12 @@ class GladiatorPlayer:
             self.stats -= buff
             if self.stats["Health"] <= 0:
                 self.die()
+
+    def unlock_attack_type(self, attack_type_id):
+        for i in self.permitted_attacks:
+            if i["id"] == attack_type_id:
+                return
+        self.permitted_attacks.append(self.attack_types[attack_type_id])
 
     def __repr__(self):
         return f"<@{self.id}>"
