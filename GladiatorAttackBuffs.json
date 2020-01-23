@@ -3,8 +3,10 @@
         "id": 0,
         "name": "Thrust",
         "buffs": {
-            "Attack Chance": 10
-        }
+            "Attack Chance": 5,
+            "Attack Max. Damage": 1
+        },
+        "reaction_emoji": "\u0031\u20E3"
     },
     {
         "id": 1,
@@ -12,8 +14,9 @@
         "buffs": {
             "Attack Chance": -10,
             "Attack Min. Damage": 1,
-            "Attack Max. Damage": 1
-        }
+            "Attack Max. Damage": 2
+        },
+        "reaction_emoji": "\u0032\u20E3"
     },
     {
         "id": 2,
@@ -21,17 +24,19 @@
         "buffs": {
             "Critical Damage Chance": 35,
             "Critical Damage Boost": -0.3,
-            "Attack Chance": -15
-        }
+            "Attack Chance": -10
+        },
+        "reaction_emoji": "\u0033\u20E3"
     },
     {
         "id": 3,
         "name": "Flurry",
         "buffs": {
-            "Attack Chance": -40,
-            "Attack Min. Damage": 4,
+            "Attack Chance": -35,
+            "Attack Min. Damage": 3,
             "Attack Max. Damage": 4,
             "Critical Damage Boost": 0.2
-        }
+        },
+        "reaction_emoji": "\u0034\u20E3"
     }
 ]

@@ -25,7 +25,6 @@ class GladiatorGame:
         # return if the current_player is dead
         if self.current_player.dead:
             self.game_continues = False
-            return self.game_continues
         # return true because we successfully went to the other round
         return self.game_continues
 
@@ -62,7 +61,7 @@ class GladiatorGame:
             event_buffs = event["event_buffs"]
             event_info = event_text + "\n"
 
-            if event["event_type"] == "buff":
+            if event["event_type"] == "buff" or event["event_type"] == "debuff":
                 buff = GladiatorBuff(event_buffs)
                 player_to_be_affected.buff(buff)
                 event_info += str(buff)
@@ -74,10 +73,7 @@ class GladiatorGame:
                 armor_equipment = GladiatorArmor(event_buffs)
                 player_to_be_affected.equip_armor(armor_equipment)
                 event_info += str(armor_equipment)
-            elif event["event_type"] == "debuff":
-                debuff = GladiatorBuff(event_buffs)
-                player_to_be_affected.buff(debuff)
-                event_info += str(debuff)
+
             return "*--------------------------\n" + event_info + "\n--------------------------*"
         else:
             return ""
