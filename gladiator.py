@@ -18,6 +18,10 @@ class Gladiator(commands.Cog):
             self.attack_types = json.load(f)
 
     @commands.command()
+    async def gamead(self, ctx):
+        await ctx.send("I've never been much of a Discord gamer, but, forget everything you think you know about discord games because Hitty hitty bang bang is one of the most ambitious PVP projects of 2020 has just been released and will change everything. Just look at the level of detail of these characters! If you use the code in the description you can start with 50,000 bonus health and join the Special Launch Tournament, and you better hurry because it's getting big fast! You can play for totally free with the link below on your Discord server.")
+
+    @commands.command()
     async def gamerules(self, ctx):
         channel = await ctx.message.author.create_dm()
         await send_embed_message(channel, GladiatorGame.construct_information_message())
