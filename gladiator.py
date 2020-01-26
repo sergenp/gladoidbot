@@ -7,6 +7,7 @@ from discord import Member
 from enum import Enum
 import json
 from discord import Emoji
+import os
 
 
 class Gladiator(commands.Cog):
@@ -14,12 +15,13 @@ class Gladiator(commands.Cog):
         self.bot = bot
         self.game_started = False
         self.Game = None
-        with open("GladiatorAttackBuffs.json") as f:
+        with open(os.path.join("Gladiator", "AttackInformation", "GladiatorAttackBuffs.json")) as f:
             self.attack_types = json.load(f)
 
     @commands.command()
     async def gamead(self, ctx):
-        await ctx.send("I've never been much of a Discord gamer, but, forget everything you think you know about discord games because Hitty hitty bang bang is one of the most ambitious PVP projects of 2020 has just been released and will change everything. Just look at the level of detail of these characters! If you use the code in the description you can start with 50,000 bonus health and join the Special Launch Tournament, and you better hurry because it's getting big fast! You can play for totally free with the link below on your Discord server.")
+        with open(os.path.join("Gladiator", "Settings", "GladiatorGameSettings.json")) as f:
+            await ctx.send(json.load(f)["game_information_texts"]["game_ad_text"])
 
     @commands.command()
     async def gamerules(self, ctx):
@@ -93,10 +95,10 @@ class Gladiator(commands.Cog):
                 reaction, _ = await self.bot.wait_for('reaction_add', timeout=30.0, check=check)
                 for i in self.Game.current_player.permitted_attacks:
                     if i["reaction_emoji"] == reaction.emoji:
-                        await send_embed_message(ctx, self.Game.attack(i["id"]))
+                        await send_embed_message(ctx, self.Game.attack(i["id"], i["damage_type_id"]))
                         break
                 else:
-                    await send_embed_message(ctx, self.Game.attack(0))
+                    await send_embed_message(ctx, self.Game.attack())
 
                 await attack_msg.delete()
                 await self.gladiator_game_loop(ctx)

@@ -1,4 +1,5 @@
 import json
+import os
 
 
 class GladiatorStats:
@@ -6,7 +7,7 @@ class GladiatorStats:
         if len(stats.items()) > 0:
             self.stats = stats
         else:
-            with open("GladiatorGameSettings.json") as f:
+            with open(os.path.join("Gladiator", "Settings", "GladiatorGameSettings.json")) as f:
                 self.stats = json.load(f)["Gladiator_initial_stats"]
 
     def __add__(self, otherStat):

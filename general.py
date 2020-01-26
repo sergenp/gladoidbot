@@ -15,7 +15,8 @@ class General(commands.Cog):
         out = ''
         for i in args:
             for l in i:
-                out += ':regional_indicator_' + l.lower() + ': '
+                if l is not " ":
+                    out += ':regional_indicator_' + l.lower() + ': '
             out += '    '
         await ctx.send(out)
 
@@ -30,7 +31,7 @@ class General(commands.Cog):
             await ctx.send("I couldn't find anything")
 
     @commands.command(pass_context=True, description="Example usage:\n h!translate \'I love you\' german")
-    async def translate(self, ctx, toTranslate: str = "", toTranslateLanguage: str = "turkish"):
+    async def translate(self, ctx, toTranslate: str = "", toTranslateLanguage: str = "en"):
         if toTranslate == "":
             await send_embed_message(ctx, "Gimme something to translate")
         try:
@@ -38,8 +39,7 @@ class General(commands.Cog):
             print(f"Language detected from {toTranslate}, {detect_language}")
             translated = TRANSLATOR.translate(
                 toTranslate, src=detect_language, dest=toTranslateLanguage).text
-            await send_embed_message(ctx, f"This:\n{toTranslate.upper()}\nMeans:\n{translated.upper()} "
-                                     f"in{toTranslateLanguage.upper()}")
+            await send_embed_message(ctx, f"This:\n{toTranslate.upper()}\nMeans:\n{translated.upper()}")
         except ValueError:
             await send_embed_message(ctx, "Error, type h!help translate")
 

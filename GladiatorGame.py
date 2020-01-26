@@ -1,8 +1,9 @@
+import json
+import random
+import collections
+import os
 from GladiatorPlayer import GladiatorPlayer
 from GladiatorStats import GladiatorArmor, GladiatorSword, GladiatorBuff
-import random
-import json
-import collections
 
 
 class GladiatorGame:
@@ -11,11 +12,11 @@ class GladiatorGame:
         self.player2 = GladiatorPlayer(player2)
         self.current_player = self.player1
         self.players = collections.deque([self.player1, self.player2])
-        with open("GladiatorGameSettings.json") as f:
-            self.random_event_chance = json.load(
-                f)["random_event_chance"]  # percent of random event chance
-        with open("GladiatorEvents.json") as file:
-            self.events = json.load(file)
+        with open(os.path.join("Gladiator", "Settings", "GladiatorGameSettings.json")) as f:
+            self.game_settings = json.load(f)  # percent of random event chance
+        self.random_event_chance = self.game_settings["random_event_chance"]
+        with open(os.path.join("Gladiator", "Events", "GladiatorEvents.json")) as f:
+            self.events = json.load(f)
         self.game_continues = True
 
     def next_turn(self):
@@ -28,28 +29,41 @@ class GladiatorGame:
         # return true because we successfully went to the other round
         return self.game_continues
 
-    def attack(self, attackType_id):
-        return self.players[0].attack(self.players[1], attackType_id)
+    def attack(self, attackType_id=0, damage_type_id=0):
+        return self.players[0].attack(self.players[1], attackType_id, damage_type_id)
 
     @staticmethod
     def construct_information_message():
         settings = None
         attack_types = None
-        with open("GladiatorGameSettings.json") as f:
+        damage_types = None
+
+        with open(os.path.join("Gladiator", "Settings", "GladiatorGameSettings.json")) as f:
             settings = json.load(f)
-        with open("GladiatorAttackBuffs.json") as f:
+
+        with open(os.path.join("Gladiator", "AttackInformation", "GladiatorAttackBuffs.json")) as f:
             attack_types = json.load(f)
 
-        information_text = settings["game_information_texts"][0]["text"]
+        with open(os.path.join("Gladiator", "AttackInformation", "GladiatorDamageTypes.json")) as f:
+            damage_types = json.load(f)
+
+        information_text = settings["game_information_texts"]["title_text"]
         for k in settings["Gladiator_initial_stats"].keys():
             information_text += f"{k}={settings['Gladiator_initial_stats'][k]}\n"
 
-        information_text += settings["game_information_texts"][1]["text"].format(
+        information_text += settings["game_information_texts"]["information_about_attack_types_text"].format(
             len(attack_types))
         for i in attack_types:
-            information_text += f"{i['name']} gives:\n"
+            information_text += f"{i['name']} has these stats:\n"
+            information_text += f"**Damage Type : {i['damage_type_name']}**\n"
             for k in i["buffs"].keys():
                 information_text += f"**{k} : {i['buffs'][k]}**\n"
+
+        information_text += settings["game_information_texts"]["damage_types_info"].format(
+            len(damage_types))
+        for i in damage_types:
+            information_text += f"**{i['damage_type_name']}** : {i['description']}\n"
+
         return information_text
 
     def random_event(self):
@@ -77,6 +91,10 @@ class GladiatorGame:
                 event_info += str(armor_equipment)
             elif event["event_type"] == "unlock_attack_type":
                 player_to_be_affected.unlock_attack_type(event["attack_id"])
+                if event_buffs:
+                    buff = GladiatorBuff(event_buffs)
+                    player_to_be_affected.buff(buff)
+                    event_info += str(buff)
 
             return "*--------------------------\n" + event_info + "\n--------------------------*"
         else:

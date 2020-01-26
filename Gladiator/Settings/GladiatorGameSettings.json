@@ -1,0 +1,39 @@
+{
+    "random_event_chance": 45,
+    "Gladiator_initial_stats": {
+        "Health": 20,
+        "Attack Chance": 85,
+        "Attack Min. Damage": 3,
+        "Attack Max. Damage": 7,
+        "Magic Damage": 4,
+        "Magic Armor": 1,
+        "Armor": 2,
+        "Block Chance": 5,
+        "Critical Damage Chance": 5,
+        "Critical Damage Boost": 1.5,
+        "Luck": 0
+    },
+    "game_information_texts": {
+        "title_text": "**Every Gladiator starts the game with these stats:\n**",
+
+        "information_about_attack_types_text": "**There are {} attacks available to each gladiator. Some attack types may not be available in the beginning of the game and can be unlocked via events. Each attack type gives you following bonuses:**\n",
+
+        "game_ad_text": "I've never been much of a Discord gamer, but, forget everything you think you know about discord games because Hitty hitty bang bang is one of the **most ambitious PVP projects of 2020** has just been released and will change everything. Just look at the level of detail of these characters! If you use the code in the description you can start with 50,000 bonus health and join the Special Launch Tournament, and you better hurry because it's getting big fast! You can play for totally free with the link below on your Discord server.",
+
+        "damage_types_info" : "There are {} of damage type available to the gladiator\n",
+
+        "take_damage_text" : "{} took **{} damage**, {} has **{} HP** remaining",
+
+        "block_damage_text" : "**But {} blocked the damage!**",
+
+        "dodge_text" : "**{} has dodged the attack!**",
+
+        "critical_hit_text" : "It is a **CRITICAL** hit ",
+        
+        "death_texts" : [
+            "**{} has died**",
+            "**{} has been decapitated.**",
+            "**{} blunders and falls face in the other gladiator's sword**"
+        ]
+    }
+}
