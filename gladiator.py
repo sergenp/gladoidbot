@@ -42,7 +42,7 @@ class Gladiator(commands.Cog):
                 await ctx.send(self.game_information["game_challenge_bot_text"].format(ctx.message.author.mention))
             else:
                 msg = await ctx.send(self.game_information["game_challenge_text"].format(
-                    ctx.message.author.mention, userToChallenge.mention, '👍', '👎'))
+                    ctx.message.author.mention, userToChallenge.mention, '👍', '👎'), delete_after=60.0)
                 await msg.add_reaction('👍')
                 await msg.add_reaction('👎')
 
@@ -65,7 +65,7 @@ class Gladiator(commands.Cog):
                         await ctx.send(self.game_information["game_challenge_declined_text"].format(user.mention), delete_after=10)
 
                 except asyncio.TimeoutError:
-                    pass
+                    await msg.delete()
                 else:
                     pass
 
