@@ -13,15 +13,18 @@ import os
 class Gladiator(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+        # dictionary holding the id of the channel and the Game instance of the channel
+        self.games = {}
         self.game_started = False
-        self.Game = None
         with open(os.path.join("Gladiator", "AttackInformation", "GladiatorAttackBuffs.json")) as f:
             self.attack_types = json.load(f)
 
+        with open(os.path.join("Gladiator", "Settings", "GladiatorGameSettings.json")) as f:
+            self.game_information = json.load(f)["game_information_texts"]
+
     @commands.command()
     async def gamead(self, ctx):
-        with open(os.path.join("Gladiator", "Settings", "GladiatorGameSettings.json")) as f:
-            await ctx.send(json.load(f)["game_information_texts"]["game_ad_text"])
+        await ctx.send(self.game_information["game_ad_text"])
 
     @commands.command()
     async def gamerules(self, ctx):
@@ -30,17 +33,16 @@ class Gladiator(commands.Cog):
 
     @commands.command()
     async def challenge(self, ctx, userToChallenge: discord.Member = None):
-        if self.game_started:
-            await ctx.send("A game is already commencing")
+        if ctx.channel.id in self.games:
+            await ctx.send(self.game_information["game_is_already_commencing_text"])
             return
 
         if userToChallenge:
             if userToChallenge.bot:
-                await ctx.send(f"{ctx.message.author.mention} has been killed by the power of AI. Dont mess with robots.")
+                await ctx.send(self.game_information["game_challenge_bot_text"].format(ctx.message.author.mention))
             else:
-                msg = await ctx.send(f"{ctx.message.author.mention} has challenged you {userToChallenge.mention} to a "
-                                     f"gladiator match\nTo accept react this message with 👍 to decline, 👎\nYou have 60 seconds to decide\n"
-                                     f"(Note Use the command **h!gamerules** to recieve a DM containing information about how the game is played)", delete_after=60)
+                msg = await ctx.send(self.game_information["game_challenge_text"].format(
+                    ctx.message.author.mention, userToChallenge.mention, '👍', '👎'))
                 await msg.add_reaction('👍')
                 await msg.add_reaction('👎')
 
@@ -51,17 +53,16 @@ class Gladiator(commands.Cog):
                     reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
                     if reaction.emoji == '👍':
                         self.game_started = True
-                        if self.Game == None:
-                            self.Game = GladiatorGame(
-                                ctx.message.author, userToChallenge)
+                        self.games.update({ctx.channel.id: GladiatorGame(
+                            ctx.message.author, userToChallenge)})
 
                         await msg.delete()
-                        await send_embed_message(ctx, f"** THE GLADIATOR GAMES HAVE BEGUN **\n")
+                        await send_embed_message(ctx, self.game_information["game_began_text"])
                         await self.gladiator_game_loop(ctx)
 
                     else:
                         await msg.delete()
-                        await ctx.send(f"{user.mention} has declined the challenge. Pussy.", delete_after=10)
+                        await ctx.send(self.game_information["game_challenge_declined_text"].format(user.mention), delete_after=10)
 
                 except asyncio.TimeoutError:
                     pass
@@ -69,48 +70,47 @@ class Gladiator(commands.Cog):
                     pass
 
         else:
-            await ctx.send(f"{ctx.message.author.mention} you need to @ the people you wanna challenge")
+            await ctx.send(self.game_information["game_challenge_user_mention_missing"].format(ctx.message.author.mention))
 
     async def gladiator_game_loop(self, ctx):
-        if self.Game.next_turn():
-            rand_ev = self.Game.random_event()
+        game = self.games[ctx.channel.id]
+        if game.next_turn():
+            rand_ev = game.random_event()
             if rand_ev:
                 await send_embed_message(ctx, rand_ev)
 
-            attack_msg_text = f"It is {self.Game.current_player}'s turn\n"
-            f"What kind of attack do you want to do? \n"
+            attack_msg_text = self.game_information["game_turn_text"].format(
+                game.current_player)
 
-            for i in self.Game.current_player.permitted_attacks:
+            for i in game.current_player.permitted_attacks:
                 attack_msg_text += f"{i['name']} : {i['reaction_emoji']}\n"
 
             attack_msg = await send_embed_message(ctx, attack_msg_text)
 
-            for i in self.Game.current_player.permitted_attacks:
+            for i in game.current_player.permitted_attacks:
                 await attack_msg.add_reaction(i["reaction_emoji"])
 
             def check(reaction, user):
-                return user == self.Game.current_player.Member and reaction.message.id == attack_msg.id
+                return user == game.current_player.Member and reaction.message.id == attack_msg.id
 
             try:
                 reaction, _ = await self.bot.wait_for('reaction_add', timeout=30.0, check=check)
-                for i in self.Game.current_player.permitted_attacks:
+                for i in game.current_player.permitted_attacks:
                     if i["reaction_emoji"] == reaction.emoji:
-                        await send_embed_message(ctx, self.Game.attack(i["id"], i["damage_type_id"]))
+                        await send_embed_message(ctx, game.attack(i["id"], i["damage_type_id"]))
                         break
                 else:
-                    await send_embed_message(ctx, self.Game.attack())
+                    await send_embed_message(ctx, game.attack())
 
                 await attack_msg.delete()
                 await self.gladiator_game_loop(ctx)
 
             except asyncio.TimeoutError:
-                await ctx.send(f"Game has ended via timeout, winner is {self.Game.players[1]}")
-                self.Game = None
-                self.game_started = False
+                await ctx.send(self.game_information["game_end_via_timeout_text"].format(game.players[1]))
+                del self.games[ctx.channel.id]
         else:
-            await ctx.send(f"{self.Game.current_player} is dead! Game is over. Get fucked {self.Game.current_player}")
-            self.Game = None
-            self.game_started = False
+            await ctx.send(self.game_information["game_over_text"].format(game.current_player, game.current_player))
+            del self.games[ctx.channel.id]
 
 
 def setup(bot):
