@@ -1,0 +1,14 @@
+{
+    "Gladiator_initial_stats": {
+        "Health": 25,
+        "Attack Chance": 85,
+        "Attack Min. Damage": 4,
+        "Attack Max. Damage": 8,
+        "Magic Damage": 5,
+        "Magic Armor": 1,
+        "Armor": 2,
+        "Block Chance": 5,
+        "Critical Damage Chance": 5,
+        "Critical Damage Boost": 1.5
+    }
+}

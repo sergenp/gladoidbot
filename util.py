@@ -2,10 +2,13 @@ from discord import Embed, DMChannel
 import subprocess
 
 
-async def send_embed_message(ctx, content="", title="", colour=0x0080c0, link="", name="", ikon_link=""):
+async def send_embed_message(ctx, content="", title="", colour=0x0080c0, link="", name="", ikon_link="", field_list=[]):
     em = Embed(title=title, description=content, colour=colour)
     em.set_thumbnail(url=link)
     em.set_author(name=name, icon_url=ikon_link)
+    if field_list:
+        for k in field_list:
+            em.add_field(name=k["name"], value=k["value"], inline=k["inline"])
     if isinstance(ctx, DMChannel):
         return await ctx.send(embed=em)
     else:

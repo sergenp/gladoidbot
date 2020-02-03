@@ -4,10 +4,12 @@ import os
 
 class GladiatorStats:
     def __init__(self, stats={}):
+        self.max_stat_value = 100
+        self.min_stat_value = 0
         if len(stats.items()) > 0:
             self.stats = stats
         else:
-            with open(os.path.join("Gladiator", "Settings", "GladiatorGameSettings.json")) as f:
+            with open(os.path.join("Gladiator", "GladiatorStats.json")) as f:
                 self.stats = json.load(f)["Gladiator_initial_stats"]
 
     def __add__(self, otherStat):
@@ -15,6 +17,8 @@ class GladiatorStats:
             for k in otherStat.keys():
                 try:
                     self.stats[k] += otherStat[k]
+                    if self.stats[k] > self.max_stat_value:
+                        self.stats[k] = self.max_stat_value
                 except KeyError:
                     self.stats[k] = otherStat[k]
 
@@ -22,6 +26,8 @@ class GladiatorStats:
             for k in otherStat.stats.keys():
                 try:
                     self.stats[k] += otherStat.stats[k]
+                    if self.stats[k] > self.max_stat_value:
+                        self.stats[k] = self.max_stat_value
                 except KeyError:
                     self.stats[k] = otherStat.stats[k]
 
@@ -32,13 +38,18 @@ class GladiatorStats:
             for k in otherStat.keys():
                 try:
                     self.stats[k] -= otherStat[k]
+                    if self.stats[k] < self.min_stat_value:
+                        self.stats[k] = self.min_stat_value
                 except KeyError:
                     self.stats[k] = otherStat[k]
 
         elif isinstance(otherStat, GladiatorStats):
             for k in otherStat.stats.keys():
                 try:
+
                     self.stats[k] -= otherStat.stats[k]
+                    if self.stats[k] < self.min_stat_value:
+                        self.stats[k] = self.min_stat_value
                 except KeyError:
                     self.stats[k] = otherStat.stats[k]
 
@@ -61,7 +72,7 @@ class GladiatorStats:
 class GladiatorArmor(GladiatorStats):
     def __init__(self, stats={}):
         if len(stats.items()) == 0:
-            self.stats = {"armor": 1}
+            self.stats = {"Armor": 1}
         else:
             self.stats = stats
 
@@ -69,7 +80,7 @@ class GladiatorArmor(GladiatorStats):
 class GladiatorSword(GladiatorStats):
     def __init__(self, stats={}):
         if len(stats.items()) == 0:
-            self.stats = {"attack_damage": 1}
+            self.stats = {"Attack Min. Damage": 1}
         else:
             self.stats = stats
 
@@ -77,6 +88,6 @@ class GladiatorSword(GladiatorStats):
 class GladiatorBuff(GladiatorStats):
     def __init__(self, stats={}):
         if len(stats.items()) == 0:
-            self.stats = {"crit_chance": 2}
+            self.stats = {"Critical Damage Chance": 2}
         else:
             self.stats = stats

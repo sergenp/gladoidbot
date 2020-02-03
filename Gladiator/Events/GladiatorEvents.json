@@ -1,25 +1,6 @@
 [
     {
         "id": 0,
-        "event_text": "**{} found a sword in the corner of the arena!**",
-        "event_buffs": {
-            "Attack Chance": 5,
-            "Attack Min. Damage": 1,
-            "Attack Max. Damage": 3
-        },
-        "event_type": "sword_equipment"
-    },
-    {
-        "id": 1,
-        "event_text": "**{} found an armor lying in the arena!**",
-        "event_buffs": {
-            "Armor": 1.5,
-            "Block Chance": 15
-        },
-        "event_type": "armor_equipment"
-    },
-    {
-        "id": 2,
         "event_text": "**The crowd hates the show! They are throwing rocks at {}**",
         "event_buffs": {
             "Health": -3
@@ -27,7 +8,7 @@
         "event_type": "debuff"
     },
     {
-        "id": 3,
+        "id": 1,
         "event_text": "**{} went berserk!**",
         "event_buffs": {
             "Armor": -3,
@@ -37,14 +18,14 @@
         "event_type": "buff"
     },
     {
-        "id": 4,
+        "id": 2,
         "attack_id": 3,
         "event_text": "**{} found a fireball scroll in the arena!**",
         "event_buffs": {},
         "event_type": "unlock_attack_type"
     },
     {
-        "id": 5,
+        "id": 3,
         "attack_id": 4,
         "event_text": "**Gods have cursed {} he now has the power to spread microbes!",
         "event_buffs": {
