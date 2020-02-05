@@ -1,19 +1,21 @@
 import random
 import math
-from Gladiator.GladiatorStats import GladiatorStats, GladiatorArmor, GladiatorSword, GladiatorBuff
-from enum import Enum
+from Gladiator.GladiatorStats import GladiatorStats
 import json
 import os
+
+INITIAL_ATTACK_TYPES_COUNT = 3
 
 
 class GladiatorPlayer:
     def __init__(self, member):
         self.Member = member
         self.id = self.Member.id
-        #self.id = 1
-        self.stats = GladiatorStats()
-
         self.dead = False
+        #self.id = 1
+        with open(os.path.join("Gladiator", "GladiatorStats.json")) as f:
+            self.stats = GladiatorStats(json.load(f)["Gladiator_initial_stats"])
+
         with open(os.path.join("Gladiator", "Settings", "GladiatorGameSettings.json")) as f:
             self.information = json.load(f)["game_information_texts"]
 
@@ -23,18 +25,16 @@ class GladiatorPlayer:
         with open(os.path.join("Gladiator", "AttackInformation", "GladiatorDamageTypes.json")) as f:
             self.damage_types = json.load(f)
 
-        with open(os.path.join("Gladiator", "Equipments", "GladiatorWeapons.json")) as f:
-            self.swords = json.load(f)
-
-        with open(os.path.join("Gladiator", "Equipments", "GladiatorArmors.json")) as f:
-            self.armors = json.load(f)
+        with open(os.path.join("Gladiator", "Equipments", "GladiatorEquipments.json")) as f:
+            self.equipments = json.load(f)
 
         with open(os.path.join("Gladiator", "AttackInformation", "GladiatorTurnDebuffs.json")) as f:
             self.turn_debuffs = json.load(f)
 
-        self.permitted_attacks = self.attack_types[:3]
-        self.armor_equipped = None
-        self.sword_equipped = None
+        with open(os.path.join("Gladiator", "Equipments", "GladiatorSlots.json")) as f:
+            self.equipment_slots = json.load(f)
+
+        self.permitted_attacks = self.attack_types[:INITIAL_ATTACK_TYPES_COUNT]
         self.debuffs = []
 
     def take_damage(self, damage, damage_type):
@@ -115,49 +115,37 @@ class GladiatorPlayer:
         self.dead = True
         return random.choice(self.information["death_texts"]).format(self)
 
-    def equip_sword(self, sword_id):
-        if not self.sword_equipped:
-            for k in self.swords:
-                if k["id"] == sword_id:
-                    self.sword_equipped = k
-                    self.stats += self.sword_equipped["buffs"]
-                    if k["debuff_id"] != -1:
+    def equip_item(self, equipment_id, equipment_slot_id):
+        slot = None
+        # search for the slot
+        for k in self.equipment_slots:
+            if k["id"] == equipment_slot_id:
+                slot = k
+                break
+        else:
+            raise IndexError("Equipment Slot couldnt be found.")
+
+        # if there is an equipment equipped already in the slot,
+        # do nothing, and return
+        if slot["Equipment"]:
+            return
+        else:
+            for equipment in self.equipments:
+                if equipment["id"] == equipment_id and equipment["equipment_slot_id"] == equipment_slot_id:
+                    slot["Equipment"] = equipment
+                    self.stats += equipment["buffs"]
+                    if equipment["debuff_id"] != -1:
                         for turn_dbf in self.turn_debuffs:
-                            if turn_dbf["debuff_stats"]["debuff_id"] == k["debuff_id"]:
+                            if turn_dbf["debuff_stats"]["debuff_id"] == equipment["debuff_id"]:
                                 self.stats += turn_dbf["debuff_stats"]
                                 break
                         else:
                             raise IndexError("Turn debuff id couldnt be found")
                     break
             else:
-                raise IndexError("Sword couldnt be found")
+                raise IndexError("Equipment couldnt be found.")
 
-    def equip_armor(self, armor_id):
-        if not self.armor_equipped:
-            for k in self.armors:
-                if k["id"] == armor_id:
-                    self.armor_equipped = k
-                    self.stats += self.armor_equipped["buffs"]
-                    if k["debuff_id"] != -1:
-                        for turn_dbf in self.turn_debuffs:
-                            if turn_dbf["debuff_stats"]["debuff_id"] == k["debuff_id"]:
-                                self.stats += turn_dbf["debuff_stats"]
-                                break
-                        else:
-                            raise IndexError("Turn debuff id couldnt be found")
-                    break
-            else:
-                raise IndexError("Armor couldnt be found")
-
-    def remove_sword(self):
-        if self.sword_equipped:
-            self.sword_equipped = None
-
-    def remove_armor(self):
-        if self.armor_equipped:
-            self.armor_equipped = None
-
-    def buff(self, buff: GladiatorBuff, buff_type="buff"):
+    def buff(self, buff: GladiatorStats, buff_type="buff"):
         if buff_type == "buff":
             self.stats += buff
         elif buff_type == "debuff":

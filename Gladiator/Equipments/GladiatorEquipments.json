@@ -1,0 +1,78 @@
+[
+    {
+        "id": 0,
+        "equipment_slot_id": 0,
+        "name": "Light Armor",
+        "buffs": {
+            "Block Chance": 15,
+            "Armor": 1
+        },
+        "reaction_emoji": "\u0031\u20E3",
+        "debuff_id": -1
+    },
+    {
+        "id": 1,
+        "equipment_slot_id": 0,
+        "name": "Heavy Armor",
+        "buffs": {
+            "Armor": 2
+        },
+        "reaction_emoji": "\u0032\u20E3",
+        "debuff_id": -1
+    },
+    {
+        "id": 2,
+        "equipment_slot_id": 0,
+        "name": "Mage Robes",
+        "buffs": {
+            "Magic Damage": 1,
+            "Magic Armor": 1,
+            "Armor": 1
+        },
+        "reaction_emoji": "\u0033\u20E3",
+        "debuff_id": -1
+    },
+    {
+        "id": 3,
+        "equipment_slot_id": 1,
+        "name": "Spear",
+        "buffs": {
+            "Attack Min. Damage": 1,
+            "Block Chance": 10
+        },
+        "reaction_emoji": "\u0031\u20E3",
+        "debuff_id": -1
+    },
+    {
+        "id": 4,
+        "equipment_slot_id": 1,
+        "name": "Gladius",
+        "buffs": {
+            "Attack Chance": -3,
+            "Attack Min. Damage": 1,
+            "Attack Max. Damage": 1
+        },
+        "reaction_emoji": "\u0032\u20E3",
+        "debuff_id": -1
+    },
+    {
+        "id": 5,
+        "equipment_slot_id": 1,
+        "name": "Axe",
+        "buffs": {
+            "Attack Min. Damage": 1
+        },
+        "reaction_emoji": "\u0033\u20E3",
+        "debuff_id": 0
+    },
+    {
+        "id": 6,
+        "equipment_slot_id": 1,
+        "name": "Magic Wand",
+        "buffs": {
+            "Magic Damage": 1
+        },
+        "reaction_emoji": "\u0034\u20E3",
+        "debuff_id": 1
+    }
+]

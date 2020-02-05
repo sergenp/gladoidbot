@@ -9,24 +9,25 @@ import json
 from discord import Emoji
 import os
 
+PLAYER_COUNT = 2
+
 
 class Gladiator(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         # dictionary holding the id of the channel and the Game instance of the channel
         self.games = {}
-        self.game_started = False
         with open(os.path.join("Gladiator", "AttackInformation", "GladiatorAttackBuffs.json")) as f:
             self.attack_types = json.load(f)
 
         with open(os.path.join("Gladiator", "Settings", "GladiatorGameSettings.json")) as f:
             self.game_information = json.load(f)["game_information_texts"]
 
-        with open(os.path.join("Gladiator", "Equipments", "GladiatorArmors.json")) as f:
-            self.armors = json.load(f)
+        with open(os.path.join("Gladiator", "Equipments", "GladiatorEquipments.json")) as f:
+            self.equipments = json.load(f)
 
-        with open(os.path.join("Gladiator", "Equipments", "GladiatorWeapons.json")) as f:
-            self.weapons = json.load(f)
+        with open(os.path.join("Gladiator", "Equipments", "GladiatorSlots.json")) as f:
+            self.equipment_slots = json.load(f)
 
         with open(os.path.join("Gladiator", "AttackInformation", "GladiatorTurnDebuffs.json")) as f:
             self.debuffs = json.load(f)
@@ -61,19 +62,18 @@ class Gladiator(commands.Cog):
                 try:
                     reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
                     if reaction.emoji == '👍':
-                        self.game_started = True
+                        await msg.delete()
                         self.games.update({ctx.channel.id: GladiatorGame(
                             ctx.message.author, userToChallenge)})
 
-                        for _ in range(0, 2):
+                        for _ in range(0, PLAYER_COUNT):
                             try:
                                 crr_game = self.games[ctx.channel.id]
-                                await self.select_equipments(ctx, crr_game.current_player.Member, 0)
-                                await self.select_equipments(ctx, crr_game.current_player.Member, 1)
+                                for eq_slot in self.equipment_slots:
+                                    await self.select_equipments(ctx, crr_game.current_player.Member, eq_slot["id"])
                                 crr_game.switch_turns()
                             except KeyError:
                                 return
-
                         await send_embed_message(ctx, self.game_information["game_began_text"])
                         await self.gladiator_game_loop(ctx)
 
@@ -95,16 +95,13 @@ class Gladiator(commands.Cog):
             game = self.games[ctx.channel.id]
         except KeyError:
             return
-
+        await ctx.send(f"{member.mention} Please select your item")
         equipments = []
-        if equipment_slot_id == 0:
-            equipments = self.weapons
-            await ctx.send(f"{member.mention}, please select your weapon")
-        elif equipment_slot_id == 1:
-            equipments = self.armors
-            await ctx.send(f"{member.mention}, please select your armor")
+        for equipment in self.equipments:
+            if equipment["equipment_slot_id"] == equipment_slot_id:
+                equipments.append(equipment)
 
-        equipment_list = []
+        equipment_field_list = []
         emoji_list = []
         for k in equipments:
             value = ""
@@ -120,15 +117,15 @@ class Gladiator(commands.Cog):
                             else:
                                 value += f"{j} : {debuff['debuff_stats'][j]}\n"
 
-            name = k["name"] + " " + k["reaction_emoji"]
+            name = f"{k['name']} {k['reaction_emoji']}"
             emoji_list.append(k["reaction_emoji"])
             dct = {
                 "name": name,
                 "value": value,
                 "inline": True
             }
-            equipment_list.append(dct)
-        msg = await send_embed_message(ctx, field_list=equipment_list)
+            equipment_field_list.append(dct)
+        msg = await send_embed_message(ctx, field_list=equipment_field_list)
         for emoji in emoji_list:
             await msg.add_reaction(emoji)
 
@@ -136,28 +133,21 @@ class Gladiator(commands.Cog):
             return user == member and reaction.message.id == msg.id
 
         try:
-            reaction, user = await self.bot.wait_for('reaction_add', timeout=45.0, check=check)
-            equipment_id = None
-            for i, emoji in enumerate(emoji_list):
-                if emoji == reaction.emoji:
-                    equipment_id = i
+            reaction, _ = await self.bot.wait_for('reaction_add', timeout=3.0, check=check)
+            equipment_id = 0
+            for eq in equipments:
+                if eq["reaction_emoji"] == reaction.emoji:
+                    equipment_id = eq["id"]
                     break
-            else:
-                equipment_id = 0
 
-            if equipment_slot_id == 0:
-                game.select_sword_for_current_player(equipment_id)
-            elif equipment_slot_id == 1:
-                game.select_armor_for_current_player(equipment_id)
-
+            game.current_player.equip_item(equipment_id, equipment_slot_id)
             await msg.delete()
 
         except asyncio.TimeoutError:
             await msg.delete()
             await ctx.send("Player failed to choose an equipment, the duel is cancelled", delete_after=10)
             del self.games[ctx.channel.id]
-        else:
-            pass
+            raise asyncio.TimeoutError
 
     async def gladiator_game_loop(self, ctx):
         game = self.games[ctx.channel.id]
@@ -185,7 +175,7 @@ class Gladiator(commands.Cog):
                 return user == game.current_player.Member and reaction.message.id == attack_msg.id
 
             try:
-                reaction, _ = await self.bot.wait_for('reaction_add', timeout=30.0, check=check)
+                reaction, _ = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
                 for i in game.current_player.permitted_attacks:
                     if i["reaction_emoji"] == reaction.emoji:
                         await send_embed_message(ctx, game.attack(i["id"], i["damage_type_id"]))

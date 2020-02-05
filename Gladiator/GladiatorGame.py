@@ -3,7 +3,7 @@ import random
 import collections
 import os
 from Gladiator.GladiatorPlayer import GladiatorPlayer
-from Gladiator.GladiatorStats import GladiatorArmor, GladiatorSword, GladiatorBuff
+from Gladiator.GladiatorStats import GladiatorStats
 
 
 class GladiatorGame:
@@ -20,12 +20,6 @@ class GladiatorGame:
             self.events = json.load(f)
 
         self.game_continues = True
-
-    def select_sword_for_current_player(self, sword_id):
-        self.current_player.equip_sword(sword_id)
-
-    def select_armor_for_current_player(self, armor_id):
-        self.current_player.equip_armor(armor_id)
 
     def switch_turns(self):
         self.players.appendleft(self.players.pop())
@@ -99,7 +93,7 @@ class GladiatorGame:
             event_info = event_text + "\n"
 
             if event_buffs:
-                buff = GladiatorBuff(event_buffs)
+                buff = GladiatorStats(event_buffs)
                 player_to_be_affected.buff(buff)
                 event_info += str(buff)
 
