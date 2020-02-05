@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 import asyncio
-from GladiatorGame import GladiatorGame
+from Gladiator.GladiatorGame import GladiatorGame
 from util import send_embed_message
 from discord import Member
 from enum import Enum
@@ -65,7 +65,7 @@ class Gladiator(commands.Cog):
                         self.games.update({ctx.channel.id: GladiatorGame(
                             ctx.message.author, userToChallenge)})
 
-                        for i in range(0, 2):
+                        for _ in range(0, 2):
                             try:
                                 crr_game = self.games[ctx.channel.id]
                                 await self.select_equipments(ctx, crr_game.current_player.Member, 0)
@@ -91,6 +91,11 @@ class Gladiator(commands.Cog):
             await ctx.send(self.game_information["game_challenge_user_mention_missing"].format(ctx.message.author.mention))
 
     async def select_equipments(self, ctx, member, equipment_slot_id=0):
+        try:
+            game = self.games[ctx.channel.id]
+        except KeyError:
+            return
+
         equipments = []
         if equipment_slot_id == 0:
             equipments = self.weapons
@@ -131,7 +136,7 @@ class Gladiator(commands.Cog):
             return user == member and reaction.message.id == msg.id
 
         try:
-            reaction, user = await self.bot.wait_for('reaction_add', timeout=30.0, check=check)
+            reaction, user = await self.bot.wait_for('reaction_add', timeout=45.0, check=check)
             equipment_id = None
             for i, emoji in enumerate(emoji_list):
                 if emoji == reaction.emoji:
@@ -140,7 +145,6 @@ class Gladiator(commands.Cog):
             else:
                 equipment_id = 0
 
-            game = self.games[ctx.channel.id]
             if equipment_slot_id == 0:
                 game.select_sword_for_current_player(equipment_id)
             elif equipment_slot_id == 1:

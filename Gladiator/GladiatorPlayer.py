@@ -1,6 +1,6 @@
 import random
 import math
-from GladiatorStats import GladiatorStats, GladiatorArmor, GladiatorSword, GladiatorBuff
+from Gladiator.GladiatorStats import GladiatorStats, GladiatorArmor, GladiatorSword, GladiatorBuff
 from enum import Enum
 import json
 import os

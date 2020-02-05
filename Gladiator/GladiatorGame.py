@@ -2,8 +2,8 @@ import json
 import random
 import collections
 import os
-from GladiatorPlayer import GladiatorPlayer
-from GladiatorStats import GladiatorArmor, GladiatorSword, GladiatorBuff
+from Gladiator.GladiatorPlayer import GladiatorPlayer
+from Gladiator.GladiatorStats import GladiatorArmor, GladiatorSword, GladiatorBuff
 
 
 class GladiatorGame:

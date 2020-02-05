@@ -6,7 +6,7 @@ class GladiatorStats:
     def __init__(self, stats={}):
         self.max_stat_value = 100
         self.min_stat_value = 0
-        if len(stats.items()) > 0:
+        if len(stats) > 0:
             self.stats = stats
         else:
             with open(os.path.join("Gladiator", "GladiatorStats.json")) as f:
