@@ -133,7 +133,7 @@ class Gladiator(commands.Cog):
             return user == member and reaction.message.id == msg.id
 
         try:
-            reaction, _ = await self.bot.wait_for('reaction_add', timeout=3.0, check=check)
+            reaction, _ = await self.bot.wait_for('reaction_add', timeout=30.0, check=check)
             equipment_id = 0
             for eq in equipments:
                 if eq["reaction_emoji"] == reaction.emoji:
