@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 from util import send_embed_message, search_youtube
 from googletrans import Translator
+import requests
 
 TRANSLATOR = Translator()
 
@@ -42,7 +43,11 @@ class General(commands.Cog):
             await send_embed_message(ctx, f"This:\n{toTranslate.upper()}\nMeans:\n{translated.upper()}")
         except ValueError:
             await send_embed_message(ctx, "Error, type h!help translate")
-
+    
+    @commands.command()
+    async def quote(self, ctx):
+        data = requests.get("https://api.quotable.io/random").json()
+        await send_embed_message(ctx, author_name=data["author"], content=data["content"])
 
 def setup(bot):
     bot.add_cog(General(bot))
