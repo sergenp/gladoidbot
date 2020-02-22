@@ -7,7 +7,7 @@ except ModuleNotFoundError:
 
 bot = commands.Bot(command_prefix="h!")
 
-startup_extensions = ["general", "gladiator"]
+startup_extensions = ["general", "gladiator", "meme"]
 
 for extension in startup_extensions:
     try:

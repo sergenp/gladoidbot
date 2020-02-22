@@ -3,10 +3,8 @@ from discord.ext import commands
 import asyncio
 from Gladiator.GladiatorGame import GladiatorGame
 from util import send_embed_message
-from discord import Member
 from enum import Enum
 import json
-from discord import Emoji
 import os
 
 PLAYER_COUNT = 2
