@@ -48,6 +48,9 @@ class Meme(commands.Cog):
         data = requests.get(f"https://xkcd.com/{random_comic_num}/info.0.json").json()["img"]
         await send_embed_message(ctx=ctx, image_url=data)
 
+    @commands.command(description="Gives out a random company buzzword")
+    async def buzzword(self, ctx):
+        await ctx.send(requests.get("https://corporatebs-generator.sameerkumar.website/").json()["phrase"])
 
 def setup(bot):
     bot.add_cog(Meme(bot))
