@@ -12,6 +12,11 @@ class Meme(commands.Cog):
         json_data = requests.get("https://meme-api.herokuapp.com/gimme").json()
         await send_embed_message(
             ctx=ctx, content=f"r/{json_data['subreddit']}\n{json_data['postLink']}", title=json_data['title'], image_url=json_data['url'])
+    
+    @commands.command(name="dadjoke")
+    async def dad_joke(self, ctx):
+        headers = {'Accept': 'text/plain'}
+        await ctx.send(requests.get("https://icanhazdadjoke.com/", headers=headers).text)
 
 
 def setup(bot):
