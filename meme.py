@@ -1,6 +1,7 @@
 import requests
 from util import send_embed_message
 from discord.ext import commands
+import discord
 
 
 class Meme(commands.Cog):
@@ -17,6 +18,27 @@ class Meme(commands.Cog):
     async def dad_joke(self, ctx):
         headers = {'Accept': 'text/plain'}
         await ctx.send(requests.get("https://icanhazdadjoke.com/", headers=headers).text)
+
+    @commands.command()
+    async def yesno(self, ctx, *args):
+        data = requests.get("https://yesno.wtf/api/").json()
+        await send_embed_message(ctx=ctx, image_url=data["image"])
+    
+    @commands.command()
+    async def blb(self, ctx, user : discord.Member = None, gender='M'):
+        if user:
+            name = user.display_name
+        else:
+            name = ctx.message.author.display_name
+        
+        name = name.replace(" ", "%20")
+        sex = gender.lower()
+        await send_embed_message(ctx=ctx, image_url=f"https://belikebill.ga/billgen-API.php?default=1&name={name}&sex={sex}")
+
+    @commands.command()
+    async def swq(self, ctx):
+        data = requests.get("http://swquotesapi.digitaljedi.dk/api/SWQuote/RandomStarWarsQuote").json()
+        await send_embed_message(ctx=ctx, content=data['starWarsQuote'])
 
 
 def setup(bot):

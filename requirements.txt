@@ -1,4 +1,5 @@
 youtube-dl
 discord
+requests
 cowpy==1.0.3
 googletrans

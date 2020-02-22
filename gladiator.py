@@ -81,7 +81,7 @@ class Gladiator(commands.Cog):
                     await msg.delete()
 
                 except asyncio.TimeoutError:
-                    await msg.delete()
+                    pass
                 else:
                     pass
 
