@@ -2,6 +2,7 @@ import requests
 from util import send_embed_message
 from discord.ext import commands
 import discord
+import random
 
 
 class Meme(commands.Cog):
@@ -27,9 +28,9 @@ class Meme(commands.Cog):
     @commands.command()
     async def blb(self, ctx, user : discord.Member = None, gender='M'):
         if user:
-            name = user.display_name
+            name = user.name
         else:
-            name = ctx.message.author.display_name
+            name = ctx.message.author.name
         
         name = name.replace(" ", "%20")
         sex = gender.lower()
@@ -39,6 +40,13 @@ class Meme(commands.Cog):
     async def swq(self, ctx):
         data = requests.get("http://swquotesapi.digitaljedi.dk/api/SWQuote/RandomStarWarsQuote").json()
         await send_embed_message(ctx=ctx, content=data['starWarsQuote'])
+    
+    @commands.command()
+    async def xkcd(self, ctx):
+        max_num = requests.get("https://xkcd.com/info.0.json").json()["num"]
+        random_comic_num = random.randint(1, max_num)
+        data = requests.get(f"https://xkcd.com/{random_comic_num}/info.0.json").json()["img"]
+        await send_embed_message(ctx=ctx, image_url=data)
 
 
 def setup(bot):
