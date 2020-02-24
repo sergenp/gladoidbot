@@ -45,9 +45,10 @@ class General(commands.Cog):
             await send_embed_message(ctx, "Error, type h!help translate")
     
     @commands.command()
-    async def quote(self, ctx):
-        data = requests.get("https://api.quotable.io/random").json()
-        await send_embed_message(ctx, author_name=data["author"], content=data["content"])
+    async def quote(self, ctx, amount=1):
+        for i in range(amount):
+            data = requests.get("https://api.quotable.io/random").json()
+            await send_embed_message(ctx, author_name=data["author"], content=data["content"])
 
 def setup(bot):
     bot.add_cog(General(bot))
