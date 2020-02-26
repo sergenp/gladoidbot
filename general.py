@@ -3,6 +3,7 @@ from discord.ext import commands
 from util import send_embed_message, search_youtube
 from googletrans import Translator
 import requests
+from cowpy import cow
 
 TRANSLATOR = Translator()
 
@@ -10,16 +11,6 @@ TRANSLATOR = Translator()
 class General(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-
-    @commands.command()
-    async def emojify(self, ctx, *args):
-        out = ''
-        for i in args:
-            for l in i:
-                if l is not " ":
-                    out += ':regional_indicator_' + l.lower() + ': '
-            out += '    '
-        await ctx.send(out)
 
     @commands.command(name="ysearch")
     async def youtubeSearch(self, ctx, *searchStr):
@@ -46,6 +37,9 @@ class General(commands.Cog):
     
     @commands.command()
     async def quote(self, ctx, amount=1):
+        if amount>10:
+            amount = 10
+            
         for i in range(amount):
             data = requests.get("https://api.quotable.io/random").json()
             await send_embed_message(ctx, author_name=data["author"], content=data["content"])
