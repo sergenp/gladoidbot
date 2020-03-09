@@ -7,6 +7,7 @@ import dateutil.parser
 class Corona(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.last_corona_virus_data = {}
     
     @commands.command(pass_context=True, description="Given country, it shows the specific cases inside that country, otherwise it shows general information about the virus")
     async def virus(self, ctx, country: str = None):
