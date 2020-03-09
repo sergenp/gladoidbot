@@ -3,7 +3,6 @@ from discord.ext import commands
 from util import send_embed_message, search_youtube
 from googletrans import Translator
 import requests
-import dateutil.parser as p
 
 TRANSLATOR = Translator()
 
