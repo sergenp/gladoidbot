@@ -7,7 +7,6 @@ from cowpy import cow
 import dateutil.parser as p
 
 TRANSLATOR = Translator()
-LAST_CALLED_CORONAVIRUS_DETAILS = {}
 
 
 class General(commands.Cog):
@@ -47,7 +46,7 @@ class General(commands.Cog):
             data = requests.get("https://api.quotable.io/random").json()
             await send_embed_message(ctx, author_name=data["author"], content=data["content"])
 
-    @commands.command(description="Given country, it shows the specific cases inside that country, otherwise it shows general information about the virus")
+    @commands.command(pass_context=True, description="Given country, it shows the specific cases inside that country, otherwise it shows general information about the virus")
     async def virus(self, ctx, country: str = None):
         async with ctx.typing():
             if country:
@@ -78,23 +77,26 @@ class General(commands.Cog):
                             confirmed_msg += f"{dt['province']} province has **{dt['latest']}** death cases\n"
 
                 msg = confirmed_msg + "Total confirmed cases : " + \
-                    f"**{tot_confirmed}**\n" + died_msg + "Total deaths : " + \
-                    f"**{tot_died}**" + "\nTotal recovered : " + \
+                    f"**{tot_confirmed}**\n" 
+                msg2 = died_msg + "Total deaths : " + \
+                    f"**{tot_died}\n**" 
+                msg3 = "Total recovered : " + \
                     f"**{tot_recovered}**"
                 await send_embed_message(ctx, content=msg)
+                await send_embed_message(ctx, content=msg2)
+                await send_embed_message(ctx, content=msg3)
             else:
-                data = General.parse_corona_information(requests.get(
+                data = self.parse_corona_information(requests.get(
                     "https://coronavirus-tracker-api.herokuapp.com/all").json())
                 await send_embed_message(ctx, title="Current information about the coronavirus", content=f"There are a total of **{data['latest_confirmed']}** cases.\nOut of all those cases **{data['latest_recovered']}** people recovered and **{data['latest_died']}** people died.\nThese informations are last updated at {data['last_updated']}")
                 if self.last_corona_virus_data:
-                    old_data = General.parse_corona_information(
+                    old_data = self.parse_corona_information(
                         self.last_corona_virus_data)
                     await send_embed_message(ctx, title="What has changed since last call of this command", content=f"There is **{old_data['latest_confirmed'] - data['latest_confirmed']}** more confirmed cases.**{old_data['latest_recovered'] - data['latest_recovered']}** people has recovered.**{old_data['latest_died'] - data['latest_died']}** died.")
 
                 self.last_corona_virus_data = data
 
-    @staticmethod
-    def parse_corona_information(data):
+    def parse_corona_information(self, data):
         latest_confirmed = data['latest']['confirmed']
         latest_died = data['latest']['deaths']
         latest_recovered = data['latest']['recovered']
