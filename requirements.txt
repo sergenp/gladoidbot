@@ -2,4 +2,4 @@ youtube-dl
 discord
 requests
 googletrans
-dateutil
+python-dateutil
