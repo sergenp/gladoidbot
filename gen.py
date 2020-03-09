@@ -3,10 +3,13 @@ from discord.ext import commands
 from util import send_embed_message, search_youtube
 from googletrans import Translator
 import requests
-from cowpy import cow
 import dateutil.parser as p
 
 TRANSLATOR = Translator()
+
+
+def setup(bot):
+    bot.add_cog(General(bot))
 
 
 class General(commands.Cog):
@@ -77,9 +80,9 @@ class General(commands.Cog):
                             confirmed_msg += f"{dt['province']} province has **{dt['latest']}** death cases\n"
 
                 msg = confirmed_msg + "Total confirmed cases : " + \
-                    f"**{tot_confirmed}**\n" 
+                    f"**{tot_confirmed}**\n"
                 msg2 = died_msg + "Total deaths : " + \
-                    f"**{tot_died}\n**" 
+                    f"**{tot_died}\n**"
                 msg3 = "Total recovered : " + \
                     f"**{tot_recovered}**"
                 await send_embed_message(ctx, content=msg)
@@ -104,7 +107,3 @@ class General(commands.Cog):
             data['deaths']['last_updated']).strftime("%b %d %Y %H:%M:%S")
 
         return {"latest_confirmed": latest_confirmed, "latest_died": latest_died, "latest_recovered": latest_recovered, "last_updated": last_died_date}
-
-
-def setup(bot):
-    bot.add_cog(General(bot))
