@@ -3,3 +3,5 @@ discord
 requests
 googletrans
 python-dateutil
+requests-html
+pandas
