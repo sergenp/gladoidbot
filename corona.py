@@ -19,7 +19,7 @@ class Corona(commands.Cog):
 
             country_data = {}
             for ctr in corona:
-                if country == ctr["Country"].lower():
+                if country.lower() == ctr["Country"].lower():
                     country_data = ctr
                     break
             else:
