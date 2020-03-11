@@ -132,3 +132,5 @@ bot_token.py
 
 #ignore test.py
 test.py
+CoronaData/data.json
+CoronaData/total_inf.json
