@@ -1,12 +1,6 @@
 # -*- coding: utf-8 -*-  
-from discord.ext import commands
-from CoronaData.corona_virus_updater import update_data 
-import asyncio
-
-try:
-    import bot_token
-except ModuleNotFoundError:
-    import os
+from discord.ext import tasks, commands
+from CoronaData.corona_virus_updater import update_data
 
 bot = commands.Bot(command_prefix="h!")
 
@@ -19,19 +13,21 @@ for extension in startup_extensions:
         exc = '{}: {}'.format(type(e).__name__, e)
         print('Failed to load extension {}\n{}'.format(extension, exc))
 
+ # update corona virus data every 2 hours
+@tasks.loop(hours=2.0)
 async def corona_update_task():
-    while True:
-        print("Updating coronavirus data")
-        update_data()
-        print("Updated coronavirus data")
-        await asyncio.sleep(60*60*2) # update corona virus data every 2 hours
+    print("Updating coronavirus data")
+    update_data()
+    print("Updated coronavirus data")
 
 @bot.event
 async def on_ready():
     print(f"Connected!\nName: {bot.user.name}\nId: {bot.user.id}\n")
-    bot.loop.create_task(corona_update_task())
+    corona_update_task.start()
 
 try:
+    import bot_token
     bot.run(bot_token.token())
-except NameError:
+except ModuleNotFoundError:
+    import os
     bot.run(os.environ['BOT_TOKEN'])
