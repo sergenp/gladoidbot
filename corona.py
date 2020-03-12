@@ -26,7 +26,7 @@ class Corona(commands.Cog):
                 await ctx.send(f"Couldn't find any info about country {country}")
                 return
 
-            msg += f"Total Cases : **{country_data['TotalCases']}"
+            msg = f"Total Cases : **{country_data['TotalCases']}"
             msg += f"New Cases : **{country_data['NewCases']}"
             msg += f"Total Deaths : **{int(country_data['TotalDeaths']) if country_data['TotalDeaths'] is not None else 'None'}**"
             msg += f"New Deaths : **{int(country_data['NewDeaths']) if country_data['NewDeaths'] is not None else 'None'}**"
