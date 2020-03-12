@@ -26,11 +26,11 @@ class Corona(commands.Cog):
                 await ctx.send(f"Couldn't find any info about country {country}")
                 return
 
-            msg = f"Total Cases : **{country_data['TotalCases']}"
-            msg += f"New Cases : **{country_data['NewCases']}"
-            msg += f"Total Deaths : **{int(country_data['TotalDeaths']) if country_data['TotalDeaths'] is not None else 'None'}**"
-            msg += f"New Deaths : **{int(country_data['NewDeaths']) if country_data['NewDeaths'] is not None else 'None'}**"
-            msg += f"Total Recovered : **{int(country_data['TotalRecovered']) if country_data['TotalRecovered'] is not None else 'None'}**"
+            msg = f"Total Cases : **{country_data['TotalCases']}\n"
+            msg += f"New Cases : **{country_data['NewCases']}\n"
+            msg += f"Total Deaths : **{int(country_data['TotalDeaths']) if country_data['TotalDeaths'] is not None else 'None'}**\n"
+            msg += f"New Deaths : **{int(country_data['NewDeaths']) if country_data['NewDeaths'] is not None else 'None'}**\n"
+            msg += f"Total Recovered : **{int(country_data['TotalRecovered']) if country_data['TotalRecovered'] is not None else 'None'}**\n"
             msg += f"Active Cases : **{int(country_data['ActiveCases']) if country_data['ActiveCases'] is not None else 'None'}**"
             msg += f"Serious: **{country_data['Serious']}**"
                 
