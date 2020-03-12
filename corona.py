@@ -32,7 +32,7 @@ class Corona(commands.Cog):
             msg += f"New Deaths : **{int(country_data['NewDeaths']) if country_data['NewDeaths'] is not None else 'None'}**\n"
             msg += f"Total Recovered : **{int(country_data['TotalRecovered']) if country_data['TotalRecovered'] is not None else 'None'}**\n"
             msg += f"Active Cases : **{int(country_data['ActiveCases']) if country_data['ActiveCases'] is not None else 'None'}**\n"
-            msg += f"Serious: **{country_data['Serious']}**"
+            msg += f"Serious: **{int(country_data['Serious']) if country_data['Serious'] is not None else 'None'}**\n"
                 
             await send_embed_message(ctx, title=country_data["Country"], content=msg)
         else:
