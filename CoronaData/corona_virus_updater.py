@@ -48,7 +48,8 @@ def get_corona_news():
         if len(old_news[today]) == len(info[today]):
             return False
         else:
-            return list(set(old_news[today]) - set(info[today]))
+            print("News : " + str(list(set(info[today]) - set(old_news[today]))))
+            return list(set(info[today]) - set(old_news[today]))
     else:    
         with open(f'CoronaData/news/{today}.json', 'w') as outfile:
             json.dump(info, outfile)

@@ -25,14 +25,17 @@ class Corona(commands.Cog):
             else:
                 await ctx.send(f"Couldn't find any info about country {country}")
                 return
+            
+            def convert_to_int(value):
+                return str(int(country_data[value])) if country_data[value] is not None else 'None'
 
-            msg = f"Total Cases : **{country_data['TotalCases']}**\n"
+            msg = f"Total Cases : **{convert_to_int('TotalCases')}**\n"
             msg += f"New Cases : **{country_data['NewCases']}**\n"
-            msg += f"Total Deaths : **{int(country_data['TotalDeaths']) if country_data['TotalDeaths'] is not None else 'None'}**\n"
-            msg += f"New Deaths : **{int(country_data['NewDeaths']) if country_data['NewDeaths'] is not None else 'None'}**\n"
-            msg += f"Total Recovered : **{int(country_data['TotalRecovered']) if country_data['TotalRecovered'] is not None else 'None'}**\n"
-            msg += f"Active Cases : **{int(country_data['ActiveCases']) if country_data['ActiveCases'] is not None else 'None'}**\n"
-            msg += f"Serious: **{int(country_data['Serious']) if country_data['Serious'] is not None else 'None'}**\n"
+            msg += f"Total Deaths : **{convert_to_int('TotalDeaths')}**\n"
+            msg += f"New Deaths : **{convert_to_int('NewDeaths')}**\n"
+            msg += f"Total Recovered : **{convert_to_int('TotalRecovered')}\n**"
+            msg += f"Active Cases : **{convert_to_int('ActiveCases')}\n**"
+            msg += f"Serious: **{convert_to_int('Serious')}**"
                 
             await send_embed_message(ctx, title=country_data["Country"], content=msg)
         else:
@@ -40,6 +43,7 @@ class Corona(commands.Cog):
                 corona = json.load(f)
             msg = f"Total Cases: **{corona['Total Cases']}**\nTotal Deaths: **{corona['Total Deaths']}**\nTotal Recovered: **{corona['Total Recovered']}**"
             await send_embed_message(ctx, title="Total Cases", content=msg)
+
 
 
 def setup(bot):
