@@ -134,3 +134,4 @@ bot_token.py
 test.py
 CoronaData/data.json
 CoronaData/total_inf.json
+CoronaData/news/
