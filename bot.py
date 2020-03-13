@@ -14,7 +14,7 @@ for extension in startup_extensions:
         print('Failed to load extension {}\n{}'.format(extension, exc))
 
  # update corona virus data every x mins
-@tasks.loop(hours=0.5)
+@tasks.loop(hours=0.1)
 async def corona_update_task():
     print("Updating coronavirus data")
     update_data()
