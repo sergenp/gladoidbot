@@ -2,6 +2,7 @@ from requests_html import HTMLSession
 import pandas as pd
 import os
 import json
+import requests
 
 session = HTMLSession()
 try:
@@ -11,7 +12,11 @@ except FileExistsError:
 
 
 def update_data():
-    r = session.get('https://www.worldometers.info/coronavirus/')
+    header = {
+  "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.75 Safari/537.36",
+  "X-Requested-With": "XMLHttpRequest"
+}
+    r = session.get('https://www.worldometers.info/coronavirus/', headers=header)
 
     title = ["Total Cases","Total Deaths","Total Recovered"]
     count = []
@@ -23,7 +28,9 @@ def update_data():
     with open('CoronaData/total_inf.json', 'w') as outfile:
         json.dump(total_inf, outfile)
 
-    tables = pd.read_html('https://www.worldometers.info/coronavirus/')
+
+    tables = pd.read_html(r.text)
+    print(tables)
     cv19_table = tables[0]
     cv19_table = cv19_table.drop("Tot Cases/1M pop", axis=1).rename(columns = {"Country,Other" : "Country", "Serious,Critical" : "Serious"})[:-1]
     cv19_table.to_json("CoronaData/data.json", orient='records')
