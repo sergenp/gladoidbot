@@ -12,7 +12,7 @@ except FileExistsError:
 
 
 header = {
-  "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.75 Safari/537.36",
+  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.246",
   "X-Requested-With": "XMLHttpRequest"
 }
 
@@ -40,19 +40,18 @@ def get_corona_news():
     r = session.get('https://www.worldometers.info/coronavirus/', headers=header)
     today = r.html.find("#innercontent > h4", first=True).text.replace("(GMT):", "").replace(" ", "")
     news = [x.text.replace("[source]", "") for x in r.html.find("#innercontent > ul > li")]
-    info = {0 : news}
+    info = {"0" : news}
 
     # lets check if there any new news
     if os.path.exists(f'CoronaData/news/{today}.json'):
         old_news = json.load(open(f'CoronaData/news/{today}.json', 'r'))
-        if len(old_news[today]) == len(info[today]):
+        if len(old_news["0"]) == len(info["0"]):
             return False
         else:
-            print("News : " + str(list(set(info[today]) - set(old_news[today]))))
-            return list(set(info[today]) - set(old_news[today]))
+            with open(f'CoronaData/news/{today}.json', 'w') as outfile:
+                json.dump(info, outfile)
+            return list(set(info["0"]) - set(old_news["0"]))
     else:    
         with open(f'CoronaData/news/{today}.json', 'w') as outfile:
             json.dump(info, outfile)
         return news
-    
-
