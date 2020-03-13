@@ -4,6 +4,11 @@ import os
 import json
 
 session = HTMLSession()
+try:
+    os.mkdir("CoronaData/news")
+except FileExistsError:
+    pass
+
 
 def update_data():
     r = session.get('https://www.worldometers.info/coronavirus/')
