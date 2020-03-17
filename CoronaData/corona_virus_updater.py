@@ -27,8 +27,9 @@ def update_data():
 
     total_inf = dict(zip(title, count))
 
-    with open('CoronaData/total_inf.json', 'w') as outfile:
-        json.dump(total_inf, outfile)
+    if total_inf:
+        with open('CoronaData/total_inf.json', 'w') as outfile:
+            json.dump(total_inf, outfile)
 
     cv19_table = pd.read_html(r.text)[0]
     cv19_table = cv19_table.drop("Tot Cases/1M pop", axis=1).rename(columns = {"Country,Other" : "Country", "Serious,Critical" : "Serious"})[:-1]
