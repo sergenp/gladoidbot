@@ -20,19 +20,21 @@ for extension in startup_extensions:
 @tasks.loop(hours=0.1)
 async def corona_update_task():
     print("Updating coronavirus data")
-    update_data()
-    print("Updated coronavirus data")
-
-    print("Trying to get the news")
-    news = get_corona_news()
-    channel = bot.get_channel(688045137162666051)
-    if news:
-        print("Updating news...")
-        for k in news:
-            await channel.send(k)
-    else:
-        print("There are no news")
-
+    try:
+        update_data()    
+        print("Updated coronavirus data")
+        print("Trying to get the news")
+        news = get_corona_news()
+        channel = bot.get_channel(688045137162666051)
+        if news:
+            print("Updating news...")
+            for k in news:
+                await channel.send(k)
+        else:
+            print("There are no news")
+    except Exception as e:
+        print(f"Failed to complete the task and error occurred\n{e}")
+    
 @bot.event
 async def on_ready():
     print(f"Connected!\nName: {bot.user.name}\nId: {bot.user.id}\n")

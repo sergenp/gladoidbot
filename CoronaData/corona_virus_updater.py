@@ -1,4 +1,4 @@
-from requests_html import HTMLSession
+from requests_html import HTMLSession, HTML
 import pandas as pd
 import os
 import json
@@ -8,7 +8,7 @@ from datetime import datetime
 session = HTMLSession()
 try:
     os.mkdir("CoronaData/news")
-except FileExistsError:
+except (FileExistsError, FileNotFoundError):
     pass
 
 
@@ -38,22 +38,21 @@ def update_data():
 
 def get_corona_news():
     r = session.get('https://www.worldometers.info/coronavirus/', headers=header)
-    today = r.html.find(".news_date", first=True).text.replace("(GMT)", "").replace(" ", "").replace(":","")
     now = datetime.now()
     div_id = f"newsdate{now.year}-{now.month:02d}-{now.day}"
     news = [x.text.replace("[source]", "") for x in r.html.find(f"#{div_id} > .news_post")]
     info = {"0" : news}
 
     # lets check if there any new news
-    if os.path.exists(f'CoronaData/news/{today}.json'):
-        old_news = json.load(open(f'CoronaData/news/{today}.json', 'r'))
+    if os.path.exists(f'CoronaData/news/{div_id}.json'):
+        old_news = json.load(open(f'CoronaData/news/{div_id}.json', 'r'))
         if len(old_news["0"]) == len(info["0"]):
             return False
         else:
-            with open(f'CoronaData/news/{today}.json', 'w') as outfile:
+            with open(f'CoronaData/news/{div_id}.json', 'w') as outfile:
                 json.dump(info, outfile)
             return list(set(info["0"]) - set(old_news["0"]))
     else:    
-        with open(f'CoronaData/news/{today}.json', 'w') as outfile:
+        with open(f'CoronaData/news/{div_id}.json', 'w') as outfile:
             json.dump(info, outfile)
         return news
