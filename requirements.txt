@@ -5,3 +5,4 @@ googletrans
 python-dateutil
 requests-html
 pandas
+google-cloud-storage

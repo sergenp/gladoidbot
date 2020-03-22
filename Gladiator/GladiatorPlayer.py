@@ -1,6 +1,8 @@
 import random
 import math
 from Gladiator.GladiatorStats import GladiatorStats
+from Gladiator.AttackInformation.GladiatorAttackInformation import GladiatorAttackInformation
+from Gladiator.Equipments.GladiatorEquipments import GladiatorEquipments
 import json
 import os
 
@@ -12,29 +14,18 @@ class GladiatorPlayer:
         self.Member = member
         self.id = self.Member.id
         self.dead = False
+
+        self.attack_information = GladiatorAttackInformation()
+        self.equipment_information = GladiatorEquipments()
+
         #self.id = 1
-        with open(os.path.join("Gladiator", "GladiatorStats.json")) as f:
-            self.stats = GladiatorStats(json.load(f)["Gladiator_initial_stats"])
+        self.stats = GladiatorStats(json.load(open(os.path.join(
+            "Gladiator", "GladiatorStats.json"), "r"))["Gladiator_initial_stats"])
 
-        with open(os.path.join("Gladiator", "Settings", "GladiatorGameSettings.json")) as f:
-            self.information = json.load(f)["game_information_texts"]
+        self.information = json.load(open(os.path.join(
+            "Gladiator", "Settings", "GladiatorGameSettings.json"), "r"))["game_information_texts"]
 
-        with open(os.path.join("Gladiator", "AttackInformation", "GladiatorAttackBuffs.json")) as f:
-            self.attack_types = json.load(f)
-
-        with open(os.path.join("Gladiator", "AttackInformation", "GladiatorDamageTypes.json")) as f:
-            self.damage_types = json.load(f)
-
-        with open(os.path.join("Gladiator", "Equipments", "GladiatorEquipments.json")) as f:
-            self.equipments = json.load(f)
-
-        with open(os.path.join("Gladiator", "AttackInformation", "GladiatorTurnDebuffs.json")) as f:
-            self.turn_debuffs = json.load(f)
-
-        with open(os.path.join("Gladiator", "Equipments", "GladiatorSlots.json")) as f:
-            self.equipment_slots = json.load(f)
-
-        self.permitted_attacks = self.attack_types[:INITIAL_ATTACK_TYPES_COUNT]
+        self.permitted_attacks = self.attack_information.attack_types[:INITIAL_ATTACK_TYPES_COUNT]
         self.debuffs = []
 
     def take_damage(self, damage, damage_type):
@@ -61,13 +52,7 @@ class GladiatorPlayer:
         if self.stats["Attack Chance"] < roll:
             return self.information["dodge_text"].format(otherGladiator)
 
-        dmg_type = None
-        for i in self.damage_types:
-            if i["damage_type_id"] == damage_type_id:
-                dmg_type = i
-                break
-        else:
-            raise IndexError("Damage type id could not be found")
+        dmg_type = self.attack_information.find_damage_type(damage_type_id)
 
         min_dmg = self.stats[dmg_type["min_damage_stat"]]
         max_dmg = self.stats[dmg_type["max_damage_stat"]]
@@ -98,13 +83,7 @@ class GladiatorPlayer:
                 "otherGladiator must be an instance of GladiatorPlayer")
 
         # find the attack corresponding the id
-        attack = None
-        for atk in self.permitted_attacks:
-            if atk["id"] == attack_type_id:
-                attack = atk
-                break
-        else:
-            raise IndexError("Attack type id could not been found")
+        attack = self.attack_information.find_attack_type(attack_type_id)
 
         self.buff(attack["buffs"])
         inf = self.damage_enemy(otherGladiator, attack["damage_type_id"])
@@ -116,34 +95,20 @@ class GladiatorPlayer:
         return random.choice(self.information["death_texts"]).format(self)
 
     def equip_item(self, equipment_id, equipment_slot_id):
-        slot = None
-        # search for the slot
-        for k in self.equipment_slots:
-            if k["id"] == equipment_slot_id:
-                slot = k
-                break
-        else:
-            raise IndexError("Equipment Slot couldnt be found.")
-
+        slot = self.equipment_information.find_slot(equipment_slot_id)
         # if there is an equipment equipped already in the slot,
         # do nothing, and return
-        if slot["Equipment"]:
-            return
-        else:
-            for equipment in self.equipments:
-                if equipment["id"] == equipment_id and equipment["equipment_slot_id"] == equipment_slot_id:
-                    slot["Equipment"] = equipment
-                    self.stats += equipment["buffs"]
-                    if equipment["debuff_id"] != -1:
-                        for turn_dbf in self.turn_debuffs:
-                            if turn_dbf["debuff_stats"]["debuff_id"] == equipment["debuff_id"]:
-                                self.stats += turn_dbf["debuff_stats"]
-                                break
-                        else:
-                            raise IndexError("Turn debuff id couldnt be found")
-                    break
+        if slot:
+            if slot["Equipment"]:
+                return
             else:
-                raise IndexError("Equipment couldnt be found.")
+                equipment = self.equipment_information.find_equipment(equipment_id)
+                if equipment:
+                    if equipment["equipment_slot_id"] == slot["id"]:
+                        self.equipment_information.update_slot(slot["id"], equipment)
+                        debuff = self.attack_information.find_turn_debuff_id(equipment["debuff_id"])
+                        if debuff:
+                            self.stats += debuff["debuff_stats"]
 
     def buff(self, buff: GladiatorStats, buff_type="buff"):
         if buff_type == "buff":
@@ -152,14 +117,8 @@ class GladiatorPlayer:
             self.stats -= buff
 
     def take_debuff(self, turn_debuff_id):
-        # find the corresponding debuff in the json file
-        debuff = None
-        for k in self.turn_debuffs:
-            if k["debuff_stats"]["debuff_id"] == turn_debuff_id:
-                debuff = k
-                break
-        else:
-            raise IndexError("Turn Debuff couldnt be found")
+
+        debuff = self.attack_information.find_turn_debuff_id(turn_debuff_id)
 
         # if the given debuff is already affecting the player,
         # make it last more turns
@@ -193,7 +152,7 @@ class GladiatorPlayer:
         for i in self.permitted_attacks:
             if i["id"] == attack_type_id:
                 return
-        self.permitted_attacks.append(self.attack_types[attack_type_id])
+        self.permitted_attacks.append(self.attack_information.attack_types[attack_type_id])
 
     def __repr__(self):
         return f"<@{self.id}>"

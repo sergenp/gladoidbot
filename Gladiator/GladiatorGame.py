@@ -4,6 +4,7 @@ import collections
 import os
 from Gladiator.GladiatorPlayer import GladiatorPlayer
 from Gladiator.GladiatorStats import GladiatorStats
+from Gladiator.GladiatorProfile import GladiatorProfile
 
 
 class GladiatorGame:
@@ -92,13 +93,20 @@ class GladiatorGame:
             event_buffs = event["event_buffs"]
             event_info = event_text + "\n"
 
-            if event_buffs:
-                buff = GladiatorStats(event_buffs)
-                player_to_be_affected.buff(buff)
-                event_info += str(buff)
+            if list(event["event_type"])[0] == "Profile":
+                profile = GladiatorProfile(player_to_be_affected.Member)
+                for k in event_buffs.keys():
+                    event_info += profile.event_bonus(k, event_buffs[k]) + "\n"
 
-            if event["event_type"] == "unlock_attack_type":
-                player_to_be_affected.unlock_attack_type(event["attack_id"])
+            elif list(event["event_type"])[0] == "PVP":
+                if event_buffs:
+                    buff = GladiatorStats(event_buffs)
+                    player_to_be_affected.buff(buff)
+                    event_info += str(buff)
+
+                if event["event_type"]["PVP"] == "unlock_attack_type":
+                    player_to_be_affected.unlock_attack_type(
+                        event["attack_id"])
 
             return "*--------------------------\n" + event_info + "\n--------------------------*"
         else:
