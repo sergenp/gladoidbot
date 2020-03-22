@@ -1,0 +1,24 @@
+{
+    "Id" : "{}",
+    "Level" : 1,
+    "Games Played" : 0,
+    "Games Won" : 0,
+    "Games Lost" : 0,
+    "Inventory" : [
+        
+    ],
+    "HutCoins" : 0,
+    "boosts" : {
+        "Health": 0,
+        "Attack Chance": 0,
+        "Attack Min. Damage": 0,
+        "Attack Max. Damage": 0,
+        "Magic Damage": 0,
+        "Magic Armor": 0,
+        "Armor": 0,
+        "Block Chance": 0,
+        "Critical Damage Chance": 0,
+        "Critical Damage Boost": 0
+    },
+    "XP" : 0
+}
