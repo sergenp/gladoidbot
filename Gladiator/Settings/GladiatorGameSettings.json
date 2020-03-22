@@ -28,10 +28,12 @@
         "challenging_self_text" : "Killing yourself isn't good for your health"
     },
     "profile_settings" : {
-        "XP_GAIN_MULTIPLIER" : 15,
-        "XP_GAIN_WHEN_LOST_MULTIPLIER" : 5,
+        "XP_TO_LEVEL_MULTIPLIER" : 15,
+        "XP_TO_LEVEL_WHEN_LOST_MULTIPLIER" : 1.25,
+        "XP_GAIN_MULTIPLIER" : 75,
         "MAX_COIN_REWARD" : 30,
         "MIN_COIN_REWARD" : 5,
-        "COIN_DECAY_CONSTANT" : 0.3
+        "COIN_DECAY_CONSTANT" : 0.5,
+        "LEVEL_UP_DIFFICULTY_CONSTANT" : 1.23
     }
 }
