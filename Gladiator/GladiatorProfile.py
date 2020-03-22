@@ -22,11 +22,13 @@ class GladiatorProfile():
 
         profile_settings = json.load(open(os.path.join(os.path.dirname(
             __file__), "Settings", "GladiatorGameSettings.json"), "r"))["profile_settings"]
+        self.XP_TO_LEVEL_MULTIPLIER = profile_settings["XP_TO_LEVEL_MULTIPLIER"]
+        self.XP_TO_LEVEL_WHEN_LOST_MULTIPLIER = profile_settings["XP_TO_LEVEL_WHEN_LOST_MULTIPLIER"]
         self.XP_GAIN_MULTIPLIER = profile_settings["XP_GAIN_MULTIPLIER"]
-        self.XP_GAIN_WHEN_LOST_MULTIPLIER = profile_settings["XP_GAIN_WHEN_LOST_MULTIPLIER"]
         self.MAX_COIN_REWARD = profile_settings["MAX_COIN_REWARD"]
         self.MIN_COIN_REWARD = profile_settings["MIN_COIN_REWARD"]
         self.COIN_DECAY_CONSANT = profile_settings["COIN_DECAY_CONSTANT"]
+        self.LEVEL_UP_DIFFICULTY_CONSTANT = profile_settings["LEVEL_UP_DIFFICULTY_CONSTANT"]
 
         if os.path.exists(os.path.join(os.path.dirname(__file__), "UserProfileData", f"{self.member.id}.json")):
             self.profile_stats = json.load(
@@ -81,7 +83,7 @@ class GladiatorProfile():
             return self.gain_xp(other_profile_level)
         else:
             self.profile_stats["Games Lost"] += 1
-            return self.gain_xp(other_profile_level/self.XP_GAIN_WHEN_LOST_MULTIPLIER)
+            return self.gain_xp(other_profile_level/self.XP_TO_LEVEL_WHEN_LOST_MULTIPLIER)
 
     @save_profile
     def add_coin(self, amount):
@@ -90,23 +92,20 @@ class GladiatorProfile():
 
     @save_profile
     def reward_player(self, other_profile_level: int):
-        if self.get_level() >= other_profile_level:
-            lvl_diff = self.get_level() - other_profile_level
-            return self.add_coin(math.ceil((self.MAX_COIN_REWARD-self.MIN_COIN_REWARD + 1) *
-                                           (math.exp(-self.COIN_DECAY_CONSANT*lvl_diff)) + self.MIN_COIN_REWARD - 1))
-        else:
-            pass
+        lvl_diff = self.get_level() - other_profile_level
+        return self.add_coin(math.ceil((self.MAX_COIN_REWARD-self.MIN_COIN_REWARD + 1) *
+                                       (math.exp(-self.COIN_DECAY_CONSANT*lvl_diff)) + self.MIN_COIN_REWARD - 1))
 
     def calculate_xp_for_next_level(self):
-        return self.XP_GAIN_MULTIPLIER*(self.get_level()**2) - (self.XP_GAIN_MULTIPLIER * self.get_level())
+        return self.XP_TO_LEVEL_MULTIPLIER*(self.get_level()**2)*self.LEVEL_UP_DIFFICULTY_CONSTANT - (self.XP_TO_LEVEL_MULTIPLIER * self.get_level()) + 300
 
     @save_profile
     def gain_xp(self, other_profile_level: int):
         msg = ""
         xp_gained = math.ceil(other_profile_level /
-                              self.profile_stats["Level"]) * 125
+                              self.get_level()) * self.XP_GAIN_MULTIPLIER
 
-        xp_gained += random.randint(0, 30)
+        xp_gained += random.randint(self.get_level(), self.get_level()*5)
         self.profile_stats["XP"] += xp_gained
         msg += f"Gained {xp_gained} XP\n"
         xp_for_next_level = self.calculate_xp_for_next_level()
@@ -114,7 +113,9 @@ class GladiatorProfile():
             self.profile_stats["Level"] += 1
             xp_for_next_level = self.calculate_xp_for_next_level()
             msg += f"You have levelled up!\n"
-
+        
+        self.profile_stats["XP To Next Level"] = self.calculate_xp_for_next_level()
+        print(self.profile_stats["XP To Next Level"])
         return msg
 
     def get_level(self):
