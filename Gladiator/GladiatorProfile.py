@@ -57,7 +57,7 @@ class GladiatorProfile():
 
         for eq in self.profile_stats["Inventory"]:
             if eq["id"] == equipment["id"]:
-                return "You already have this item!"
+                return f"You are already using {eq['name']}!"
 
         if self.profile_stats["HutCoins"] - equipment["price"] < 0:
             return "You cannot afford this item!"
@@ -73,7 +73,7 @@ class GladiatorProfile():
                 break
         # add the equipment to the profile inventory
         self.profile_stats["Inventory"].append(equipment)
-        return f"Successfully bought {equipment['name']}"
+        return f"Successfully bought **{equipment['name']}**. You have **{self.profile_stats['HutCoins']} HutCoins** left."
 
     @save_profile
     def update_games(self, other_profile_level: int, won=False):
@@ -88,7 +88,7 @@ class GladiatorProfile():
     @save_profile
     def add_coin(self, amount):
         self.profile_stats["HutCoins"] += amount
-        return f"You earned {amount} HutCoins!"
+        return f"**You earned {amount} HutCoins!**"
 
     @save_profile
     def reward_player(self, other_profile_level: int):
@@ -115,7 +115,6 @@ class GladiatorProfile():
             msg += f"You have levelled up!\n"
         
         self.profile_stats["XP To Next Level"] = self.calculate_xp_for_next_level()
-        print(self.profile_stats["XP To Next Level"])
         return msg
 
     def get_level(self):
@@ -126,14 +125,13 @@ class GladiatorProfile():
         self.profile_stats[profile_stat_key] += amount
         return f"Added {amount} of {profile_stat_key} to your profile!"
 
-
-class Member():
-    def __init__(self):
-        self.id = 1
-        self.name = "sergen"
-        self.mention = "sergen"
-
-
-a = GladiatorProfile(Member())
-print(a.add_coin(5))
-print(a.buy_equipment(30))
+    def __repr__(self):        
+        msg = ""
+        for key in self.profile_stats.keys():
+            if not key in ("Id", "armor_id", "weapon_id", "boosts"):
+                if key == "Inventory":
+                    for item in self.profile_stats[key]:
+                        msg += f"{item['type']} : **{item['name']}\n**"
+                    continue
+                msg += f"{key} : **{self.profile_stats[key]}**\n"
+        return msg
