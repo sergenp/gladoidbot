@@ -121,16 +121,14 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-bot_token.py
 
 
 # ignore vscode
 .vscode/
 
-# ignore test gladiator matches
-.testmatches/
-
 #ignore test.py
-test.py
+test.*
 CoronaData/data.json
 CoronaData/total_inf.json
+bot_token.py
+google-credentials.json

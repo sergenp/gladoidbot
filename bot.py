@@ -2,6 +2,7 @@
 from discord.ext import tasks, commands
 from CoronaData.corona_virus_updater import update_data, get_corona_news
 import datetime
+from Gladiator.UserProfileData import backup_user_data
 
 bot = commands.Bot(command_prefix="h!")
 
@@ -17,7 +18,11 @@ for extension in startup_extensions:
  # update corona virus data every x mins
 
 
-@tasks.loop(hours=0.1)
+@tasks.loop(hours=0.2)
+async def upload_profiles_task():
+    backup_user_data.backup_profiles()
+
+@tasks.loop(hours=0.2)
 async def corona_update_task():
     print("Updating coronavirus data")
     try:
@@ -39,6 +44,9 @@ async def corona_update_task():
 async def on_ready():
     print(f"Connected!\nName: {bot.user.name}\nId: {bot.user.id}\n")
     corona_update_task.start()
+    backup_user_data.download_profiles()
+    upload_profiles_task.start()
+
 
 try:
     import bot_token

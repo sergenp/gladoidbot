@@ -1,78 +1,92 @@
 [
     {
         "id": 0,
-        "equipment_slot_id": 0,
+        "equipment_slot_id": 1,
         "name": "Light Armor",
+        "type" : "Armor",
         "buffs": {
-            "Block Chance": 15,
+            "Block Chance": 10,
             "Armor": 1
         },
         "reaction_emoji": "\u0031\u20E3",
-        "debuff_id": -1
+        "debuff_id": -1,
+        "price" : 100
     },
     {
         "id": 1,
-        "equipment_slot_id": 0,
+        "equipment_slot_id": 1,
         "name": "Heavy Armor",
+        "type" : "Armor",
         "buffs": {
             "Armor": 2
         },
         "reaction_emoji": "\u0032\u20E3",
-        "debuff_id": -1
+        "debuff_id": -1,
+        "price" : 200
     },
     {
         "id": 2,
-        "equipment_slot_id": 0,
+        "equipment_slot_id": 1,
         "name": "Mage Robes",
+        "type" : "Armor",
         "buffs": {
             "Magic Damage": 1,
             "Magic Armor": 1,
             "Armor": 1
         },
         "reaction_emoji": "\u0033\u20E3",
-        "debuff_id": -1
+        "debuff_id": -1,
+        "price" : 200
     },
     {
         "id": 3,
-        "equipment_slot_id": 1,
+        "equipment_slot_id": 2,
         "name": "Spear",
+        "type" : "Weapon",
         "buffs": {
-            "Attack Min. Damage": 1,
-            "Block Chance": 10
+            "Block Chance": 5
         },
         "reaction_emoji": "\u0031\u20E3",
-        "debuff_id": -1
+        "debuff_id": -1,
+        "price" : 50
     },
     {
         "id": 4,
-        "equipment_slot_id": 1,
+        "equipment_slot_id": 2,
         "name": "Gladius",
+        "type" : "Weapon",
         "buffs": {
             "Attack Chance": -3,
-            "Attack Min. Damage": 1,
+            "Attack Min. Damage": 2,
             "Attack Max. Damage": 1
         },
         "reaction_emoji": "\u0032\u20E3",
-        "debuff_id": -1
+        "debuff_id": -1,
+        "price" : 150
     },
     {
         "id": 5,
-        "equipment_slot_id": 1,
+        "equipment_slot_id": 2,
         "name": "Axe",
+        "type" : "Weapon",
         "buffs": {
+            "Attack Chance" : -2,
             "Attack Min. Damage": 1
         },
         "reaction_emoji": "\u0033\u20E3",
-        "debuff_id": 0
+        "debuff_id": 0,
+        "price" : 250
     },
     {
         "id": 6,
-        "equipment_slot_id": 1,
+        "equipment_slot_id": 2,
         "name": "Magic Wand",
+        "type" : "Weapon",
         "buffs": {
             "Magic Damage": 1
         },
         "reaction_emoji": "\u0034\u20E3",
-        "debuff_id": 1
+        "debuff_id": 1,
+        "price" : 250
     }
 ]

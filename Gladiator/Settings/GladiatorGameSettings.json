@@ -24,6 +24,16 @@
             "**{} blunders and falls face in the other gladiator's sword**"
         ],
         "take_damage_per_turn_from_debuffs_text": "{} took **{} damage** from *{}* and has **{} HP** remaining. This effect will last {} more turn(s)\n",
-        "take_debuff_text": "{} took **{}** debuff which will last **{} turn(s)**\n"
+        "take_debuff_text": "{} took **{}** debuff which will last **{} turn(s)**\n",
+        "challenging_self_text" : "Killing yourself isn't good for your health"
+    },
+    "profile_settings" : {
+        "XP_TO_LEVEL_MULTIPLIER" : 15,
+        "XP_TO_LEVEL_WHEN_LOST_MULTIPLIER" : 1.25,
+        "XP_GAIN_MULTIPLIER" : 75,
+        "MAX_COIN_REWARD" : 30,
+        "MIN_COIN_REWARD" : 5,
+        "COIN_DECAY_CONSTANT" : 0.5,
+        "LEVEL_UP_DIFFICULTY_CONSTANT" : 1.23
     }
 }

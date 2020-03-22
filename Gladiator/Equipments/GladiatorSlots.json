@@ -1,11 +1,11 @@
 [
     {
-        "id" : 0,
+        "id" : 1,
         "Slot Name" : "Armor",
         "Equipment" : null
     },
     {
-        "id" : 1,
+        "id" : 2,
         "Slot Name" : "Sword",
         "Equipment" : null
     }
