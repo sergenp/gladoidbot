@@ -1,6 +1,9 @@
+import sys
+sys.path.append("..")
 import json
 import os
 from Gladiator.Equipments.GladiatorEquipments import GladiatorEquipments
+from Gladiator.UserProfileData.backup_user_data import backup_single_profile
 import math
 import random
 
@@ -8,14 +11,15 @@ import random
 def save_profile(func):
     def wrapper(self, *args, **kwargs):
         out = func(self, *args, **kwargs)
-        json.dump(self.profile_stats, open(os.path.join(os.path.dirname(__file__),
-                                                        "UserProfileData", f"{self.profile_stats['Id']}.json"), "w"), indent=4, sort_keys=True)
+        filename = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                                        "UserProfileData", f"{self.profile_stats['Id']}.json")
+        json.dump(self.profile_stats, open(filename, "w"), indent=4, sort_keys=True)
+        backup_single_profile(filename)
         return out
     return wrapper
 
 
 class GladiatorProfile():
-    @save_profile
     def __init__(self, member, **kwargs):
         self.equipment_info = GladiatorEquipments()
         self.member = member
@@ -30,23 +34,28 @@ class GladiatorProfile():
         self.COIN_DECAY_CONSANT = profile_settings["COIN_DECAY_CONSTANT"]
         self.LEVEL_UP_DIFFICULTY_CONSTANT = profile_settings["LEVEL_UP_DIFFICULTY_CONSTANT"]
 
-        if os.path.exists(os.path.join(os.path.dirname(__file__), "UserProfileData", f"{self.member.id}.json")):
+        if os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), "UserProfileData", f"{self.member.id}.json")):
             self.profile_stats = json.load(
-                open(os.path.join(os.path.dirname(__file__), "UserProfileData", f"{self.member.id}.json"), "r"))
+                open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "UserProfileData", f"{self.member.id}.json"), "r"))
         else:
-            self.profile_stats = json.load(
-                open(os.path.join(os.path.dirname(__file__), "UserProfileData", "default_profile.json"), "r"))
-            self.profile_stats["Id"] = self.profile_stats["Id"].format(
-                self.member.id)
+            self.create_default_profile(**kwargs)
 
-            # add default items for the people whomst have first created their profile
-            self.profile_stats["Inventory"].append(
-                self.equipment_info.find_equipment(0))  # Light Armor
-            self.profile_stats["Inventory"].append(
-                self.equipment_info.find_equipment(3))  # Spear
+    @save_profile
+    def create_default_profile(self, **kwargs):
+        self.profile_stats = json.load(
+            open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "UserProfileData", "default_profile.json"), "r"))
+        self.profile_stats["Id"] = self.profile_stats["Id"].format(
+            self.member.id)
+
+        # add default items for the people whomst have first created their profile
+        self.profile_stats["Inventory"].append(
+            self.equipment_info.find_equipment(0))  # Light Armor
+        self.profile_stats["Inventory"].append(
+            self.equipment_info.find_equipment(3))  # Spear
 
         for key in kwargs:
             self.profile_stats[key] = kwargs.get(key)
+
 
     @save_profile
     def buy_equipment(self, equipment_id: int):
@@ -113,7 +122,7 @@ class GladiatorProfile():
             self.profile_stats["Level"] += 1
             xp_for_next_level = self.calculate_xp_for_next_level()
             msg += f"You have levelled up!\n"
-        
+
         self.profile_stats["XP To Next Level"] = self.calculate_xp_for_next_level()
         return msg
 
@@ -125,7 +134,7 @@ class GladiatorProfile():
         self.profile_stats[profile_stat_key] += amount
         return f"Added {amount} of {profile_stat_key} to your profile!"
 
-    def __repr__(self):        
+    def __repr__(self):
         msg = ""
         for key in self.profile_stats.keys():
             if not key in ("Id", "armor_id", "weapon_id", "boosts"):

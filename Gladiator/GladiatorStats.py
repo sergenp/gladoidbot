@@ -43,11 +43,10 @@ class GladiatorStats:
         return self
 
     def __repr__(self):
-        representation = ""
+        info = ""
         for k in self.stats.keys():
-            info = f"{k} : {self.stats[k]} "
-            representation += info
-        return representation
+            info += f"{k} : {self.stats[k]} " 
+        return info
 
     def __getitem__(self, key):
         return self.stats[key]
