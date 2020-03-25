@@ -106,7 +106,7 @@ class GladiatorProfile():
                                        (math.exp(-self.COIN_DECAY_CONSANT*lvl_diff)) + self.MIN_COIN_REWARD - 1))
 
     def calculate_xp_for_next_level(self):
-        return self.XP_TO_LEVEL_MULTIPLIER*(self.get_level()**2)*self.LEVEL_UP_DIFFICULTY_CONSTANT - (self.XP_TO_LEVEL_MULTIPLIER * self.get_level()) + 300
+        return round(self.XP_TO_LEVEL_MULTIPLIER*(self.get_level()**2)*self.LEVEL_UP_DIFFICULTY_CONSTANT - (self.XP_TO_LEVEL_MULTIPLIER * self.get_level()) + 300, 2)
 
     @save_profile
     def gain_xp(self, other_profile_level: int):
