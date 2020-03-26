@@ -2,7 +2,7 @@ import json
 import random
 import collections
 import os
-from Gladiator.GladiatorPlayer import GladiatorPlayer
+from Gladiator.Player import GladiatorPlayer
 from Gladiator.GladiatorStats import GladiatorStats
 from Gladiator.GladiatorProfile import GladiatorProfile
 
@@ -58,27 +58,27 @@ class GladiatorGame:
             damage_types = json.load(f)
 
         information_text = settings["game_information_texts"]["title_text"]
-        for k in initial_stats["Gladiator_initial_stats"].keys():
+        for k in initial_stats["Stats"].keys():
             if "Chance" in k:
-                information_text += f"{k}=%{initial_stats['Gladiator_initial_stats'][k]}\n"
+                information_text += f"{k} = %{initial_stats['Stats'][k]}\n"
             else:
-                information_text += f"{k}={initial_stats['Gladiator_initial_stats'][k]}\n"
+                information_text += f"{k} = {initial_stats['Stats'][k]}\n"
 
-        information_text += settings["game_information_texts"]["information_about_attack_types_text"].format(
+        information_text += "\n" + settings["game_information_texts"]["information_about_attack_types_text"].format(
             len(attack_types))
         for i in attack_types:
-            information_text += f"{i['name']} has these stats:\n"
-            information_text += f"**Damage Type : {i['damage_type_name']}**\n"
+            information_text += f"\n***{i['name']}*** has these bonuses:\n"
+            information_text += f"Damage Type : **{i['damage_type_name']}**\n"
             for k in i["buffs"].keys():
                 if "Chance" in k:
-                    information_text += f"**{k} : %{i['buffs'][k]}**\n"
+                    information_text += f"{k} : **%{i['buffs'][k]}**\n"
                 else:
-                    information_text += f"**{k} : {i['buffs'][k]}**\n"
+                    information_text += f"{k} : **{i['buffs'][k]}**\n"
 
-        information_text += settings["game_information_texts"]["damage_types_info"].format(
+        information_text += "\n" + settings["game_information_texts"]["damage_types_info"].format(
             len(damage_types))
         for i in damage_types:
-            information_text += f"**{i['damage_type_name']}** : {i['description']}\n"
+            information_text += f"**\n{i['damage_type_name']}** : {i['description']}\n"
 
         return information_text
 

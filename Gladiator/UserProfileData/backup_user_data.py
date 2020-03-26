@@ -12,9 +12,12 @@ def backup_single_profile(filename):
     thread.start()
 
 def backup_single_profile_task(filename):
-    blob = bucket.blob(filename)
-    blob.upload_from_filename(filename=filename)
-    print(f"Uploaded {filename}")
+    try:
+        blob = bucket.blob(filename)
+        blob.upload_from_filename(filename=filename)
+        print(f"Uploaded {filename}")
+    except ValueError:
+        pass
 
 def backup_profiles():
     print("Uploading profiles to cloud")
