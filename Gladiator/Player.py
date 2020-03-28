@@ -1,6 +1,6 @@
 import random
 import math
-from Gladiator.GladiatorStats import GladiatorStats
+from Gladiator.Stats.GladiatorStats import GladiatorStats
 from Gladiator.AttackInformation.GladiatorAttackInformation import GladiatorAttackInformation
 from Gladiator.Equipments.GladiatorEquipments import GladiatorEquipments
 import json
@@ -13,10 +13,11 @@ class Player:
     def __init__(self, stats_path):
         self.dead = False
         self.debuffs = []
-        self.stats = GladiatorStats(json.load(open(stats_path, "r"))["Stats"])
+        self.json_dict = json.load(open(stats_path, "r"))
+        self.stats = GladiatorStats((self.json_dict["Stats"]))
 
-        self.information = json.load(open(os.path.join(
-            "Gladiator", "Settings", "GladiatorGameSettings.json"), "r"))["game_information_texts"]
+        self.information = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                                       "Settings", "GladiatorGameSettings.json"), "r"))["game_information_texts"]
 
     def take_damage(self, damage, damage_type):
         try:
@@ -123,11 +124,11 @@ class Player:
             return inf
 
 
-class GladiatorPlayer(Player):    
+class GladiatorPlayer(Player):
     def __init__(self, member):
-        super().__init__(stats_path = os.path.join("Gladiator", "GladiatorStats.json"))
-        self.Member = member
-        self.id = self.Member.id
+        super().__init__(stats_path=os.path.join(os.path.dirname(
+            os.path.abspath(__file__)), "Stats", "GladiatorStats.json"))
+        self.member = member
         self.attack_information = GladiatorAttackInformation()
         self.equipment_information = GladiatorEquipments()
         self.permitted_attacks = self.attack_information.attack_types[:INITIAL_ATTACK_TYPES_COUNT]
@@ -140,11 +141,14 @@ class GladiatorPlayer(Player):
             if slot["Equipment"]:
                 return
             else:
-                equipment = self.equipment_information.find_equipment(equipment_id)
+                equipment = self.equipment_information.find_equipment(
+                    equipment_id)
                 if equipment:
                     if equipment["equipment_slot_id"] == slot["id"]:
-                        self.equipment_information.update_slot(slot["id"], equipment)
-                        debuff = self.attack_information.find_turn_debuff_id(equipment["debuff_id"])
+                        self.equipment_information.update_slot(
+                            slot["id"], equipment)
+                        debuff = self.attack_information.find_turn_debuff_id(
+                            equipment["debuff_id"])
                         if debuff:
                             self.stats += debuff["debuff_stats"]
 
@@ -152,7 +156,28 @@ class GladiatorPlayer(Player):
         for i in self.permitted_attacks:
             if i["id"] == attack_type_id:
                 return
-        self.permitted_attacks.append(self.attack_information.attack_types[attack_type_id])
+        self.permitted_attacks.append(
+            self.attack_information.attack_types[attack_type_id])
 
     def __repr__(self):
-        return f"<@{self.id}>"
+        return f"<@{self.member.id}>"
+
+
+class GladiatorNPC(Player):
+    def __init__(self, stats_path, **kwargs):
+        super().__init__(stats_path)
+        self.name = self.json_dict["Name"]
+        self.image_path = os.path.join(os.path.dirname(os.path.abspath(
+            __file__)), "NPCs", "Images", random.choice(self.json_dict["NPC_Images_Path"]))
+        self.level = random.randint(
+            self.json_dict["NPC_Level_Range"][0], self.json_dict["NPC_Level_Range"][1])
+        self.attack_information = GladiatorAttackInformation()
+        self.permitted_attacks = []
+        for attack_id in self.json_dict["Attack Ids"]:
+            self.permitted_attacks.append(
+                self.attack_information.find_attack_type(attack_id))
+
+        self.stats += kwargs
+
+    def __repr__(self):
+        return f"{self.name}\nLevel : {self.level}\n{self.stats}"

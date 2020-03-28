@@ -1,0 +1,33 @@
+[
+    {
+        "id" : 0,
+        "event_text" : "**{} have been robbed!**",
+        "event_buffs" : {
+            "HutCoins" : -5
+        },
+        "event_type" : {"Profile" : "HutCoins"}
+    },
+    {
+        "id"  : 1,
+        "event_text" : "**{} have found a book. You spend time reading it and, well, that was a time wasted not adventuring.**",
+        "event_buffs" : {},
+        "event_type" : {"Profile" : null}
+    },
+    {
+        "id" : 2,
+        "event_text" : "**{} found a purse and stole it.**",
+        "event_buffs" : {
+            "HutCoins" : 5
+        },
+        "event_type" : {"Profile" : "HutCoins"}
+    },
+    {
+        "id" : 3,
+        "event_text" : "**{} chopped wood.**",
+        "event_buffs" : {
+            "XP" : -5,
+            "HutCoins" : 1
+        },
+        "event_type" : {"Profile" : "XP, HutCoins"}
+    }
+]

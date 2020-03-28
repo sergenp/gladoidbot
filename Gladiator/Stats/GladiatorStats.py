@@ -3,10 +3,11 @@ import os
 
 
 class GladiatorStats:
-    def __init__(self, stats={}):
+    def __init__(self, stats={}, **kwargs):
         self.max_stat_value = 100
         self.min_stat_value = 0
         self.stats = stats
+        self.stats.update(kwargs)
             
     def __add__(self, otherStat):
         other_dict = {}
@@ -45,7 +46,7 @@ class GladiatorStats:
     def __repr__(self):
         info = ""
         for k in self.stats.keys():
-            info += f"{k} : {self.stats[k]} " 
+            info += f"{k} : {self.stats[k]}\n" 
         return info
 
     def __getitem__(self, key):

@@ -1,5 +1,6 @@
 {
     "random_event_chance": 45,
+    "finding_npc_chance" : 80,
     "game_information_texts": {
         "game_challenge_text": "{} has challenged you {} to a gladiator match\nTo accept react this message with {}, to decline {}\nYou have 60 seconds to decide\n(Note Use the command **h!gamerules** to recieve a DM containing information about how the game is played)",
         "game_challenge_bot_text": "{} has been killed by the power of AI. Dont mess with robots.",
@@ -25,7 +26,8 @@
         ],
         "take_damage_per_turn_from_debuffs_text": "{} took **{} damage** from *{}* and has **{} HP** remaining. This effect will last {} more turn(s)\n",
         "take_debuff_text": "{} took **{}** debuff which will last **{} turn(s)**\n",
-        "challenging_self_text": "Killing yourself isn't good for your health"
+        "challenging_self_text": "Killing yourself isn't good for your health",
+        "npc_spawned_text": "**A Level {} {} has appeared!**"
     },
     "profile_settings": {
         "XP_TO_LEVEL_MULTIPLIER": 14,

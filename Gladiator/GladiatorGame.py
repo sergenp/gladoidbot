@@ -1,9 +1,8 @@
 import sys
 sys.path.append('..')
 
-from Gladiator.GladiatorNPC import GladiatorNPC
 from Gladiator.Stats.GladiatorStats import GladiatorStats
-from Gladiator.Player import GladiatorPlayer
+from Gladiator.Player import GladiatorPlayer, GladiatorNPC
 from Gladiator.Equipments.GladiatorEquipments import GladiatorEquipments
 from Gladiator.AttackInformation.GladiatorAttackInformation import GladiatorAttackInformation
 from Gladiator.GladiatorProfile import GladiatorProfile
@@ -21,10 +20,9 @@ class GladiatorGame:
         self.current_player = self.player1
         self.players = collections.deque([self.player1, self.player2])
         with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "Settings", "GladiatorGameSettings.json")) as f:
-            self.random_event_chance = json.load(
-                f)["random_event_chance"]  # percent of random event chance
+            self.random_event_chance = json.load(f)["random_event_chance"]  # percent of random event chance
 
-        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "Events", "GladiatorEvents.json")) as f:
+        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "Events", "GladiatorDuelEvents.json")) as f:
             self.events = json.load(f)
 
         self.game_continues = True
@@ -89,6 +87,39 @@ class GladiatorGame:
 
         return information_text
 
+    @staticmethod
+    def get_event(event_dict, player_to_be_affected):
+        event_text = event_dict["event_text"].format(player_to_be_affected.member.mention)
+        event_buffs = event_dict["event_buffs"]
+        event_info = "\n" + event_text + "\n"
+
+        if list(event_dict["event_type"])[0] == "Profile":
+            profile = None
+            if isinstance(player_to_be_affected, GladiatorProfile):
+                profile = player_to_be_affected
+
+            elif isinstance(player_to_be_affected, GladiatorPlayer):
+                profile = GladiatorProfile(player_to_be_affected.member)
+
+            for k in event_buffs.keys():
+                event_info += profile.event_bonus(k, event_buffs[k]) + "\n"
+                
+        elif list(event_dict["event_type"])[0] == "PVP":
+            if isinstance(player_to_be_affected, GladiatorPlayer):
+                if event_buffs:
+                    buff = GladiatorStats(event_buffs)
+                    player_to_be_affected.buff(buff)
+                    event_info += str(buff)
+
+                if event_dict["event_type"]["PVP"] == "unlock_attack_type":
+                    player_to_be_affected.unlock_attack_type(
+                        event_dict["attack_id"])
+        else:
+            return ""
+            
+        return "--------------------------\n" + event_info + "\n--------------------------"
+    
+
     def random_event(self):
         if not self.game_continues:
             return ""
@@ -96,37 +127,22 @@ class GladiatorGame:
         if self.random_event_chance > roll:
             event = random.choice(self.events)
             player_to_be_affected = random.choice([self.player1, self.player2])
-            event_text = event["event_text"].format(player_to_be_affected)
-            event_buffs = event["event_buffs"]
-            event_info = event_text + "\n"
-
-            if list(event["event_type"])[0] == "Profile":
-                profile = GladiatorProfile(player_to_be_affected.Member)
-                for k in event_buffs.keys():
-                    event_info += profile.event_bonus(k, event_buffs[k]) + "\n"
-
-            elif list(event["event_type"])[0] == "PVP":
-                if event_buffs:
-                    buff = GladiatorStats(event_buffs)
-                    player_to_be_affected.buff(buff)
-                    event_info += str(buff)
-
-                if event["event_type"]["PVP"] == "unlock_attack_type":
-                    player_to_be_affected.unlock_attack_type(
-                        event["attack_id"])
-
-            return "*--------------------------\n" + event_info + "\n--------------------------*"
-        else:
-            return ""
-
+            return GladiatorGame.get_event(event, player_to_be_affected)
+    
     @staticmethod
-    def random_spawn():
+    def hunt():
         # get a random json file from NPCs directory
         npc_stats_path = random.choice(glob.glob(os.path.join(
             os.path.dirname(os.path.abspath(__file__)), "NPCs", "*.json")))
         # return a GladiatorNPC with the name of the json file, and the stats it has
-        return GladiatorNPC(name=os.path.splitext(os.path.basename(npc_stats_path))[0], stats_path=npc_stats_path)
-
+        return GladiatorNPC(stats_path=npc_stats_path)
+    
+    @staticmethod
+    def hunt_failed(gladiatorProfile : GladiatorProfile):
+        npc_events = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "Events", "GladiatorNPCEvents.json")))
+        rand_event = random.choice(npc_events)
+        return GladiatorGame.get_event(rand_event, gladiatorProfile)
+        
     @staticmethod
     def construct_shop_message(page_id : int):
         equipments = GladiatorEquipments().get_all_equipments_from_slot_id(page_id)
@@ -160,5 +176,3 @@ class GladiatorGame:
             equipment_field_list.append(dct)
             
         return equipment_field_list, emoji_list
-
-GladiatorGame.random_spawn()

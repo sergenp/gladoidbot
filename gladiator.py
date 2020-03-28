@@ -9,6 +9,7 @@ from util import send_embed_message
 from enum import Enum
 import json
 import os
+import random
 
 class Gladiator(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -18,9 +19,11 @@ class Gladiator(commands.Cog):
         
         self.GladiatorEquipments = GladiatorEquipments()
         self.GladiatorAttackInformation = GladiatorAttackInformation()
+        
+        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "Gladiator", "Settings", "GladiatorGameSettings.json")) as f:
+            self.settings = json.load(f)
 
-        with open(os.path.join("Gladiator", "Settings", "GladiatorGameSettings.json")) as f:
-            self.game_information = json.load(f)["game_information_texts"]
+        self.game_information = self.settings["game_information_texts"]
 
     @commands.command()
     async def gamead(self, ctx):
@@ -57,54 +60,37 @@ class Gladiator(commands.Cog):
             await ctx.send(f"Couldn't find any page called {list(page)[0]}")
             return
 
-        equipments = self.GladiatorEquipments.get_all_equipments_from_slot_id(page_id)
-        equipment_field_list = []
-        emoji_list = []
-        for k in equipments:
-            value = ""
-            for val in k["buffs"].keys():
-                if "Chance" in val:
-                    value += f"{val} : **%{k['buffs'][val]}**\n"
-                else:
-                    value += f"{val} : **{k['buffs'][val]}**\n"
-            value += f"Price : **{k['price']} HutCoins**\n"
+        equipment_field_list, emoji_list = GladiatorGame.construct_shop_message(page_id)
 
-            debuff = self.GladiatorAttackInformation.find_turn_debuff_id(k["debuff_id"])
-            if debuff:
-                for j in debuff["debuff_stats"]:
-                    if not j in ("debuff_id"):
-                        if "Chance" in j:
-                            value += f"{j} : **%{debuff['debuff_stats'][j]}**\n"
-                        else:
-                            value += f"{j} : **{debuff['debuff_stats'][j]}**\n"
+        if equipment_field_list and emoji_list:    
+            msg = await send_embed_message(ctx, field_list=equipment_field_list)
+            for emoji in emoji_list:
+                await msg.add_reaction(emoji)
 
-            name = f"{k['name']} {k['reaction_emoji']}"
-            emoji_list.append(k["reaction_emoji"])
-            dct = {
-                "name": name,
-                "value": value,
-                "inline": True
-            }
-            equipment_field_list.append(dct)
+            def check(reaction, user):
+                return user == ctx.message.author and reaction.message.id == msg.id
+
+            try:
+                reaction, _ = await self.bot.wait_for('reaction_add', timeout=180.0, check=check)
+                equipment_id = self.GladiatorEquipments.get_equipment_id_by_emoji(reaction.emoji, page_id)
+                await ctx.send(GladiatorProfile(ctx.message.author).buy_equipment(equipment_id))
+
+            except asyncio.TimeoutError:
+                await msg.delete()
         
-        msg = await send_embed_message(ctx, field_list=equipment_field_list)
-        for emoji in emoji_list:
-            await msg.add_reaction(emoji)
-
-        def check(reaction, user):
-            return user == ctx.message.author and reaction.message.id == msg.id
-
-        try:
-            reaction, _ = await self.bot.wait_for('reaction_add', timeout=180.0, check=check)
-            equipment_id = self.GladiatorEquipments.get_equipment_id_by_emoji(reaction.emoji, page_id)
-            await ctx.send(GladiatorProfile(ctx.message.author).buy_equipment(equipment_id))
-
-        except asyncio.TimeoutError:
-            await msg.delete()
-    
     @commands.command()
     async def hunt(self, ctx):
-        ctx.send("Currently working on PVE Gameplay. Meanwhile, go h!challenge some people to earn some HutCoin")
+        roll = random.randint(0, 100)
+        profile = GladiatorProfile(ctx.message.author)
+        if self.settings["finding_npc_chance"] > roll:
+            random_spawn = GladiatorGame.hunt()
+            message = self.game_information["npc_spawned_text"].format(random_spawn.level, random_spawn.name)
+            msg = await send_embed_message(ctx, content=message, image_url=random_spawn.image_path, image_local_file=True)
+            await msg.add_reaction("⚔️")
+            await msg.add_reaction("🏃")
+        else:
+            msg = GladiatorGame.hunt_failed(GladiatorProfile(ctx.message.author))
+            await send_embed_message(ctx, content=msg)
 
     @commands.command()
     async def challenge(self, ctx, userToChallenge: discord.Member = None):
@@ -112,9 +98,9 @@ class Gladiator(commands.Cog):
             await ctx.send(self.game_information["game_is_already_commencing_text"])
             return
         
-        if userToChallenge == ctx.message.author:
-            await ctx.send(self.game_information["challenging_self_text"])
-            return
+        #if userToChallenge == ctx.message.author:
+        #    await ctx.send(self.game_information["challenging_self_text"])
+        #    return
 
         if userToChallenge:
             if userToChallenge.bot:
@@ -139,9 +125,11 @@ class Gladiator(commands.Cog):
 
                         crr_game = self.games[ctx.channel.id]
                         for profile in profiles:
+                            equip_inf = f"{crr_game.current_player} equips "
                             for equipment in profile.profile_stats["Inventory"]:
                                 crr_game.current_player.equip_item(
                                     equipment["id"], equipment["equipment_slot_id"])
+                                equip_inf += f"**{equipment['name']}** "
                             crr_game.current_player.buff(
                                 GladiatorStats(profile.profile_stats["boosts"]))
                             crr_game.switch_turns()
@@ -183,7 +171,7 @@ class Gladiator(commands.Cog):
                 await attack_msg.add_reaction(i["reaction_emoji"])
 
             def check(reaction, user):
-                return user == game.current_player.Member and reaction.message.id == attack_msg.id
+                return user == game.current_player.member and reaction.message.id == attack_msg.id
 
             try:
                 reaction, _ = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
@@ -199,8 +187,8 @@ class Gladiator(commands.Cog):
 
             except asyncio.TimeoutError:
                 await ctx.send(self.game_information["game_end_via_timeout_text"].format(game.players[1]))
-                loser_profile = GladiatorProfile(game.current_player.Member)
-                winner_profile = GladiatorProfile(game.players[1].Member)
+                loser_profile = GladiatorProfile(game.current_player.member)
+                winner_profile = GladiatorProfile(game.players[1].member)
 
                 await send_embed_message(ctx, content=winner_profile.update_games(loser_profile.get_level(), won=True), author_name=winner_profile.member.name, author_icon_link=winner_profile.member.avatar_url)
                 await send_embed_message(ctx, content=loser_profile.update_games(winner_profile.get_level(), won=False), author_name=loser_profile.member.name, author_icon_link=loser_profile.member.avatar_url)
@@ -209,8 +197,8 @@ class Gladiator(commands.Cog):
                 del self.games[ctx.channel.id]
         else:
             await ctx.send(self.game_information["game_over_text"].format(game.current_player, game.current_player))
-            loser_profile = GladiatorProfile(game.current_player.Member)
-            winner_profile = GladiatorProfile(game.players[1].Member)
+            loser_profile = GladiatorProfile(game.current_player.member)
+            winner_profile = GladiatorProfile(game.players[1].member)
 
             await send_embed_message(ctx, content=winner_profile.update_games(loser_profile.get_level(), won=True), author_name=winner_profile.member.name, author_icon_link=winner_profile.member.avatar_url)
             await send_embed_message(ctx, content=loser_profile.update_games(winner_profile.get_level(), won=False), author_name=loser_profile.member.name, author_icon_link=loser_profile.member.avatar_url)
