@@ -14,9 +14,9 @@ import json
 
 
 class GladiatorGame:
-    def __init__(self, player1, player2):
-        self.player1 = GladiatorPlayer(player1)
-        self.player2 = GladiatorPlayer(player2)
+    def __init__(self, player1 : (GladiatorPlayer, GladiatorNPC), player2 : (GladiatorPlayer, GladiatorNPC)):
+        self.player1 = player1
+        self.player2 = player2
         self.current_player = self.player1
         self.players = collections.deque([self.player1, self.player2])
         with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "Settings", "GladiatorGameSettings.json")) as f:

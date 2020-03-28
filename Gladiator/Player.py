@@ -178,6 +178,9 @@ class GladiatorNPC(Player):
                 self.attack_information.find_attack_type(attack_id))
 
         self.stats += kwargs
+    
+    def get_random_attack(self):
+        return random.choice(self.permitted_attacks)
 
     def __repr__(self):
-        return f"{self.name}\nLevel : {self.level}\n{self.stats}"
+        return f"Level {self.level} {self.name} "
