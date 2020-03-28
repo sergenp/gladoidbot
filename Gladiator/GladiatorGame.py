@@ -1,13 +1,18 @@
 import sys
 sys.path.append('..')
 
-import json
-import random
-import collections
-import os
-import glob
-from Gladiator.Player import GladiatorPlayer
+from Gladiator.GladiatorNPC import GladiatorNPC
 from Gladiator.Stats.GladiatorStats import GladiatorStats
+from Gladiator.Player import GladiatorPlayer
+from Gladiator.Equipments.GladiatorEquipments import GladiatorEquipments
+from Gladiator.AttackInformation.GladiatorAttackInformation import GladiatorAttackInformation
+from Gladiator.GladiatorProfile import GladiatorProfile
+import glob
+import os
+import collections
+import random
+import json
+
 
 class GladiatorGame:
     def __init__(self, player1, player2):
@@ -116,7 +121,44 @@ class GladiatorGame:
 
     @staticmethod
     def random_spawn():
-        npc_stats_path = random.choice(glob.glob(os.path.join(os.path.dirname(os.path.abspath(__file__)), "NPCs", "*.json")))
-        print(npc_stats_path)
+        # get a random json file from NPCs directory
+        npc_stats_path = random.choice(glob.glob(os.path.join(
+            os.path.dirname(os.path.abspath(__file__)), "NPCs", "*.json")))
+        # return a GladiatorNPC with the name of the json file, and the stats it has
+        return GladiatorNPC(name=os.path.splitext(os.path.basename(npc_stats_path))[0], stats_path=npc_stats_path)
+
+    @staticmethod
+    def construct_shop_message(page_id : int):
+        equipments = GladiatorEquipments().get_all_equipments_from_slot_id(page_id)
+        equipment_field_list = []
+        emoji_list = []
+        for k in equipments:
+            value = ""
+            for val in k["buffs"].keys():
+                if "Chance" in val:
+                    value += f"{val} : **%{k['buffs'][val]}**\n"
+                else:
+                    value += f"{val} : **{k['buffs'][val]}**\n"
+            value += f"Price : **{k['price']} HutCoins**\n"
+
+            debuff = GladiatorAttackInformation().find_turn_debuff_id(k["debuff_id"])
+            if debuff:
+                for j in debuff["Stats"]:
+                    if not j in ("debuff_id"):
+                        if "Chance" in j:
+                            value += f"{j} : **%{debuff['Stats'][j]}**\n"
+                        else:
+                            value += f"{j} : **{debuff['Stats'][j]}**\n"
+
+            name = f"{k['name']} {k['reaction_emoji']}"
+            emoji_list.append(k["reaction_emoji"])
+            dct = {
+                "name": name,
+                "value": value,
+                "inline": True
+            }
+            equipment_field_list.append(dct)
+            
+        return equipment_field_list, emoji_list
 
 GladiatorGame.random_spawn()
