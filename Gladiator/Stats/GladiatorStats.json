@@ -1,5 +1,5 @@
 {
-    "Gladiator_initial_stats": {
+    "Stats": {
         "Health": 25,
         "Attack Chance": 85,
         "Attack Min. Damage": 4,

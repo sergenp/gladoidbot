@@ -1,0 +1,30 @@
+{
+    "Name": "Rat",
+    "Stats": {
+        "Health": 15,
+        "Attack Chance": 80,
+        "Attack Min. Damage": 2,
+        "Attack Max. Damage": 10,
+        "Magic Damage": 5,
+        "Magic Armor": 1,
+        "Armor": 2,
+        "Block Chance": 5,
+        "Critical Damage Chance": 15,
+        "Critical Damage Boost": 1.2
+    },
+    "NPC_Level_Range": [
+        1,
+        10
+    ],
+    "NPC_Images_Path": [
+        "Rat.png"
+    ],
+    "Attack Ids": [
+        2,
+        5,
+        6
+    ],
+    "Debuff Ids": [
+        2
+    ]
+}

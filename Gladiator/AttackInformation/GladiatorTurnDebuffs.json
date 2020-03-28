@@ -16,5 +16,14 @@
             "Debuff Damage": 1
         },
         "lasts_turn_count": 2
+    },
+    {
+        "debuff_stats" : {
+            "debuff_id" : 2,
+            "Debuff Type" : "Plague",
+            "Debuff Chance" : 50,
+            "Debuff Damage" : 1
+        },
+        "lasts_turn_count" : 5
     }
 ]
