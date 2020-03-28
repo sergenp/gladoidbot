@@ -11,6 +11,12 @@ class GladiatorEquipments:
             if equipment["id"] == equipment_id:
                 return equipment
         return None
+    
+    def get_equipment_with_slot_id(self, equipment_id: int, slot_id : int):
+        for equipment in self.equipments:
+            if equipment["equipment_slot_id"] == slot_id and equipment["id"] == equipment_id:
+                return equipment
+        return None
 
     def find_slot(self, slot_id : int):
         for slot in self.slots:

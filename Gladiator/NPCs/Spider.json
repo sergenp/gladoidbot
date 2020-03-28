@@ -1,0 +1,16 @@
+{
+    "Stats" : {
+        "Health" : 10,
+        "Attack Chance" : 40,
+        "Attack Min. Damage" : 5,
+        "Attack Max. Damage" : 5,
+        "Magic Damage" : 5,
+        "Magic Armor" : 1,
+        "Armor" : 1,
+        "Block Chance" : 10,
+        "Critical Damage Chance" : 50,
+        "Critical Damage Boost" : 1.5
+    },
+    "NPC_Level_Range" : [1, 15],
+    "NPC_Image_Path" : ["Spider.png", "Spider1.png"]
+}

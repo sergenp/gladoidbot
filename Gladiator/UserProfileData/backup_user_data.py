@@ -15,7 +15,7 @@ def backup_single_profile_task(filename):
     try:
         blob = bucket.blob(filename)
         blob.upload_from_filename(filename=filename)
-        print(f"Uploaded {filename}")
+        #print(f"Uploaded {filename}")
     except ValueError:
         pass
 

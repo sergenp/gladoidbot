@@ -1,19 +1,20 @@
 import sys
-sys.path.append("..")
-import json
-import os
-from Gladiator.Equipments.GladiatorEquipments import GladiatorEquipments
-from Gladiator.UserProfileData.backup_user_data import backup_single_profile
-import math
-import random
+sys.path.append('..')
 
+import random
+import math
+from Gladiator.UserProfileData.backup_user_data import backup_single_profile
+from Gladiator.Equipments.GladiatorEquipments import GladiatorEquipments
+import os
+import json
 
 def save_profile(func):
     def wrapper(self, *args, **kwargs):
         out = func(self, *args, **kwargs)
         filename = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                                        "UserProfileData", f"{self.profile_stats['Id']}.json")
-        json.dump(self.profile_stats, open(filename, "w"), indent=4, sort_keys=True)
+                                "UserProfileData", f"{self.profile_stats['Id']}.json")
+        json.dump(self.profile_stats, open(
+            filename, "w"), indent=4, sort_keys=True)
         backup_single_profile(filename)
         return out
     return wrapper
@@ -35,7 +36,8 @@ class GladiatorProfile():
         self.LEVEL_UP_DIFFICULTY_CONSTANT = profile_settings["LEVEL_UP_DIFFICULTY_CONSTANT"]
         self.LEVEL_UP_START_POINT = profile_settings["LEVEL_UP_START_POINT"]
 
-        profile_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "UserProfileData", f"{self.member.id}.json")
+        profile_path = os.path.join(os.path.dirname(os.path.abspath(
+            __file__)), "UserProfileData", f"{self.member.id}.json")
         if os.path.exists(profile_path):
             self.profile_stats = json.load(open(profile_path, "r"))
         else:
@@ -83,7 +85,6 @@ class GladiatorProfile():
         self.profile_stats["Inventory"].append(equipment)
         return f"Successfully bought **{equipment['name']}**. You have **{self.profile_stats['HutCoins']} HutCoins** left."
 
-    @save_profile
     def update_games(self, other_profile_level: int, won=False):
         self.profile_stats["Games Played"] += 1
         if won:
@@ -97,30 +98,28 @@ class GladiatorProfile():
     def reward_player(self, other_profile_level: int):
         lvl_diff = self.get_level() - other_profile_level
         coin = math.ceil(self.MAX_COIN_REWARD-self.MIN_COIN_REWARD + 1 *
-                                       math.exp(-self.COIN_DECAY_CONSANT*lvl_diff) + self.MIN_COIN_REWARD - 1)
+                         math.exp(-self.COIN_DECAY_CONSANT*lvl_diff) + self.MIN_COIN_REWARD - 1)
 
         self.profile_stats["HutCoins"] += coin
         return f"**You earned {coin} HutCoins!**"
-    
+
     def calculate_xp_for_next_level(self):
         return round(self.XP_TO_LEVEL_MULTIPLIER*(self.get_level()**2)*self.LEVEL_UP_DIFFICULTY_CONSTANT - (self.XP_TO_LEVEL_MULTIPLIER * self.get_level()) + self.LEVEL_UP_START_POINT) + 1
 
     @save_profile
     def gain_xp(self, other_profile_level: int):
-        msg = ""
         xp_gained = math.ceil(other_profile_level /
-                              self.get_level()) * self.XP_GAIN_MULTIPLIER
+                              self.get_level()) * self.XP_GAIN_MULTIPLIER + random.randint(self.get_level(), self.get_level()*5)
 
-        xp_gained += random.randint(self.get_level(), self.get_level()*5)
         self.profile_stats["XP"] += xp_gained
-        msg += f"Gained {xp_gained} XP\n"
+        msg = f"Gained {xp_gained} XP\n"
         xp_for_next_level = self.calculate_xp_for_next_level()
-        while self.profile_stats["XP"] > xp_for_next_level:
+        while self.profile_stats["XP"] >= xp_for_next_level:
             self.profile_stats["Level"] += 1
             xp_for_next_level = self.calculate_xp_for_next_level()
             msg += f"You have levelled up!\n"
 
-        self.profile_stats["XP To Next Level"] = self.calculate_xp_for_next_level()
+        self.profile_stats["XP To Next Level"] = xp_for_next_level
         return msg
 
     def get_level(self):
@@ -129,7 +128,7 @@ class GladiatorProfile():
     @save_profile
     def event_bonus(self, profile_stat_key: str, amount: int):
         self.profile_stats[profile_stat_key] += amount
-        return f"Added **{amount}** of **{profile_stat_key}** to your profile!"
+        return f"Added **{amount} {profile_stat_key}** to your profile!"
 
     def __repr__(self):
         msg = ""

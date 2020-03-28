@@ -1,11 +1,13 @@
+import sys
+sys.path.append('..')
+
 import json
 import random
 import collections
 import os
+import glob
 from Gladiator.Player import GladiatorPlayer
-from Gladiator.GladiatorStats import GladiatorStats
-from Gladiator.GladiatorProfile import GladiatorProfile
-
+from Gladiator.Stats.GladiatorStats import GladiatorStats
 
 class GladiatorGame:
     def __init__(self, player1, player2):
@@ -13,11 +15,11 @@ class GladiatorGame:
         self.player2 = GladiatorPlayer(player2)
         self.current_player = self.player1
         self.players = collections.deque([self.player1, self.player2])
-        with open(os.path.join("Gladiator", "Settings", "GladiatorGameSettings.json")) as f:
+        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "Settings", "GladiatorGameSettings.json")) as f:
             self.random_event_chance = json.load(
                 f)["random_event_chance"]  # percent of random event chance
 
-        with open(os.path.join("Gladiator", "Events", "GladiatorEvents.json")) as f:
+        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "Events", "GladiatorEvents.json")) as f:
             self.events = json.load(f)
 
         self.game_continues = True
@@ -45,16 +47,16 @@ class GladiatorGame:
         damage_types = None
         initial_stats = None
 
-        with open(os.path.join("Gladiator", "GladiatorStats.json")) as f:
+        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "Stats", "GladiatorStats.json")) as f:
             initial_stats = json.load(f)
 
-        with open(os.path.join("Gladiator", "Settings", "GladiatorGameSettings.json")) as f:
+        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "Settings", "GladiatorGameSettings.json")) as f:
             settings = json.load(f)
 
-        with open(os.path.join("Gladiator", "AttackInformation", "GladiatorAttackBuffs.json")) as f:
+        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "AttackInformation", "GladiatorAttackBuffs.json")) as f:
             attack_types = json.load(f)
 
-        with open(os.path.join("Gladiator", "AttackInformation", "GladiatorDamageTypes.json")) as f:
+        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "AttackInformation", "GladiatorDamageTypes.json")) as f:
             damage_types = json.load(f)
 
         information_text = settings["game_information_texts"]["title_text"]
@@ -111,3 +113,10 @@ class GladiatorGame:
             return "*--------------------------\n" + event_info + "\n--------------------------*"
         else:
             return ""
+
+    @staticmethod
+    def random_spawn():
+        npc_stats_path = random.choice(glob.glob(os.path.join(os.path.dirname(os.path.abspath(__file__)), "NPCs", "*.json")))
+        print(npc_stats_path)
+
+GladiatorGame.random_spawn()
