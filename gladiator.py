@@ -183,16 +183,15 @@ class Gladiator(commands.Cog):
     async def gladiator_game_loop(self, ctx):
         game = self.games[ctx.channel.id]
         if game.next_turn():
-            rand_ev = game.random_event()
-            if rand_ev:
-                await send_embed_message(ctx, rand_ev)
-
             dmg_per_turn = game.current_player.take_damage_per_turn()
             if dmg_per_turn:
                 await send_embed_message(ctx, dmg_per_turn)
-
-            print(type(game.current_player))
+                
             if isinstance(game.current_player, GladiatorPlayer):
+                rand_ev = game.random_event()
+                if rand_ev:
+                    await send_embed_message(ctx, rand_ev)
+
                 attack_msg_text = self.game_information["game_turn_text"].format(
                     game.current_player)
 

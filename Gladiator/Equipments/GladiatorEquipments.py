@@ -28,11 +28,8 @@ class GladiatorEquipments:
         return None
 
     def update_slot(self, slot_id: int, equipment):
-        try:
-            self.slots[slot_id]["Equipment"] = equipment
-        except KeyError:
-            raise KeyError(
-                f"Slot id {slot_id} doesn't exist in the GladiatorSlots.json file.")
+        slot = self.find_slot(slot_id)
+        slot["Equipment"] = equipment
 
     def get_all_slots(self):
         return self.slots

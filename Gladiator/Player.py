@@ -147,6 +147,7 @@ class GladiatorPlayer(Player):
                     if equipment["equipment_slot_id"] == slot["id"]:
                         self.equipment_information.update_slot(
                             slot["id"], equipment)
+                        self.stats += equipment["buffs"]
                         debuff = self.attack_information.find_turn_debuff_id(
                             equipment["debuff_id"])
                         if debuff:
@@ -177,7 +178,11 @@ class GladiatorNPC(Player):
             self.permitted_attacks.append(
                 self.attack_information.find_attack_type(attack_id))
 
+        for debuff_ids in self.json_dict["Debuff Ids"]:
+            self.stats += self.attack_information.find_turn_debuff_id(debuff_ids)["debuff_stats"]
+            
         self.stats += kwargs
+        self.stats["Health"] += self.level
     
     def get_random_attack(self):
         return random.choice(self.permitted_attacks)

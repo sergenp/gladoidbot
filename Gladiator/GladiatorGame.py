@@ -88,7 +88,10 @@ class GladiatorGame:
         return information_text
 
     @staticmethod
-    def get_event(event_dict, player_to_be_affected):
+    def get_event(event_dict, player_to_be_affected : (GladiatorNPC, GladiatorPlayer, GladiatorProfile)):
+        if isinstance(player_to_be_affected, GladiatorNPC):
+            return
+
         event_text = event_dict["event_text"].format(player_to_be_affected.member.mention)
         event_buffs = event_dict["event_buffs"]
         event_info = "\n" + event_text + "\n"
@@ -100,6 +103,9 @@ class GladiatorGame:
 
             elif isinstance(player_to_be_affected, GladiatorPlayer):
                 profile = GladiatorProfile(player_to_be_affected.member)
+            
+            else:
+                return
 
             for k in event_buffs.keys():
                 event_info += profile.event_bonus(k, event_buffs[k]) + "\n"
@@ -114,6 +120,9 @@ class GladiatorGame:
                 if event_dict["event_type"]["PVP"] == "unlock_attack_type":
                     player_to_be_affected.unlock_attack_type(
                         event_dict["attack_id"])
+            else:
+                return ""
+
         else:
             return ""
             
@@ -159,12 +168,12 @@ class GladiatorGame:
 
             debuff = GladiatorAttackInformation().find_turn_debuff_id(k["debuff_id"])
             if debuff:
-                for j in debuff["Stats"]:
+                for j in debuff["debuff_stats"]:
                     if not j in ("debuff_id"):
                         if "Chance" in j:
-                            value += f"{j} : **%{debuff['Stats'][j]}**\n"
+                            value += f"{j} : **%{debuff['debuff_stats'][j]}**\n"
                         else:
-                            value += f"{j} : **{debuff['Stats'][j]}**\n"
+                            value += f"{j} : **{debuff['debuff_stats'][j]}**\n"
 
             name = f"{k['name']} {k['reaction_emoji']}"
             emoji_list.append(k["reaction_emoji"])
