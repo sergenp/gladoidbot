@@ -130,9 +130,9 @@ class Gladiator(commands.Cog):
             await ctx.send(self.game_information["game_is_already_commencing_text"])
             return
 
-        # if userToChallenge == ctx.message.author:
-        #    await ctx.send(self.game_information["challenging_self_text"])
-        #    return
+        if userToChallenge == ctx.message.author:
+            await ctx.send(self.game_information["challenging_self_text"])
+            return
 
         if userToChallenge:
             if userToChallenge.bot:
@@ -219,16 +219,15 @@ class Gladiator(commands.Cog):
                     await self.gladiator_game_loop(ctx)
 
                 except asyncio.TimeoutError:
-                    if isinstance(game.current_player, discord.Member) and isinstance(game.players[1], discord.Member):
+                    # means that this is a duel between players
+                    if isinstance(game.players[1], discord.Member):
                         await ctx.send(self.game_information["game_end_via_timeout_text"].format(game.players[1]))
-                        loser_profile = GladiatorProfile(
-                            game.current_player.member)
-                        winner_profile = GladiatorProfile(
-                            game.players[1].member)
+                        loser_profile = GladiatorProfile(game.current_player.member)
+                        winner_profile = GladiatorProfile(game.players[1].member)
+                        winner_msg = winner_profile.update_games(loser_profile.get_level(), won=True) + "\n" + winner_profile.reward_player(loser_profile.get_level())
 
-                        await send_embed_message(ctx, content=winner_profile.update_games(loser_profile.get_level(), won=True), author_name=winner_profile.member.name, author_icon_link=winner_profile.member.avatar_url)
+                        await send_embed_message(ctx, content=winner_msg, author_name=winner_profile.member.name, author_icon_link=winner_profile.member.avatar_url)
                         await send_embed_message(ctx, content=loser_profile.update_games(winner_profile.get_level(), won=False), author_name=loser_profile.member.name, author_icon_link=loser_profile.member.avatar_url)
-                        await send_embed_message(ctx, content=winner_profile.reward_player(loser_profile.get_level()), author_icon_link=winner_profile.member.avatar_url, author_name=winner_profile.member.name)
 
                     del self.games[ctx.channel.id]
 
@@ -236,28 +235,23 @@ class Gladiator(commands.Cog):
                 attack = game.current_player.get_random_attack()
                 await send_embed_message(ctx, game.attack(attack["id"], attack["damage_type_id"])) 
                 await self.gladiator_game_loop(ctx)
-
-            else:
-                await ctx.send(self.game_information["game_over_text"].format(game.current_player, game.current_player))
-                
+               
         else:
             if isinstance(game.current_player, GladiatorPlayer) and isinstance(game.players[1], GladiatorPlayer):
                 await ctx.send(self.game_information["game_over_text"].format(game.current_player, game.current_player))
                 loser_profile = GladiatorProfile(game.current_player.member)
                 winner_profile = GladiatorProfile(game.players[1].member)
-                await send_embed_message(ctx, content=winner_profile.update_games(loser_profile.get_level(), won=True), author_name=winner_profile.member.name, author_icon_link=winner_profile.member.avatar_url)
+                winner_msg = winner_profile.update_games(loser_profile.get_level(), won=True) + "\n" + winner_profile.reward_player(loser_profile.get_level())
+
+                await send_embed_message(ctx, content=winner_msg, author_name=winner_profile.member.name, author_icon_link=winner_profile.member.avatar_url)
                 await send_embed_message(ctx, content=loser_profile.update_games(winner_profile.get_level(), won=False), author_name=loser_profile.member.name, author_icon_link=loser_profile.member.avatar_url)
-                await send_embed_message(ctx, content=winner_profile.reward_player(loser_profile.get_level()), author_icon_link=winner_profile.member.avatar_url, author_name=winner_profile.member.name)
             
-            # this means the current_player is an npc and he is dead
+            # this means the current_player is an npc and he is dead, so reward the non NPC player
             elif isinstance(game.current_player, GladiatorNPC):
                 winner_profile = GladiatorProfile(game.players[1].member)
-                msg = winner_profile.update_games(game.current_player.level) + "\n" + winner_profile.reward_player(game.current_player.level)
+                msg = winner_profile.update_games(game.current_player.level, won=True) + "\n" + winner_profile.reward_player(game.current_player.level)
                 await send_embed_message(ctx, content=msg, author_name=winner_profile.member.name, author_icon_link=winner_profile.member.avatar_url)
 
-            else:
-                await ctx.send(self.game_information["game_over_text"].format(game.current_player, game.current_player))
-                
             del self.games[ctx.channel.id]
 
 

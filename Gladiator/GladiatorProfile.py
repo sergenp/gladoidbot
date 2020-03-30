@@ -85,7 +85,7 @@ class GladiatorProfile():
         self.profile_stats["Inventory"].append(equipment)
         return f"Successfully bought **{equipment['name']}**. You have **{self.profile_stats['HutCoins']} HutCoins** left."
 
-    def update_games(self, other_profile_level: int, won=False):
+    def update_games(self, other_profile_level: int, won : bool):
         self.profile_stats["Games Played"] += 1
         if won:
             self.profile_stats["Games Won"] += 1
