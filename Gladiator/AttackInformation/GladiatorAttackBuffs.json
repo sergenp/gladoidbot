@@ -24,17 +24,15 @@
     },
     {
         "id": 2,
-        "damage_type_id": 0,
-        "damage_type_name": "Physical",
-        "name": "Flurry",
+        "damage_type_id": 1,
+        "damage_type_name": "Magical",
+        "name": "Ice Shard",
         "buffs": {
-            "Attack Chance": -42,
-            "Attack Min. Damage": 3,
-            "Attack Max. Damage": 4,
-            "Critical Damage Boost": 0.2,
-            "Critical Damage Chance": 15
+            "Magic Damage" : 1,
+            "Critical Damage Chance" : 15,
+            "Critical Damage Boost" : 0.2
         },
-        "reaction_emoji": "\u0033\u20E3"
+        "reaction_emoji": "\u2744"
     },
     {
         "id": 3,
@@ -43,8 +41,7 @@
         "name": "Fireball",
         "buffs": {
             "Attack Chance": -22,
-            "Attack Min. Damage": 2,
-            "Attack Max. Damage": 1,
+            "Magic Damage" : 2,
             "Critical Damage Chance": 25,
             "Critical Damage Boost": 0.2
         },
@@ -86,5 +83,15 @@
         "name" : "Spit",
         "buffs" : {},
         "reaction_emoji" : ""
+    },
+    {
+        "id" : 8,
+        "damage_type_id" : 1,
+        "damage_type_name" :"Magical",
+        "name" : "Curse",
+        "buffs" : {
+            "Attack Chance" : 8,
+            "Magic Damage" : 1
+        }
     }
 ]

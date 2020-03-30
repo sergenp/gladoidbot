@@ -1,0 +1,30 @@
+{
+    "Name": "Necromancer",
+    "Stats": {
+        "Health": 10,
+        "Attack Chance": 62,
+        "Attack Min. Damage": 0,
+        "Attack Max. Damage": 0,
+        "Magic Damage": 8,
+        "Magic Armor": 1,
+        "Armor": 0,
+        "Block Chance": 0,
+        "Critical Damage Chance": 35,
+        "Critical Damage Boost": 1.1
+    },
+    "NPC_Level_Range": [
+        5,
+        25
+    ],
+    "NPC_Images_Path": [
+        "Necromancer.jpg",
+        "Necromancer1.jpg"
+    ],
+    "Attack Ids": [
+        3,
+        8
+    ],
+    "Debuff Ids": [
+        1
+    ]
+}

@@ -21,8 +21,7 @@
         "critical_hit_text": "It is a **CRITICAL** hit ",
         "death_texts": [
             "**{} has died**",
-            "**{} has been decapitated.**",
-            "**{} blunders and falls face in the other gladiator's sword**"
+            "**{} has been decapitated.**"
         ],
         "take_damage_per_turn_from_debuffs_text": "{} took **{} damage** from *{}* and has **{} HP** remaining. This effect will last {} more turn(s)\n",
         "take_debuff_text": "{} took **{}** debuff which will last **{} turn(s)**\n",
