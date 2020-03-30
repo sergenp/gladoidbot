@@ -137,13 +137,17 @@ You would just need to create a .json file with these keys for your NPC to appea
     ]
 }
 ```
+
 The keys of the json file is pretty self explainatory but "Attack Ids" and "Debuff Ids". 
 Those 2 keys come from the Gladiator/AttackInformation folder
+
 Attack Ids are from : Gladiator/AttackInformation/GladiatorAttackBuffs.json
+
 Debuff Ids are from : Gladiator/AttackInformation/GladiatorTurnDebuffs.json
 
-"Attack Ids" key makes your NPC to use the attacks that appear in the related json file. This list must have at least 1 key,
-otherwise well, you won't be able to battle your NPC. 
+
+"Attack Ids" key makes your NPC to use the attacks that appear in the related json file. 
+This list must have at least 1 key, otherwise well, you won't be able to battle your NPC. 
 
 "Debuff Ids" gives your NPC a chance to apply debuff to the player(Which currently is just a damage per turn debuff, may extend to something more in the future) each attack.
 This list can be empty like 
@@ -151,30 +155,4 @@ This list can be empty like
     "Debuff Ids": []
 ```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+When you add your custom NPC.json file along with images to that NPC, simply git commit to the master branch and give me a pull request. I will check out your custom NPC and make sure it is balanced(we probably won't want a 1921823 HP dark elf) and add it to our game!
