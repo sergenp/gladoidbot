@@ -40,10 +40,10 @@ def update_data():
 def get_corona_news():
     r = session.get('https://www.worldometers.info/coronavirus/', headers=header)
     now = datetime.now()
-    div_id = f"newsdate{now.year}-{now.month:02d}-{now.day}"
+    div_id = f"newsdate{now.year}-{now.month:02d}-{now.day:02d}"
     news = [x.text.replace("[source]", "") for x in r.html.find(f"#{div_id} > .news_post")]
     info = {"0" : news}
-
+    print(news)
     # lets check if there any new news
     if os.path.exists(f'CoronaData/news/{div_id}.json'):
         old_news = json.load(open(f'CoronaData/news/{div_id}.json', 'r'))
@@ -57,3 +57,4 @@ def get_corona_news():
         with open(f'CoronaData/news/{div_id}.json', 'w') as outfile:
             json.dump(info, outfile)
         return news
+        
