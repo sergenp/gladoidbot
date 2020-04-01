@@ -6,6 +6,7 @@ from Gladiator.Player import GladiatorPlayer, GladiatorNPC
 from Gladiator.Equipments.GladiatorEquipments import GladiatorEquipments
 from Gladiator.AttackInformation.GladiatorAttackInformation import GladiatorAttackInformation
 from Gladiator.GladiatorProfile import GladiatorProfile
+from Gladiator.NPCs.NPCFinder import NPCFinder
 import glob
 import os
 import collections
@@ -14,7 +15,7 @@ import json
 
 
 class GladiatorGame:
-    def __init__(self, player1 : (GladiatorPlayer, GladiatorNPC), player2 : (GladiatorPlayer, GladiatorNPC)):
+    def __init__(self, player1 : (GladiatorPlayer, GladiatorNPC), player2 : (GladiatorPlayer, GladiatorNPC), spawn_type = {}):
         self.player1 = player1
         self.player2 = player2
         self.current_player = self.player1
@@ -26,6 +27,9 @@ class GladiatorGame:
             self.events = json.load(f)
 
         self.game_continues = True
+        
+        if spawn_type:
+            self.bonus_awards = spawn_type["Spawn Bonuses"]
 
     def switch_turns(self):
         self.players.appendleft(self.players.pop())
@@ -140,11 +144,18 @@ class GladiatorGame:
     
     @staticmethod
     def hunt():
-        # get a random json file from NPCs directory
-        npc_stats_path = random.choice(glob.glob(os.path.join(
-            os.path.dirname(os.path.abspath(__file__)), "NPCs", "*.json")))
+        spawns = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "NPCs", "Settings", "Spawns.json")))
+        # roll for spawn
+        roll = random.randint(0, 100)
+        spawn_type = spawns[0]
+        for spawn in spawns:
+            if roll < spawn["Spawn Chance"]:
+                spawn_type = spawn
+        
+        # get a random json file from NPCs directory given spawn type
+        npc_stats_path = NPCFinder().get_npc_by_id(random.choice(spawn_type["NPC_Ids"]))
         # return a GladiatorNPC with the name of the json file, and the stats it has
-        return GladiatorNPC(stats_path=npc_stats_path)
+        return GladiatorNPC(stats_path=npc_stats_path), spawn_type
     
     @staticmethod
     def hunt_failed(gladiatorProfile : GladiatorProfile):
