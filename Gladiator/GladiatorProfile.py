@@ -98,9 +98,9 @@ class GladiatorProfile():
     def reward_player(self, other_profile_level: int, **kwargs):
         lvl_diff = self.get_level() - other_profile_level if self.get_level() - other_profile_level > -5 else -5
         coin = math.ceil(self.MAX_COIN_REWARD-self.MIN_COIN_REWARD + 1 *
-                         math.exp(-self.COIN_DECAY_CONSANT*lvl_diff) + self.MIN_COIN_REWARD - 1)
+                         math.exp(-self.COIN_DECAY_CONSANT*lvl_diff) + self.MIN_COIN_REWARD - 1) + kwargs.get("HutCoins", 0)
         
-        self.profile_stats["HutCoins"] += coin + kwargs.get("HutCoins", 0)
+        self.profile_stats["HutCoins"] += coin
         return f"**You earned {coin} HutCoins!**"
 
     def calculate_xp_for_next_level(self):
@@ -109,9 +109,9 @@ class GladiatorProfile():
     @save_profile
     def gain_xp(self, other_profile_level: int, **kwargs):
         xp_gained = math.ceil(other_profile_level /
-                              self.get_level()) * self.XP_GAIN_MULTIPLIER + random.randint(self.get_level(), self.get_level()*5)
+                              self.get_level()) * self.XP_GAIN_MULTIPLIER + random.randint(self.get_level(), self.get_level()*5) + kwargs.get("XP", 0)
 
-        self.profile_stats["XP"] += xp_gained + kwargs.get("XP", 0)
+        self.profile_stats["XP"] += xp_gained
         msg = f"Gained {xp_gained} XP\n"
         xp_for_next_level = self.calculate_xp_for_next_level()
         while self.profile_stats["XP"] >= xp_for_next_level:
