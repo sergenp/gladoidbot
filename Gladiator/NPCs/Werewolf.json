@@ -1,0 +1,35 @@
+{
+    "id": 3,
+    "Name": "Werewolf",
+    "Stats": {
+        "Health": 8,
+        "Attack Chance": 85,
+        "Attack Min. Damage": 1,
+        "Attack Max. Damage": 6,
+        "Magic Damage": 0,
+        "Magic Armor": -1,
+        "Armor": 3,
+        "Block Chance": 10,
+        "Critical Damage Chance": 60,
+        "Critical Damage Boost": 1.15
+    },
+    "NPC_Level_Range": [
+        15,
+        35
+    ],
+    "NPC_Images_Path": [
+        "Werewolf.jpg",
+        "Werewolf1.jpg",
+        "Werewolf2.jpg",
+        "Werewolf3.png"
+
+    ],
+    "Attack Ids": [
+        1,
+        5,
+        6
+    ],
+    "Debuff Ids": [
+        0
+    ]
+}

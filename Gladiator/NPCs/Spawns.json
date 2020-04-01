@@ -1,0 +1,37 @@
+[
+    {
+        "Spawn Type": "Common",
+        "NPC_Ids": [
+            0,
+            1,
+            2
+        ],
+        "Spawn Chance": 80,
+        "Spawn Bonuses": {
+            "XP": 0,
+            "HutCoins": 0
+        }
+    },
+    {
+        "Spawn Type": "Rare",
+        "NPC_Ids": [
+            3
+        ],
+        "Spawn Chance": 14,
+        "Spawn Bonuses": {
+            "XP": 50,
+            "HutCoins": 10
+        }
+    },
+    {
+        "Spawn Type": "Epic",
+        "NPC_Ids": [
+            4
+        ],
+        "Spawn Chance": 6,
+        "Spawn Bonuses": {
+            "XP": 100,
+            "HutCoins": 20
+        }
+    }
+]
