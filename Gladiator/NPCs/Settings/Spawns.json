@@ -15,7 +15,8 @@
     {
         "Spawn Type": "Rare",
         "NPC_Ids": [
-            3
+            3,
+            6
         ],
         "Spawn Chance": 14,
         "Spawn Bonuses": {
@@ -26,7 +27,8 @@
     {
         "Spawn Type": "Epic",
         "NPC_Ids": [
-            4
+            4,
+            5
         ],
         "Spawn Chance": 6,
         "Spawn Bonuses": {
