@@ -85,33 +85,33 @@ class GladiatorProfile():
         self.profile_stats["Inventory"].append(equipment)
         return f"Successfully bought **{equipment['name']}**. You have **{self.profile_stats['HutCoins']} HutCoins** left."
 
-    def update_games(self, other_profile_level: int, won : bool):
+    def update_games(self, other_profile_level: int, won : bool, **kwargs):
         self.profile_stats["Games Played"] += 1
         if won:
             self.profile_stats["Games Won"] += 1
-            return self.gain_xp(other_profile_level)
+            return self.gain_xp(other_profile_level, **kwargs)
         else:
             self.profile_stats["Games Lost"] += 1
-            return self.gain_xp(other_profile_level/self.XP_TO_LEVEL_WHEN_LOST_MULTIPLIER)
+            return self.gain_xp(other_profile_level/self.XP_TO_LEVEL_WHEN_LOST_MULTIPLIER, **kwargs)
 
     @save_profile
-    def reward_player(self, other_profile_level: int):
+    def reward_player(self, other_profile_level: int, **kwargs):
         lvl_diff = self.get_level() - other_profile_level if self.get_level() - other_profile_level > -5 else -5
         coin = math.ceil(self.MAX_COIN_REWARD-self.MIN_COIN_REWARD + 1 *
                          math.exp(-self.COIN_DECAY_CONSANT*lvl_diff) + self.MIN_COIN_REWARD - 1)
-
-        self.profile_stats["HutCoins"] += coin
+        
+        self.profile_stats["HutCoins"] += coin + kwargs.get("HutCoins", 0)
         return f"**You earned {coin} HutCoins!**"
 
     def calculate_xp_for_next_level(self):
         return round(self.XP_TO_LEVEL_MULTIPLIER*(self.get_level()**2)*self.LEVEL_UP_DIFFICULTY_CONSTANT - (self.XP_TO_LEVEL_MULTIPLIER * self.get_level()) + self.LEVEL_UP_START_POINT) + 1
 
     @save_profile
-    def gain_xp(self, other_profile_level: int):
+    def gain_xp(self, other_profile_level: int, **kwargs):
         xp_gained = math.ceil(other_profile_level /
                               self.get_level()) * self.XP_GAIN_MULTIPLIER + random.randint(self.get_level(), self.get_level()*5)
 
-        self.profile_stats["XP"] += xp_gained
+        self.profile_stats["XP"] += xp_gained + kwargs.get("XP", 0)
         msg = f"Gained {xp_gained} XP\n"
         xp_for_next_level = self.calculate_xp_for_next_level()
         while self.profile_stats["XP"] >= xp_for_next_level:
