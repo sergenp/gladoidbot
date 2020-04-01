@@ -1,0 +1,30 @@
+{
+    "id": 4,
+    "Name": "Wendigo",
+    "Stats": {
+        "Health": 5,
+        "Attack Chance": 95,
+        "Attack Min. Damage": 5,
+        "Attack Max. Damage": 8,
+        "Magic Damage": 0,
+        "Magic Armor": 0,
+        "Armor": 0,
+        "Block Chance": 30,
+        "Critical Damage Chance": 0,
+        "Critical Damage Boost": 1
+    },
+    "NPC_Level_Range": [
+        25,
+        40
+    ],
+    "NPC_Images_Path": [
+        "Wendigo.png",
+        "Wendigo1.jpg"
+    ],
+    "Attack Ids": [
+        2
+    ],
+    "Debuff Ids": [
+        0
+    ]
+}
