@@ -262,7 +262,7 @@ class Gladiator(commands.Cog):
             # this means the current player is non NPC and dead
             else:
                 loser_profile = GladiatorProfile(game.current_player.member)
-                await send_embed_message(loser_profile.update_games(game.players[1].level, won=False))
+                await send_embed_message(ctx, loser_profile.update_games(game.players[1].level, won=False))
 
             del self.games[ctx.channel.id]
 
