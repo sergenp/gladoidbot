@@ -96,7 +96,7 @@ class GladiatorProfile():
 
     @save_profile
     def reward_player(self, other_profile_level: int):
-        lvl_diff = self.get_level() - other_profile_level
+        lvl_diff = self.get_level() - other_profile_level if self.get_level() - other_profile_level > -5 else -5
         coin = math.ceil(self.MAX_COIN_REWARD-self.MIN_COIN_REWARD + 1 *
                          math.exp(-self.COIN_DECAY_CONSANT*lvl_diff) + self.MIN_COIN_REWARD - 1)
 
