@@ -88,5 +88,42 @@
         "reaction_emoji": "\u0034\u20E3",
         "debuff_id": 1,
         "price" : 250
+    },
+    {
+        "id" : 7,
+        "equipment_slot_id" : 3,
+        "name" : "Warrior Ring",
+        "type" : "Ring",
+        "buffs" : {
+            "Attack Min. Damage" : 1,
+            "Attack Max. Damage" : 1
+        },
+        "reaction_emoji" : "\u0031\u20E3",
+        "debuff_id" : -1,
+        "price" : 400
+    },
+    {
+        "id" : 8,
+        "equipment_slot_id" : 3,
+        "name" : "Mage's Ring",
+        "type" : "Ring",
+        "buffs" : {
+            "Magic Damage" : 1
+        },
+        "reaction_emoji" : "\u0032\u20E3",
+        "debuff_id" : -1,
+        "price" : 400
+    },
+    {
+        "id" : 9,
+        "equipment_slot_id" : 4,
+        "name" : "Iron Shield",
+        "type" : "Shield",
+        "buffs" : {
+            "Block Chance" : 5
+        },
+        "reaction_emoji" :"\u0031\u20E3",
+        "debuff_id" : -1,
+        "price" : 500
     }
 ]
