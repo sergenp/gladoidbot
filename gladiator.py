@@ -228,6 +228,10 @@ class Gladiator(commands.Cog):
 
                         await send_embed_message(ctx, content=winner_msg, author_name=winner_profile.member.name, author_icon_link=winner_profile.member.avatar_url)
                         await send_embed_message(ctx, content=loser_profile.update_games(winner_profile.get_level(), won=False), author_name=loser_profile.member.name, author_icon_link=loser_profile.member.avatar_url)
+                    # this means the current player is non NPC and dead
+                    else:
+                        loser_profile = GladiatorProfile(game.current_player)
+                        loser_profile.update_games(game.players[1].level, won=False)
 
                     del self.games[ctx.channel.id]
 
@@ -251,6 +255,10 @@ class Gladiator(commands.Cog):
                 winner_profile = GladiatorProfile(game.players[1].member)
                 msg = winner_profile.update_games(game.current_player.level, won=True) + "\n" + winner_profile.reward_player(game.current_player.level)
                 await send_embed_message(ctx, content=msg, author_name=winner_profile.member.name, author_icon_link=winner_profile.member.avatar_url)
+            # this means the current player is non NPC and dead
+            else:
+                loser_profile = GladiatorProfile(game.current_player)
+                loser_profile.update_games(game.players[1].level, won=False)
 
             del self.games[ctx.channel.id]
 
