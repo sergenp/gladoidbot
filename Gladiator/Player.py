@@ -14,7 +14,7 @@ class Player:
         self.dead = False
         self.debuffs = []
         self.json_dict = json.load(open(stats_path, "r"))
-        self.stats = GladiatorStats((self.json_dict["Stats"]))
+        self.stats = GladiatorStats(self.json_dict["Stats"])
 
         self.information = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                                        "Settings", "GladiatorGameSettings.json"), "r"))["game_information_texts"]
