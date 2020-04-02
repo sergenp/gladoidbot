@@ -37,9 +37,9 @@ async def corona_update_task():
             print("Updating news...")
             for guild in bot.guilds:
                 try:
-                    channel_id = news_channels[str(guild.id)]
+                    channel = bot.get_channel(news_channels[str(guild.id)])
                     for k in news:
-                        await bot.get_channel(channel_id).send(k)
+                        await channel.send(k)
                 except KeyError:
                     pass
         else:
