@@ -89,7 +89,7 @@ class GladiatorProfile():
         self.profile_stats["Games Played"] += 1
         if won:
             self.profile_stats["Games Won"] += 1
-            return self.gain_xp(other_profile_level, kwargs.get("XP", 0)) + "\n" + self.reward_player(other_profile_level, kwargs.get("HutCoins", 0))
+            return self.gain_xp(other_profile_level, kwargs.get("XP", 0)) + self.reward_player(other_profile_level, kwargs.get("HutCoins", 0))
         else:
             self.profile_stats["Games Lost"] += 1
             return self.gain_xp(other_profile_level/self.XP_TO_LEVEL_WHEN_LOST_MULTIPLIER)
