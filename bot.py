@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import discord
 from discord.ext import tasks, commands
 from CoronaData.corona_virus_updater import update_data, get_corona_news
 import datetime
@@ -21,7 +22,7 @@ for extension in startup_extensions:
 async def corona_update_task():
     print("Updating coronavirus data")
     try:
-        update_data()    
+        update_data()
         print("Updated coronavirus data")
         print("Trying to get the news")
         news = get_corona_news()
@@ -40,9 +41,10 @@ async def corona_update_task():
 async def on_ready():
     print(f"Connected!\nName: {bot.user.name}\nId: {bot.user.id}\n")
     corona_update_task.start()
+    await bot.change_presence(activity=discord.Game(name=f"with {len(bot.guilds)} server.Type h!help for commands"))
     download_profiles()
-
-
+    
+    
 try:
     import bot_token
     bot.run(bot_token.token())
