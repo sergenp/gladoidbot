@@ -20,14 +20,13 @@ for extension in startup_extensions:
         print('Failed to load extension {}\n{}'.format(extension, exc))
 
 
-news_channels = {}
-with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "CoronaData", "guild_channel_data.json")) as f:
-    news_channels = json.load(f)
 
  # update corona virus data every x mins
 @tasks.loop(hours=0.2)
 async def corona_update_task():
-    global news_channels
+    news_channels = {}
+    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "CoronaData", "guild_channel_data.json")) as f:
+        news_channels = json.load(f)
     print("Updating coronavirus data")
     try:
         update_data()
