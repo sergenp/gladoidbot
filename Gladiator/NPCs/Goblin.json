@@ -1,0 +1,31 @@
+{
+    "id": 8,
+    "Name": "Goblin",
+    "Stats": {
+        "Health": 10,
+        "Attack Chance": 80,
+        "Attack Min. Damage": 4,
+        "Attack Max. Damage": 9,
+        "Magic Damage": 0,
+        "Magic Armor": 1,
+        "Armor": 1,
+        "Block Chance": 0,
+        "Critical Damage Chance": 35,
+        "Critical Damage Boost": 1.2
+    },
+    "NPC_Level_Range": [
+        1,
+        15
+    ],
+    "NPC_Images_Path": [
+        "goblin.jpg",
+        "goblin1.jpg",
+        "goblin2.png",
+        "goblin3.jpg"
+    ],
+    "Attack Ids": [
+        0,
+        1
+    ],
+    "Debuff Ids": []
+}

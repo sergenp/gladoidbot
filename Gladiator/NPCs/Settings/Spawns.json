@@ -4,7 +4,9 @@
         "NPC_Ids": [
             0,
             1,
-            2
+            2,
+            7,
+            8
         ],
         "Spawn Chance": 80,
         "Spawn Bonuses": {

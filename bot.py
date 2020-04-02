@@ -41,7 +41,7 @@ async def corona_update_task():
 async def on_ready():
     print(f"Connected!\nName: {bot.user.name}\nId: {bot.user.id}\n")
     corona_update_task.start()
-    await bot.change_presence(activity=discord.Game(name=f"with {len(bot.guilds)} server.Type h!help for commands"))
+    await bot.change_presence(activity=discord.Game(name=f"with {len(bot.guilds)} servers. h!help for commands"))
     download_profiles()
     
     
