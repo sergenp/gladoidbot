@@ -14,7 +14,6 @@ def setup(bot):
 class General(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.last_corona_virus_data = {}
 
     @commands.command(name="ysearch")
     async def youtubeSearch(self, ctx, *searchStr):
@@ -47,3 +46,4 @@ class General(commands.Cog):
         for i in range(amount):
             data = requests.get("https://api.quotable.io/random").json()
             await send_embed_message(ctx, author_name=data["author"], content=data["content"])
+    
