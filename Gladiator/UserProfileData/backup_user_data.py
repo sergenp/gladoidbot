@@ -29,5 +29,8 @@ def backup_profiles():
 def download_profiles():
     print("Downloading all the files from cloud")
     for blob in bucket.list_blobs():
-        blob.download_to_filename(filename=os.path.join(os.path.dirname(os.path.abspath(__file__)), blob.name))
+        try:
+            blob.download_to_filename(filename=os.path.join(os.path.dirname(os.path.abspath(__file__)), blob.name))
+        except FileNotFoundError:
+            pass
     print("Download complete")
