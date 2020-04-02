@@ -43,7 +43,6 @@ def get_corona_news():
     div_id = f"newsdate{now.year}-{now.month:02d}-{now.day:02d}"
     news = [x.text.replace("[source]", "") for x in r.html.find(f"#{div_id} > .news_post")]
     info = {"0" : news}
-    print(news)
     # lets check if there any new news
     if os.path.exists(f'CoronaData/news/{div_id}.json'):
         old_news = json.load(open(f'CoronaData/news/{div_id}.json', 'r'))

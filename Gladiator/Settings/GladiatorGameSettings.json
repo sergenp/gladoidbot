@@ -26,7 +26,7 @@
         "take_damage_per_turn_from_debuffs_text": "{} took **{} damage** from *{}* and has **{} HP** remaining. This effect will last {} more turn(s)\n",
         "take_debuff_text": "{} took **{}** debuff which will last **{} turn(s)**\n",
         "challenging_self_text": "Killing yourself isn't good for your health",
-        "npc_spawned_text": "**A Level {} {} has appeared!**"
+        "npc_spawned_text": "**A Level {} {} has appeared!**\nThis is a **{}** Spawn"
     },
     "profile_settings": {
         "XP_TO_LEVEL_MULTIPLIER": 14,

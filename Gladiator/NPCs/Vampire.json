@@ -1,0 +1,30 @@
+{
+    "id": 6,
+    "Name": "Vampire",
+    "Stats": {
+        "Health": 5,
+        "Attack Chance": 100,
+        "Attack Min. Damage": 0,
+        "Attack Max. Damage": 0,
+        "Magic Damage": 7,
+        "Magic Armor": 1,
+        "Armor": 2,
+        "Block Chance": 20,
+        "Critical Damage Chance": 10,
+        "Critical Damage Boost": 1.5
+    },
+    "NPC_Level_Range": [
+        30,
+        75
+    ],
+    "NPC_Images_Path": [
+        "Vampire.jpg",
+        "Vampire1.jpg"
+    ],
+    "Attack Ids": [
+        2,
+        3,
+        8
+    ],
+    "Debuff Ids": []
+}
