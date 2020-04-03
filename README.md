@@ -24,6 +24,18 @@ With that I have added NPCs to the dueling functionality. You can now, using the
 
 In future, I am planning to add more NPCs to the game.
 
+#### How Can I access to Corona Virus News?
+
+Hut Assistant has a special functionality for virus related news, it scrapes the web for data and retrieves a list of new
+cases and sends these data to a channel in your server.
+
+In order to take advantage of this functionality, first you need to give the bot a channel to write its data in, which can be done using
+
+```
+h!setnewschannel
+```
+
+command. The next time it updates its own data, you'll see it sends the news data to your channel
 
 ### I am a developer. I want to add stuff to this bot. What do I need to do?
 
