@@ -51,10 +51,17 @@ async def corona_update_task():
 @bot.event
 async def on_ready():
     print(f"Connected!\nName: {bot.user.name}\nId: {bot.user.id}\n")
-    await bot.change_presence(activity=discord.Game(name=f"with {len(bot.guilds)} servers. h!help for commands"))
+    await bot.change_presence(activity=discord.Game(name=f"with {len(bot.guilds)} guilds. h!help for commands"))
     download_profiles()
     corona_update_task.start()
-    
+
+@bot.event
+async def on_guild_join(guild):
+    await bot.change_presence(activity=discord.Game(name=f"with {len(bot.guilds)} guilds. h!help for commands"))
+
+@bot.event
+async def on_guild_remove(guild):
+    await bot.change_presence(activity=discord.Game(name=f"with {len(bot.guilds)} guilds. h!help for commands"))
 
 try:
     import bot_token
