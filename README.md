@@ -24,18 +24,41 @@ With that I have added NPCs to the dueling functionality. You can now, using the
 
 In future, I am planning to add more NPCs to the game.
 
-#### How Can I access to Corona Virus News?
+#### Bot Commands
 
-Hut Assistant has a special functionality for virus related news, it scrapes the web for data and retrieves a list of new
-cases and sends these data to a channel in your server.
+| Corona           |                                                                                                                                                                                                                   |
+|------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| setnewschannel   | Sets the current channel as the corona news channel. Bot will send news about corona virus to this channel after using this command                                                                               |
+| virus            | Given country, it shows the specific cases inside that country, otherwise it shows general information about the virus. Information about the virus is gotten from the https://www.worldometers.info/coronavirus/ |
+    
+| General   |                                                                                                    |
+|-----------|----------------------------------------------------------------------------------------------------|
+| quote     | Gives out a random quote from a random person from history                                         |
+| translate | Example usage: h!translate 'I love you' german  h!translate [toTranslate] [toTranslateLanguage=en] |
+| ysearch   | Searchs given strings in youtube and writes out the first video it finds                           |
 
-In order to take advantage of this functionality, first you need to give the bot a channel to write its data in, which can be done using
+| Gladiator |                                                                                                                                        |
+|-----------|----------------------------------------------------------------------------------------------------------------------------------------|
+| challenge | Challenges the another discord member to a gladiator match                                                                             |
+| gamead    | Shows a buzzwordy ad for the Gladiator game                                                                                            |
+| gamerules | Sends a DM containing how the Gladiator game is played                                                                                 |
+| hunt      | Spawns a random NPC(%90) or fails(10%). You can fight a Gladiator Game with spawned NPC                                                |
+| profile   | Shows your Gladiator Game profile, LVL, XP, Items etc. Or given a tag to another discord Member, shows the same for the discord Member |
+| shop      | Given a page, it shows the Items you can buy for your Gladiator. If no argument is given, it shows the available pages instead         |
 
-```
-h!setnewschannel
-```
+| Meme     |                                                                                                                    |
+|----------|--------------------------------------------------------------------------------------------------------------------|
+| blb      | Generates a be like bill image given gender value, which can be F or M for Female or Male  h!blb [user] [gender=M] |
+| buzzword | Gives out a random company buzzword                                                                                |
+| dadjoke  | Gives out a random dad joke                                                                                        |
+| meme     | Gives out a random meme                                                                                            |
+| swq      | Gives out a random star wars quote                                                                                 |
+| xkcd     | Gives out a random xkcd comic                                                                                      |
+| yesno    | Gives out a random yes/no/maybe image  Example:  h!yesno is my life going to be alright?                           |     
 
-command. The next time it updates its own data, you'll see it sends the news data to your channel
+| Trivia |                                                                     |
+|--------|---------------------------------------------------------------------|
+| ask    | Asks a random trivia question to the user who have used the command |        
 
 ### I am a developer. I want to add stuff to this bot. What do I need to do?
 
