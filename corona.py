@@ -11,7 +11,7 @@ class Corona(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(pass_context=True, description="Given country, it shows the specific cases inside that country, otherwise it shows general information about the virus. Information about the virus is gotten from the https://www.worldometers.info/coronavirus/")
+    @commands.command(pass_context=True, description="Given country, it shows the specific cases inside that country, otherwise it shows general information about the virus.")
     async def virus(self, ctx, country: str = None):
         if country:
             corona = {}
@@ -42,7 +42,9 @@ class Corona(commands.Cog):
         else:
             with open(os.path.join("CoronaData", "total_inf.json")) as f:
                 corona = json.load(f)
-            msg = f"Total Cases: **{corona['Total Cases']}**\nTotal Deaths: **{corona['Total Deaths']}**\nTotal Recovered: **{corona['Total Recovered']}**"
+            msg = ""
+            for k in corona:
+                msg += f"{k} : **{corona[k]}**\n"
             await send_embed_message(ctx, title="Total Cases", content=msg)
 
     @commands.command(name="setnewschannel", pass_context=True, description="Sets the current channel as the corona news channel.\nBot will send news about corona virus to this channel after using this command")

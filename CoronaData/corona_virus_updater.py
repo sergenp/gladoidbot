@@ -26,8 +26,18 @@ def update_data():
         count.append(k.find("span", first=True).text)
 
     total_inf = dict(zip(title, count))
-
+    
     if total_inf:
+        closed_cases = int(total_inf['Total Deaths'].replace(",","")) + int(total_inf['Total Recovered'].replace(",",""))
+        active_cases = int(total_inf['Total Cases'].replace(",","")) - closed_cases
+        death_rate = int(total_inf['Total Deaths'].replace(",","")) / closed_cases * 100
+        recovered_rate = int(total_inf['Total Recovered'].replace(",","")) / closed_cases *100
+
+        total_inf["Active Cases"] = active_cases
+        total_inf["Closed Cases"] = closed_cases
+        total_inf["Recovery Rate"] = f"%{round(recovered_rate, 2)}"
+        total_inf["Death Rate"] = f"%{round(death_rate,2)}"
+
         with open('CoronaData/total_inf.json', 'w') as outfile:
             json.dump(total_inf, outfile)
 
