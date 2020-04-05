@@ -62,7 +62,7 @@ In future, I am planning to add more NPCs to the game.
 
 | No Category           |                                                                                                                                                                                                                   |
 |------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| changeprefix   | Changed the prefix of the bot from default "h!" |
+| changeprefix   | Changes the prefix of the bot from default "h!" |
 | help | Shows the default help message, h!help command_name for specific information about the command_name |
 
 ### I am a developer. I want to add stuff to this bot. What do I need to do?
