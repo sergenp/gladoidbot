@@ -65,6 +65,20 @@ In future, I am planning to add more NPCs to the game.
 | changeprefix   | Changes the prefix of the bot from default "h!" |
 | help | Shows the default help message, h!help command_name for specific information about the command_name |
 
+
+### Gladiator Game
+
+`h!hunt`
+
+An example of NPC spawning using this command
+![](Images/Hunt.png)
+
+An example fight
+![](Images/Hunt1.png)
+![](Images/Hunt2.png)
+![](Images/Hunt3.png)
+![](Images/Hunt4.png)
+
 ### I am a developer. I want to add stuff to this bot. What do I need to do?
 
 First of all, thanks! I have worked hard to make this bot work the way it works now and I would appreciate any addition you'd make to the bot. 
