@@ -71,13 +71,21 @@ In future, I am planning to add more NPCs to the game.
 `h!hunt`
 
 An example of NPC spawning using this command
+
+
 ![](Images/Hunt.png)
 
+
 An example fight
+
 ![](Images/Hunt1.png)
+
 ![](Images/Hunt2.png)
+
 ![](Images/Hunt3.png)
+
 ![](Images/Hunt4.png)
+
 
 ### I am a developer. I want to add stuff to this bot. What do I need to do?
 
