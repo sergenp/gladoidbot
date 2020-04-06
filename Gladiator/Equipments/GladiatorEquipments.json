@@ -125,5 +125,16 @@
         "reaction_emoji" :"\u0031\u20E3",
         "debuff_id" : -1,
         "price" : 500
-    }
+    },
+    {
+        "id" : 10,
+        "equipment_slot_id" : 1,
+        "name" : "Cloak",
+        "type" : "Armor",
+        "buffs" : {},
+        "reaction_emoji" :"\u0034\u20E3",
+        "debuff_id" : -1,
+        "price" : 150,
+        "unlock_attack_id" : 9
+    } 
 ]

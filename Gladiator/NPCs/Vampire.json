@@ -8,14 +8,14 @@
         "Attack Max. Damage": 0,
         "Magic Damage": 7,
         "Magic Armor": 1,
-        "Armor": 2,
+        "Armor": -1,
         "Block Chance": 20,
         "Critical Damage Chance": 10,
         "Critical Damage Boost": 1.5
     },
     "NPC_Level_Range": [
-        30,
-        75
+        1,
+        50
     ],
     "NPC_Images_Path": [
         "Vampire.jpg",

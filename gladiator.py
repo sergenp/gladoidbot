@@ -1,16 +1,16 @@
-import discord
-from discord.ext import commands
+import json
+import os
+import random
 import asyncio
+import discord
+
+from discord.ext import commands
 from Gladiator.Player import GladiatorNPC, GladiatorPlayer
 from Gladiator.GladiatorGame import GladiatorGame, GladiatorStats
 from Gladiator.Equipments.GladiatorEquipments import GladiatorEquipments
 from Gladiator.AttackInformation.GladiatorAttackInformation import GladiatorAttackInformation
-from Gladiator.GladiatorProfile import GladiatorProfile
+from Gladiator.Profile import GladiatorProfile
 from util import send_embed_message
-from enum import Enum
-import json
-import os
-import random
 
 
 class Gladiator(commands.Cog):
@@ -102,7 +102,7 @@ class Gladiator(commands.Cog):
                 return user == ctx.message.author and reaction.message.id == msg.id
 
             try:
-                reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
+                reaction, _ = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
                 if reaction.emoji == '⚔️':
                     self.games.update({ctx.channel.id: GladiatorGame(
                         GladiatorPlayer(ctx.message.author), random_spawn, spawn_type)})
@@ -111,6 +111,12 @@ class Gladiator(commands.Cog):
                     for equipment in profile.profile_stats["Inventory"]:
                         crr_game.current_player.equip_item(
                             equipment["id"], equipment["equipment_slot_id"])
+                        try:
+                            unlock_attack = equipment["unlock_attack_id"]
+                            crr_game.current_player.unlock_attack_type(unlock_attack)
+                        except KeyError:
+                            pass
+
                         equip_inf += f"**{equipment['name']}** "
                     await ctx.send(equip_inf)
                     crr_game.current_player.buff(
@@ -165,7 +171,14 @@ class Gladiator(commands.Cog):
                             for equipment in profile.profile_stats["Inventory"]:
                                 crr_game.current_player.equip_item(
                                     equipment["id"], equipment["equipment_slot_id"])
-                                equip_inf += f"**{equipment['name']}** "
+                            try:
+                                unlock_attack = equipment["unlock_attack_id"]
+                                crr_game.current_player.unlock_attack_type(unlock_attack)
+                            except KeyError:
+                                pass
+                            
+                            equip_inf += f"**{equipment['name']}** "
+                            
                             crr_game.current_player.buff(
                                 GladiatorStats(profile.profile_stats["boosts"]))
                             crr_game.switch_turns()
@@ -189,8 +202,7 @@ class Gladiator(commands.Cog):
         if game.next_turn():
             dmg_per_turn = game.current_player.take_damage_per_turn()
             if dmg_per_turn:
-                await send_embed_message(ctx, dmg_per_turn)
-                
+                await send_embed_message(ctx, dmg_per_turn)              
             if isinstance(game.current_player, GladiatorPlayer):
                 rand_ev = game.random_event()
                 if rand_ev:
@@ -234,7 +246,7 @@ class Gladiator(commands.Cog):
                         await send_embed_message(ctx, content=loser_profile.update_games(winner_profile.get_level(), won=False), author_name=loser_profile.member.name, author_icon_link=loser_profile.member.avatar_url)
                     # this means the current player is non NPC and timedout
                     else:
-                        await ctx.send(self.game_information["game_end_via_timeout_text"].format(game.current_player))
+                        await ctx.send(self.game_information["game_end_via_timeout_text"].format(game.players[1].name))
 
                     del self.games[ctx.channel.id]
 
@@ -242,7 +254,6 @@ class Gladiator(commands.Cog):
                 attack = game.current_player.get_random_attack()
                 await send_embed_message(ctx, game.attack(attack["id"], attack["damage_type_id"])) 
                 await self.gladiator_game_loop(ctx)
-               
         else:
             #this means it is a pvp game and it ended
             if isinstance(game.current_player, GladiatorPlayer) and isinstance(game.players[1], GladiatorPlayer):
@@ -253,7 +264,6 @@ class Gladiator(commands.Cog):
 
                 await send_embed_message(ctx, content=winner_msg, author_name=winner_profile.member.name, author_icon_link=winner_profile.member.avatar_url)
                 await send_embed_message(ctx, content=loser_profile.update_games(winner_profile.get_level(), won=False), author_name=loser_profile.member.name, author_icon_link=loser_profile.member.avatar_url)
-            
             # this means the current_player is an npc and he is dead, so reward the non NPC player
             elif isinstance(game.current_player, GladiatorNPC):
                 winner_profile = GladiatorProfile(game.players[1].member)

@@ -14,8 +14,8 @@
         "Critical Damage Boost": 1.25
     },
     "NPC_Level_Range": [
-        15,
-        35
+        1,
+        50
     ],
     "NPC_Images_Path": [
         "Werewolf.jpg",

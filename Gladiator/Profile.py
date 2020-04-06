@@ -3,10 +3,11 @@ sys.path.append('..')
 
 import random
 import math
-from Gladiator.UserProfileData.backup_user_data import backup_single_profile
-from Gladiator.Equipments.GladiatorEquipments import GladiatorEquipments
 import os
 import json
+from Gladiator.UserProfileData.backup_user_data import backup_single_profile
+from Gladiator.Equipments.GladiatorEquipments import GladiatorEquipments
+
 
 def save_profile(func):
     def wrapper(self, *args, **kwargs):
@@ -20,24 +21,11 @@ def save_profile(func):
     return wrapper
 
 
-class GladiatorProfile():
+class Profile():
     def __init__(self, member, **kwargs):
-        self.equipment_info = GladiatorEquipments()
         self.member = member
-
-        profile_settings = json.load(open(os.path.join(os.path.dirname(
-            __file__), "Settings", "GladiatorGameSettings.json"), "r"))["profile_settings"]
-        self.XP_TO_LEVEL_MULTIPLIER = profile_settings["XP_TO_LEVEL_MULTIPLIER"]
-        self.XP_TO_LEVEL_WHEN_LOST_MULTIPLIER = profile_settings["XP_TO_LEVEL_WHEN_LOST_MULTIPLIER"]
-        self.XP_GAIN_MULTIPLIER = profile_settings["XP_GAIN_MULTIPLIER"]
-        self.MAX_COIN_REWARD = profile_settings["MAX_COIN_REWARD"]
-        self.MIN_COIN_REWARD = profile_settings["MIN_COIN_REWARD"]
-        self.COIN_DECAY_CONSANT = profile_settings["COIN_DECAY_CONSTANT"]
-        self.LEVEL_UP_DIFFICULTY_CONSTANT = profile_settings["LEVEL_UP_DIFFICULTY_CONSTANT"]
-        self.LEVEL_UP_START_POINT = profile_settings["LEVEL_UP_START_POINT"]
-
         profile_path = os.path.join(os.path.dirname(os.path.abspath(
-            __file__)), "UserProfileData", f"{self.member.id}.json")
+                    __file__)), "UserProfileData", f"{self.member.id}.json")
         if os.path.exists(profile_path):
             self.profile_stats = json.load(open(profile_path, "r"))
         else:
@@ -50,13 +38,34 @@ class GladiatorProfile():
         self.profile_stats["Id"] = self.profile_stats["Id"].format(
             self.member.id)
 
-        # add default items for the people whomst have first created their profile
-        self.profile_stats["Inventory"].append(
-            self.equipment_info.find_equipment(0))  # Light Armor
-        self.profile_stats["Inventory"].append(
-            self.equipment_info.find_equipment(3))  # Spear
-
         self.profile_stats.update(kwargs)
+
+    def get_level(self):
+        return self.profile_stats["Level"]
+
+    @save_profile
+    def event_bonus(self, profile_stat_key: str, amount: int) -> str:
+        self.profile_stats[profile_stat_key] += amount
+        return f"Added **{amount} {profile_stat_key}** to your profile!"
+ 
+    def calculate_xp_for_next_level(self):
+        return round(self.XP_TO_LEVEL_MULTIPLIER*(self.get_level()**2)*self.LEVEL_UP_DIFFICULTY_CONSTANT - (self.XP_TO_LEVEL_MULTIPLIER * self.get_level()) + self.LEVEL_UP_START_POINT) + 1
+
+class GladiatorProfile(Profile):
+    def __init__(self, member, **kwargs):
+        super().__init__(member=member)
+        self.equipment_info = GladiatorEquipments()
+       
+        profile_settings = json.load(open(os.path.join(os.path.dirname(
+            __file__), "Settings", "GladiatorGameSettings.json"), "r"))["profile_settings"]
+        self.XP_TO_LEVEL_MULTIPLIER = profile_settings["XP_TO_LEVEL_MULTIPLIER"]
+        self.XP_TO_LEVEL_WHEN_LOST_MULTIPLIER = profile_settings["XP_TO_LEVEL_WHEN_LOST_MULTIPLIER"]
+        self.XP_GAIN_MULTIPLIER = profile_settings["XP_GAIN_MULTIPLIER"]
+        self.MAX_COIN_REWARD = profile_settings["MAX_COIN_REWARD"]
+        self.MIN_COIN_REWARD = profile_settings["MIN_COIN_REWARD"]
+        self.COIN_DECAY_CONSANT = profile_settings["COIN_DECAY_CONSTANT"]
+        self.LEVEL_UP_DIFFICULTY_CONSTANT = profile_settings["LEVEL_UP_DIFFICULTY_CONSTANT"]
+        self.LEVEL_UP_START_POINT = profile_settings["LEVEL_UP_START_POINT"]
 
     @save_profile
     def buy_equipment(self, equipment_id: int) -> str:
@@ -103,9 +112,6 @@ class GladiatorProfile():
         self.profile_stats["HutCoins"] += coin
         return f"**You earned {coin} HutCoins!**"
 
-    def calculate_xp_for_next_level(self):
-        return round(self.XP_TO_LEVEL_MULTIPLIER*(self.get_level()**2)*self.LEVEL_UP_DIFFICULTY_CONSTANT - (self.XP_TO_LEVEL_MULTIPLIER * self.get_level()) + self.LEVEL_UP_START_POINT) + 1
-
     @save_profile
     def gain_xp(self, other_profile_level: int, bonus_xp : float = 0.0) -> str:
         xp_gained = math.ceil(other_profile_level /
@@ -121,14 +127,6 @@ class GladiatorProfile():
 
         self.profile_stats["XP To Next Level"] = xp_for_next_level
         return msg
-
-    def get_level(self):
-        return self.profile_stats["Level"]
-
-    @save_profile
-    def event_bonus(self, profile_stat_key: str, amount: int) -> str:
-        self.profile_stats[profile_stat_key] += amount
-        return f"Added **{amount} {profile_stat_key}** to your profile!"
 
     def __repr__(self):
         msg = ""

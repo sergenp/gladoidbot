@@ -5,7 +5,7 @@ from Gladiator.Stats.GladiatorStats import GladiatorStats
 from Gladiator.Player import GladiatorPlayer, GladiatorNPC
 from Gladiator.Equipments.GladiatorEquipments import GladiatorEquipments
 from Gladiator.AttackInformation.GladiatorAttackInformation import GladiatorAttackInformation
-from Gladiator.GladiatorProfile import GladiatorProfile
+from Gladiator.Profile import GladiatorProfile
 from Gladiator.NPCs.NPCFinder import NPCFinder
 import glob
 import os
@@ -146,7 +146,7 @@ class GladiatorGame:
     def hunt():
         spawns = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "NPCs", "Settings", "Spawns.json")))
         # roll for spawn
-        roll = random.randint(0, 100)
+        roll = random.randint(0, 100) #
         spawn_type = spawns[0]
         for spawn in spawns:
             if roll < spawn["Spawn Chance"]:
@@ -185,6 +185,12 @@ class GladiatorGame:
                             value += f"{j} : **%{debuff['debuff_stats'][j]}**\n"
                         else:
                             value += f"{j} : **{debuff['debuff_stats'][j]}**\n"
+            try:
+                attack = GladiatorAttackInformation().find_attack_type(k["unlock_attack_id"])
+                if attack:
+                    value += f"Unlocks {attack['name']} {attack['reaction_emoji']}\n"
+            except KeyError:
+                pass
 
             name = f"{k['name']} {k['reaction_emoji']}"
             emoji_list.append(k["reaction_emoji"])
