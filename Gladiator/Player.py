@@ -169,9 +169,9 @@ class GladiatorNPC(Player):
         super().__init__(stats_path)
         self.name = self.json_dict["Name"]
         self.image_path = os.path.join(os.path.dirname(os.path.abspath(
-            __file__)), "NPCs", "Images", random.choice(self.json_dict["NPC_Images_Path"]))
+            __file__)), "NPCs", "Images", random.choice(self.json_dict["NPC Images Path"]))
         self.level = random.randint(
-            self.json_dict["NPC_Level_Range"][0], self.json_dict["NPC_Level_Range"][1])
+            self.json_dict["NPC Level Range"][0], self.json_dict["NPC Level Range"][1])
         self.attack_information = GladiatorAttackInformation()
         self.permitted_attacks = []
         for attack_id in self.json_dict["Attack Ids"]:

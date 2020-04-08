@@ -13,11 +13,11 @@
         "Critical Damage Chance": 0,
         "Critical Damage Boost": 1
     },
-    "NPC_Level_Range": [
+    "NPC Level Range": [
         25,
         40
     ],
-    "NPC_Images_Path": [
+    "NPC Images Path": [
         "Wendigo.png",
         "Wendigo1.jpg"
     ],

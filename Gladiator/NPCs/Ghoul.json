@@ -13,11 +13,11 @@
         "Critical Damage Chance": 70,
         "Critical Damage Boost": 1.1
     },
-    "NPC_Level_Range": [
+    "NPC Level Range": [
         15,
         35
     ],
-    "NPC_Images_Path": [
+    "NPC Images Path": [
         "Ghoul.png",
         "Ghoul1.png"
     ],

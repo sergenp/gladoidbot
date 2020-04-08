@@ -13,11 +13,11 @@
         "Critical Damage Chance": 35,
         "Critical Damage Boost": 1.1
     },
-    "NPC_Level_Range": [
+    "NPC Level Range": [
         5,
         25
     ],
-    "NPC_Images_Path": [
+    "NPC Images Path": [
         "Necromancer.jpg",
         "Necromancer1.jpg"
     ],
