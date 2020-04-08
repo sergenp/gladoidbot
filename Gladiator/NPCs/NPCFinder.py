@@ -13,7 +13,6 @@ class NPCFinder:
             return NPC file path given npc_id
         '''
         for npc in self.npcs:
-            print(npc)
             with open(npc) as f:
                 if json.load(f)["Name"] == npc_name:
                     return npc

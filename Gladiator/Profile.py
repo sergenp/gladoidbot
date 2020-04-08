@@ -117,7 +117,7 @@ class GladiatorProfile(Profile):
         return f"**You earned {coin} HutCoins!**"
 
     @save_profile
-    def gain_xp(self, other_profile_level: int, bonus_xp: float = 0.0) -> str:
+    def gain_xp(self, other_profile_level: int, bonus_xp: int = 0) -> str:
         xp_gained = math.ceil(other_profile_level /
                               self.get_level()) * self.XP_GAIN_MULTIPLIER + random.randint(self.get_level(), self.get_level()*5) + bonus_xp
 

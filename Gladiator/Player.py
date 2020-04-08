@@ -58,8 +58,7 @@ class Player:
             if self.stats["Debuff Chance"] > 0:
                 # roll for debuff effect to other player
                 if self.stats["Debuff Chance"] > random.randint(0, 100):
-                    inf += otherPlayer.take_debuff(
-                        self.stats["Debuff Type"])
+                    inf += otherPlayer.take_debuff(self.stats["Debuff Type"])
         except KeyError:
             pass
 
@@ -76,11 +75,14 @@ class Player:
 
         # find the attack corresponding the name
         attack = self.attack_information.find_attack_type(attack_type_name)
+        if not attack:
+            attack = random.choice(self.permitted_attacks)
 
         self.buff(attack["buffs"])
         inf = self.damage_enemy(otherPlayer, attack["damage_type_name"])
         self.buff(attack["buffs"], buff_type="debuff")
-        return inf
+        return f"{self} Used {attack['name']}\n" + inf
+
 
     def die(self):
         self.dead = True
@@ -143,15 +145,12 @@ class GladiatorPlayer(Player):
             if slot["Equipment"]:
                 return
 
-            equipment = self.equipment_information.find_equipment(
-                equipment_name)
+            equipment = self.equipment_information.find_equipment(equipment_name)
             if equipment:
                 if equipment["type"] == slot["Slot Name"]:
-                    self.equipment_information.update_slot(
-                        slot["Slot Name"], equipment)
+                    self.equipment_information.update_slot(slot["Slot Name"], equipment)
                     self.stats += equipment["buffs"]
-                    debuff = self.attack_information.find_turn_debuff(
-                        equipment["debuff_name"])
+                    debuff = self.attack_information.find_turn_debuff(equipment["debuff_name"])
                     if debuff:
                         self.stats += debuff["debuff_stats"]
 

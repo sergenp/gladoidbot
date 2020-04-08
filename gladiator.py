@@ -48,11 +48,11 @@ class Gladiator(commands.Cog):
 
     @commands.command()
     async def shop(self, ctx, *page):
+        slots = self.GladiatorEquipments.get_all_slots()
         if not page:
-            slots = self.GladiatorEquipments.get_all_slots()
             msg = ""
-            for slot in slots:
-                msg += f"**Page {slot['id']} : {slot['Slot Name']}**\n"
+            for k, slot in enumerate(slots):
+                msg += f"**Page {k+1} : {slot['Slot Name']}**\n"
             await send_embed_message(ctx, msg)
             return
 
@@ -61,9 +61,14 @@ class Gladiator(commands.Cog):
         except ValueError:
             await ctx.send(f"Couldn't find any page called {list(page)[0]}")
             return
+        
+        try:
+            page_name = slots[page_id-1]["Slot Name"]
+        except IndexError:
+            await ctx.send(f"Couldn't find page {page_id-1}")
+            return
 
-        equipment_field_list, emoji_list = GladiatorGame.construct_shop_message(
-            page_id)
+        equipment_field_list, emoji_list = GladiatorGame.construct_shop_message(page_name)
 
         if equipment_field_list and emoji_list:
             msg = await send_embed_message(ctx, field_list=equipment_field_list)
@@ -75,9 +80,9 @@ class Gladiator(commands.Cog):
 
             try:
                 reaction, _ = await self.bot.wait_for('reaction_add', timeout=180.0, check=check)
-                equipment_id = self.GladiatorEquipments.get_equipment_id_by_emoji(
-                    reaction.emoji, page_id)
-                await ctx.send(GladiatorProfile(ctx.message.author).buy_equipment(equipment_id))
+                equipment_name = self.GladiatorEquipments.get_equipment_name_by_emoji(
+                    reaction.emoji, page_name)
+                await ctx.send(GladiatorProfile(ctx.message.author).buy_equipment(equipment_name))
 
             except asyncio.TimeoutError:
                 await msg.delete()
@@ -107,18 +112,14 @@ class Gladiator(commands.Cog):
                     self.games.update({ctx.channel.id: GladiatorGame(
                         GladiatorPlayer(ctx.message.author), random_spawn, spawn_type)})
                     crr_game = self.games[ctx.channel.id]
-                    equip_inf = f"{crr_game.current_player} equips "
-                    for equipment in profile.profile_stats["Inventory"]:
-                        crr_game.current_player.equip_item(equipment["name"], equipment["type"])
-                        try:
-                            unlock_attack = equipment["unlock_attack_name"]
-                            crr_game.current_player.unlock_attack_type(unlock_attack)
-                        except KeyError:
-                            pass
-
-                        equip_inf += f"**{equipment['name']}** "
-                    await ctx.send(equip_inf)
-                    # await send_embed_message(ctx, self.game_information["game_began_text"])
+                    if len(profile.profile_stats["Inventory"]) > 0:
+                        equip_inf = f"{crr_game.current_player} equips "
+                        for equipment in profile.profile_stats["Inventory"]:
+                            crr_game.current_player.equip_item(equipment["name"], equipment["type"])
+                            if equipment["unlock_attack_name"]:
+                                crr_game.current_player.unlock_attack_type(equipment["unlock_attack_name"])
+                            equip_inf += f"**{equipment['name']}** "
+                        await ctx.send(equip_inf)
                     await self.gladiator_game_loop(ctx)
                 else:
                     await self.hunt(ctx)
@@ -136,56 +137,57 @@ class Gladiator(commands.Cog):
             await ctx.send(self.game_information["game_is_already_commencing_text"])
             return
 
-        if userToChallenge == ctx.message.author:
-            await ctx.send(self.game_information["challenging_self_text"])
-            return
-
         if userToChallenge:
             if userToChallenge.bot:
                 await ctx.send(self.game_information["game_challenge_bot_text"].format(ctx.message.author.mention))
-            else:
-                msg = await ctx.send(self.game_information["game_challenge_text"].format(
-                    ctx.message.author.mention, userToChallenge.mention, '👍', '👎'), delete_after=60.0)
-                await msg.add_reaction('👍')
-                await msg.add_reaction('👎')
+                return
+                
+            elif userToChallenge == ctx.message.author:
+                await ctx.send(self.game_information["challenging_self_text"])
+                return
 
-                def check(reaction, user):
-                    return user == userToChallenge and reaction.message.id == msg.id
+            msg = await ctx.send(self.game_information["game_challenge_text"].format(
+                ctx.message.author.mention, userToChallenge.mention, '👍', '👎'), delete_after=60.0)
+            await msg.add_reaction('👍')
+            await msg.add_reaction('👎')
 
-                try:
-                    reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
-                    if reaction.emoji == '👍':
-                        self.games.update({ctx.channel.id: GladiatorGame(GladiatorPlayer(
-                            ctx.message.author), GladiatorPlayer(userToChallenge))})
+            def check(reaction, user):
+                return user == userToChallenge and reaction.message.id == msg.id
 
-                        profiles = [GladiatorProfile(
-                            ctx.message.author), GladiatorProfile(userToChallenge)]
+            try:
+                reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
+                if reaction.emoji == '👍':
+                    self.games.update({ctx.channel.id: GladiatorGame(GladiatorPlayer(
+                        ctx.message.author), GladiatorPlayer(userToChallenge))})
 
-                        crr_game = self.games[ctx.channel.id]
-                        for profile in profiles:
-                            equip_inf = f"{crr_game.current_player} equips "
-                            for equipment in profile.profile_stats["Inventory"]:
-                                crr_game.current_player.equip_item(equipment["name"], equipment["type"])
-                                try:
-                                    unlock_attack = equipment["unlock_attack_name"]
-                                    crr_game.current_player.unlock_attack_type(unlock_attack)
-                                except KeyError:
-                                    pass
-                            
-                                equip_inf += f"**{equipment['name']}** "
+                    profiles = [GladiatorProfile(
+                        ctx.message.author), GladiatorProfile(userToChallenge)]
 
-                            crr_game.switch_turns()
+                    crr_game = self.games[ctx.channel.id]
+                    for profile in profiles:
+                        equip_inf = f"{crr_game.current_player} equips "
+                        for equipment in profile.profile_stats["Inventory"]:
+                            crr_game.current_player.equip_item(equipment["name"], equipment["type"])
+                            try:
+                                unlock_attack = equipment["unlock_attack_name"]
+                                crr_game.current_player.unlock_attack_type(unlock_attack)
+                            except KeyError:
+                                pass
+                        
+                            equip_inf += f"**{equipment['name']}** "
 
-                        await send_embed_message(ctx, self.game_information["game_began_text"])
-                        await self.gladiator_game_loop(ctx)
+                        crr_game.switch_turns()
 
-                    else:
-                        await ctx.send(self.game_information["game_challenge_declined_text"].format(user.mention), delete_after=10)
+                    await send_embed_message(ctx, self.game_information["game_began_text"])
+                    await self.gladiator_game_loop(ctx)
 
-                except asyncio.TimeoutError:
-                    pass
                 else:
-                    pass
+                    await ctx.send(self.game_information["game_challenge_declined_text"].format(user.mention), delete_after=10)
+
+            except asyncio.TimeoutError:
+                pass
+            else:
+                pass
 
         else:
             await ctx.send(self.game_information["game_challenge_user_mention_missing"].format(ctx.message.author.mention))

@@ -152,8 +152,8 @@ class GladiatorGame:
         return GladiatorGame.get_event(rand_event, gladiatorProfile)
         
     @staticmethod
-    def construct_shop_message(page_id: int):
-        equipments = GladiatorEquipments().get_all_equipments_from_slot_id(page_id)
+    def construct_shop_message(page_name: int):
+        equipments = GladiatorEquipments().get_all_equipments_from_slot_name(page_name)
         equipment_field_list = []
         emoji_list = []
         for k in equipments:
