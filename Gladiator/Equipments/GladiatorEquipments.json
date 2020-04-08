@@ -1,140 +1,139 @@
 [
     {
-        "id": 0,
-        "equipment_slot_id": 1,
         "name": "Light Armor",
-        "type" : "Armor",
-        "buffs": {
+        "type": "Armor",
+        "buffs":
+        {
             "Block Chance": 10,
             "Armor": 1
         },
         "reaction_emoji": "\u0031\u20E3",
-        "debuff_id": -1,
-        "price" : 100
+        "price": 100,
+        "unlock_attack_name": "",
+        "debuff_name" : ""
     },
     {
-        "id": 1,
-        "equipment_slot_id": 1,
         "name": "Heavy Armor",
-        "type" : "Armor",
-        "buffs": {
+        "type": "Armor",
+        "buffs":
+        {
             "Armor": 2
         },
         "reaction_emoji": "\u0032\u20E3",
-        "debuff_id": -1,
-        "price" : 200
+        "price": 200,
+        "unlock_attack_name": "",
+        "debuff_name" : ""
     },
     {
-        "id": 2,
-        "equipment_slot_id": 1,
         "name": "Mage Robes",
-        "type" : "Armor",
-        "buffs": {
+        "type": "Armor",
+        "buffs":
+        {
             "Magic Damage": 1,
             "Magic Armor": 1,
             "Armor": 1
         },
         "reaction_emoji": "\u0033\u20E3",
-        "debuff_id": -1,
-        "price" : 200
+        "price": 200,
+        "unlock_attack_name": "",
+        "debuff_name" : ""
     },
     {
-        "id": 3,
-        "equipment_slot_id": 2,
         "name": "Spear",
-        "type" : "Weapon",
-        "buffs": {
+        "type": "Weapon",
+        "buffs":
+        {
             "Block Chance": 5
         },
         "reaction_emoji": "\u0031\u20E3",
-        "debuff_id": -1,
-        "price" : 50
+        "price": 50,
+        "unlock_attack_name": "",
+        "debuff_name" : ""
     },
     {
-        "id": 4,
-        "equipment_slot_id": 2,
         "name": "Gladius",
-        "type" : "Weapon",
-        "buffs": {
+        "type": "Weapon",
+        "buffs":
+        {
             "Attack Chance": -3,
             "Attack Min. Damage": 2,
             "Attack Max. Damage": 1
         },
         "reaction_emoji": "\u0032\u20E3",
-        "debuff_id": -1,
-        "price" : 150
+        "price": 150,
+        "unlock_attack_name": "",
+        "debuff_name" : ""
     },
     {
-        "id": 5,
-        "equipment_slot_id": 2,
         "name": "Axe",
-        "type" : "Weapon",
-        "buffs": {
-            "Attack Chance" : -2,
+        "type": "Weapon",
+        "buffs":
+        {
+            "Attack Chance": -2,
             "Attack Min. Damage": 1
         },
         "reaction_emoji": "\u0033\u20E3",
-        "debuff_id": 0,
-        "price" : 250
+        "price": 250,
+        "unlock_attack_name": "",
+        "debuff_name" : "Bleeding"
     },
     {
-        "id": 6,
-        "equipment_slot_id": 2,
         "name": "Magic Wand",
-        "type" : "Weapon",
-        "buffs": {
+        "type": "Weapon",
+        "buffs":
+        {
             "Magic Damage": 1
         },
         "reaction_emoji": "\u0034\u20E3",
-        "debuff_id": 1,
-        "price" : 250
+        "price": 250,
+        "unlock_attack_name": "",
+        "debuff_name" : "Soul On Fire"
     },
     {
-        "id" : 7,
-        "equipment_slot_id" : 3,
-        "name" : "Warrior Ring",
-        "type" : "Ring",
-        "buffs" : {
-            "Attack Min. Damage" : 1,
-            "Attack Max. Damage" : 1
+        "name": "Warrior Ring",
+        "type": "Ring",
+        "buffs":
+        {
+            "Attack Min. Damage": 1,
+            "Attack Max. Damage": 1
         },
-        "reaction_emoji" : "\u0031\u20E3",
-        "debuff_id" : -1,
-        "price" : 400
+        "reaction_emoji": "\u0031\u20E3",
+        "price": 400,
+        "unlock_attack_name": "",
+        "debuff_name" : ""
     },
     {
-        "id" : 8,
-        "equipment_slot_id" : 3,
-        "name" : "Mage's Ring",
-        "type" : "Ring",
-        "buffs" : {
-            "Magic Damage" : 1
+        "name": "Mage's Ring",
+        "type": "Ring",
+        "buffs":
+        {
+            "Magic Damage": 1
         },
-        "reaction_emoji" : "\u0032\u20E3",
-        "debuff_id" : -1,
-        "price" : 400
+        "reaction_emoji": "\u0032\u20E3",
+        "price": 400,
+        "unlock_attack_name": "",
+        "debuff_name" : ""
     },
     {
-        "id" : 9,
-        "equipment_slot_id" : 4,
-        "name" : "Iron Shield",
-        "type" : "Shield",
-        "buffs" : {
-            "Block Chance" : 5
+        "name": "Iron Shield",
+        "type": "Shield",
+        "buffs":
+        {
+            "Block Chance": 5
         },
-        "reaction_emoji" :"\u0031\u20E3",
-        "debuff_id" : -1,
-        "price" : 500
+        "reaction_emoji": "\u0031\u20E3",
+        "price": 500,
+        "unlock_attack_name": "",
+        "debuff_name" : ""
     },
     {
-        "id" : 10,
-        "equipment_slot_id" : 1,
-        "name" : "Cloak",
-        "type" : "Armor",
-        "buffs" : {},
-        "reaction_emoji" :"\u0034\u20E3",
-        "debuff_id" : -1,
-        "price" : 150,
-        "unlock_attack_id" : 9
-    } 
+        "name": "Cloak",
+        "type": "Armor",
+        "buffs":
+        {},
+        "reaction_emoji": "\u0034\u20E3",
+        "price": 150,
+        "unlock_attack_name": "Backstab",
+        "debuff_name" : ""
+    }
 ]

@@ -1,7 +1,7 @@
 {
-    "id": 7,
     "Name": "Centipede",
-    "Stats": {
+    "Stats":
+    {
         "Health": 8,
         "Attack Chance": 70,
         "Attack Min. Damage": 4,
@@ -13,18 +13,14 @@
         "Critical Damage Chance": 35,
         "Critical Damage Boost": 1.2
     },
-    "NPC Level Range": [
-        1,
-        25
-    ],
-    "NPC Images Path": [
+    "Min Level": 1,
+    "Max Level": 25,
+    "Images Path": [
         "Centipede.png",
         "Centipede1.jpeg"
     ],
-    "Attack Ids": [
-        0,
-        1,
-        4
+    "Attacks": [
+        "Thrust", "Slash", "Virus"
     ],
-    "Debuff Ids": []
+    "Debuffs": []
 }

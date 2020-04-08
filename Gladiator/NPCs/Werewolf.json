@@ -1,7 +1,7 @@
 {
-    "id": 3,
     "Name": "Werewolf",
-    "Stats": {
+    "Stats":
+    {
         "Health": 8,
         "Attack Chance": 100,
         "Attack Min. Damage": 1,
@@ -13,22 +13,20 @@
         "Critical Damage Chance": 60,
         "Critical Damage Boost": 1.25
     },
-    "NPC Level Range": [
-        1,
-        50
-    ],
-    "NPC Images Path": [
+    "Min Level": 1,
+    "Max Level": 50,
+    "Images Path": [
         "Werewolf.jpg",
         "Werewolf1.jpg",
         "Werewolf2.jpg",
         "Werewolf3.png"
     ],
-    "Attack Ids": [
-        1,
-        5,
-        6
+    "Attacks": [
+        "Thrust",
+        "Bite",
+        "Scratch"
     ],
-    "Debuff Ids": [
-        0
+    "Debuffs": [
+        "Bleeding"
     ]
 }

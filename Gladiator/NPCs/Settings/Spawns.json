@@ -1,14 +1,14 @@
 [
     {
         "Spawn Type": "Common",
-        "NPC_Ids": [
-            0,
-            1,
-            2,
-            7,
-            8
+        "NPCs": [
+            "Centipede",
+            "Rat",
+            "Spider",
+            "Goblin",
+            "Necromancer"
         ],
-        "Spawn Chance": 80,
+        "Spawn Chance": 70,
         "Spawn Bonuses": {
             "XP": 0,
             "HutCoins": 0
@@ -16,11 +16,11 @@
     },
     {
         "Spawn Type": "Rare",
-        "NPC_Ids": [
-            3,
-            6
+        "NPCs": [
+            "Werewolf",
+            "Vampire"
         ],
-        "Spawn Chance": 14,
+        "Spawn Chance": 20,
         "Spawn Bonuses": {
             "XP": 50,
             "HutCoins": 10
@@ -28,11 +28,11 @@
     },
     {
         "Spawn Type": "Epic",
-        "NPC_Ids": [
-            4,
-            5
+        "NPCs": [
+            "Ghoul",
+            "Wendigo"
         ],
-        "Spawn Chance": 6,
+        "Spawn Chance": 10,
         "Spawn Bonuses": {
             "XP": 100,
             "HutCoins": 20

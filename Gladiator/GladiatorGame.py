@@ -1,5 +1,9 @@
 import sys
 sys.path.append('..')
+import os
+import collections
+import random
+import json
 
 from Gladiator.Stats.GladiatorStats import GladiatorStats
 from Gladiator.Player import GladiatorPlayer, GladiatorNPC
@@ -7,15 +11,11 @@ from Gladiator.Equipments.GladiatorEquipments import GladiatorEquipments
 from Gladiator.AttackInformation.GladiatorAttackInformation import GladiatorAttackInformation
 from Gladiator.Profile import GladiatorProfile
 from Gladiator.NPCs.NPCFinder import NPCFinder
-import glob
-import os
-import collections
-import random
-import json
+
 
 
 class GladiatorGame:
-    def __init__(self, player1 : (GladiatorPlayer, GladiatorNPC), player2 : (GladiatorPlayer, GladiatorNPC), spawn_type = {}):
+    def __init__(self, player1: (GladiatorPlayer, GladiatorNPC), player2: (GladiatorPlayer, GladiatorNPC), spawn_type: dict = None):
         self.player1 = player1
         self.player2 = player2
         self.current_player = self.player1
@@ -44,18 +44,15 @@ class GladiatorGame:
         # return true because we successfully went to the other round
         return self.game_continues
 
-    def attack(self, attackType_id=0, damage_type_id=0):
-        return self.players[0].attack(self.players[1], attackType_id, damage_type_id)
+    def attack(self, attack_name=""):
+        return self.players[0].attack(self.players[1], attack_name)
 
     @staticmethod
-    def construct_information_message():
+    def construct_information_message(gladiator_profile: GladiatorProfile):
         settings = None
         attack_types = None
         damage_types = None
-        initial_stats = None
-
-        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "Stats", "GladiatorStats.json")) as f:
-            initial_stats = json.load(f)
+        gladiator_stats = gladiator_profile.get_stats()
 
         with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "Settings", "GladiatorGameSettings.json")) as f:
             settings = json.load(f)
@@ -67,11 +64,11 @@ class GladiatorGame:
             damage_types = json.load(f)
 
         information_text = settings["game_information_texts"]["title_text"]
-        for k in initial_stats["Stats"].keys():
+        for k in gladiator_stats.keys():
             if "Chance" in k:
-                information_text += f"{k} = %{initial_stats['Stats'][k]}\n"
+                information_text += f"{k} = %{gladiator_stats[k]}\n"
             else:
-                information_text += f"{k} = {initial_stats['Stats'][k]}\n"
+                information_text += f"{k} = {gladiator_stats[k]}\n"
 
         information_text += "\n" + settings["game_information_texts"]["information_about_attack_types_text"].format(
             len(attack_types))
@@ -92,9 +89,9 @@ class GladiatorGame:
         return information_text
 
     @staticmethod
-    def get_event(event_dict, player_to_be_affected : (GladiatorNPC, GladiatorPlayer, GladiatorProfile)):
+    def get_event(event_dict, player_to_be_affected: (GladiatorNPC, GladiatorPlayer, GladiatorProfile)):
         if isinstance(player_to_be_affected, GladiatorNPC):
-            return
+            return ""
 
         event_text = event_dict["event_text"].format(player_to_be_affected.member.mention)
         event_buffs = event_dict["event_buffs"]
@@ -105,12 +102,9 @@ class GladiatorGame:
             if isinstance(player_to_be_affected, GladiatorProfile):
                 profile = player_to_be_affected
 
-            elif isinstance(player_to_be_affected, GladiatorPlayer):
+            else:
                 profile = GladiatorProfile(player_to_be_affected.member)
             
-            else:
-                return
-
             for k in event_buffs.keys():
                 event_info += profile.event_bonus(k, event_buffs[k]) + "\n"
                 
@@ -123,12 +117,7 @@ class GladiatorGame:
 
                 if event_dict["event_type"]["PVP"] == "unlock_attack_type":
                     player_to_be_affected.unlock_attack_type(
-                        event_dict["attack_id"])
-            else:
-                return ""
-
-        else:
-            return ""
+                        event_dict["attack_name"])
             
         return "--------------------------\n" + event_info + "\n--------------------------"
     
@@ -151,20 +140,19 @@ class GladiatorGame:
         for spawn in spawns:
             if roll < spawn["Spawn Chance"]:
                 spawn_type = spawn
-        
         # get a random json file from NPCs directory given spawn type
-        npc_stats_path = NPCFinder().get_npc_by_id(random.choice(spawn_type["NPC_Ids"]))
+        npc_stats_path = NPCFinder().get_npc_by_name(random.choice(spawn_type["NPCs"]))
         # return a GladiatorNPC with the name of the json file, and the stats it has
         return GladiatorNPC(stats_path=npc_stats_path), spawn_type
     
     @staticmethod
-    def hunt_failed(gladiatorProfile : GladiatorProfile):
+    def hunt_failed(gladiatorProfile: GladiatorProfile):
         npc_events = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "Events", "GladiatorNPCEvents.json")))
         rand_event = random.choice(npc_events)
         return GladiatorGame.get_event(rand_event, gladiatorProfile)
         
     @staticmethod
-    def construct_shop_message(page_id : int):
+    def construct_shop_message(page_id: int):
         equipments = GladiatorEquipments().get_all_equipments_from_slot_id(page_id)
         equipment_field_list = []
         emoji_list = []
@@ -177,16 +165,15 @@ class GladiatorGame:
                     value += f"{val} : **{k['buffs'][val]}**\n"
             value += f"Price : **{k['price']} HutCoins**\n"
 
-            debuff = GladiatorAttackInformation().find_turn_debuff_id(k["debuff_id"])
+            debuff = GladiatorAttackInformation().find_turn_debuff(k["debuff_name"])
             if debuff:
                 for j in debuff["debuff_stats"]:
-                    if not j in ("debuff_id"):
-                        if "Chance" in j:
-                            value += f"{j} : **%{debuff['debuff_stats'][j]}**\n"
-                        else:
-                            value += f"{j} : **{debuff['debuff_stats'][j]}**\n"
+                    if "Chance" in j:
+                        value += f"{j} : **%{debuff['debuff_stats'][j]}**\n"
+                    else:
+                        value += f"{j} : **{debuff['debuff_stats'][j]}**\n"
             try:
-                attack = GladiatorAttackInformation().find_attack_type(k["unlock_attack_id"])
+                attack = GladiatorAttackInformation().find_attack_type(k["unlock_attack_name"])
                 if attack:
                     value += f"Unlocks {attack['name']} {attack['reaction_emoji']}\n"
             except KeyError:

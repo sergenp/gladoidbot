@@ -1,7 +1,7 @@
 {
-    "id": 5,
     "Name": "Ghoul",
-    "Stats": {
+    "Stats":
+    {
         "Health": 5,
         "Attack Chance": 30,
         "Attack Min. Damage": 6,
@@ -13,18 +13,16 @@
         "Critical Damage Chance": 70,
         "Critical Damage Boost": 1.1
     },
-    "NPC Level Range": [
-        15,
-        35
-    ],
-    "NPC Images Path": [
+    "Min Level": 15,
+    "Max Level": 35,
+    "Images Path": [
         "Ghoul.png",
         "Ghoul1.png"
     ],
-    "Attack Ids": [
-        0
+    "Attacks": [
+        "Thrust"
     ],
-    "Debuff Ids": [
-        0
+    "Debuffs": [
+        "Bleeding"
     ]
 }

@@ -1,44 +1,60 @@
 [
     {
-        "id": 0,
         "event_text": "**The crowd hates the show! They are throwing rocks at {}**",
-        "event_buffs": {
+        "event_buffs":
+        {
             "Health": -3
         },
-        "event_type": {"PVP" : "buff"}
+        "event_type":
+        {
+            "PVP": "buff"
+        }
     },
     {
-        "id": 1,
         "event_text": "**{} went berserk!**",
-        "event_buffs": {
+        "event_buffs":
+        {
             "Armor": -3,
             "Critical Damage Chance": 30,
             "Critical Damage Boost": 0.5
         },
-        "event_type": {"PVP" : "buff"}
+        "event_type":
+        {
+            "PVP": "buff"
+        }
     },
     {
-        "id": 2,
-        "attack_id": 3,
+        "attack_name": "Fireball",
         "event_text": "**{} found a fireball scroll in the arena!**",
-        "event_buffs": {},
-        "event_type": {"PVP" : "unlock_attack_type"}
+        "event_buffs":
+        {},
+        "event_type":
+        {
+            "PVP": "unlock_attack_type"
+        }
     },
     {
-        "id": 3,
-        "attack_id": 4,
+        "attack_name": "Virus",
         "event_text": "**Gods have cursed {} he now has the power to spread microbes!**",
-        "event_buffs": {
+        "event_buffs":
+        {
             "Health": -3
         },
-        "event_type": {"PVP" : "unlock_attack_type"}
+        "event_type":
+        {
+            "PVP": "unlock_attack_type"
+        }
     },
     {
-        "id" : 4,
-        "event_text" : "**People really like the show! They're showering {} with HutCoin!**",
-        "event_buffs" : {
-            "HutCoins" : 2
+
+        "event_text": "**People really like the show! They're showering {} with HutCoin!**",
+        "event_buffs":
+        {
+            "HutCoins": 2
         },
-        "event_type" : {"Profile": "HutCoins"}
+        "event_type":
+        {
+            "Profile": "HutCoins"
+        }
     }
 ]

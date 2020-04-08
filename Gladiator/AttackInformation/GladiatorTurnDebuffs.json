@@ -1,7 +1,6 @@
 [
     {
         "debuff_stats": {
-            "debuff_id": 0,
             "Debuff Type": "Bleeding",
             "Debuff Chance": 25,
             "Debuff Damage": 1
@@ -10,7 +9,6 @@
     },
     {
         "debuff_stats": {
-            "debuff_id": 1,
             "Debuff Type": "Soul On Fire",
             "Debuff Chance": 25,
             "Debuff Damage": 1
@@ -19,7 +17,6 @@
     },
     {
         "debuff_stats" : {
-            "debuff_id" : 2,
             "Debuff Type" : "Plague",
             "Debuff Chance" : 50,
             "Debuff Damage" : 1

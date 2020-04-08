@@ -1,7 +1,7 @@
 {
-    "id": 4,
     "Name": "Wendigo",
-    "Stats": {
+    "Stats":
+    {
         "Health": 5,
         "Attack Chance": 95,
         "Attack Min. Damage": 5,
@@ -13,18 +13,16 @@
         "Critical Damage Chance": 0,
         "Critical Damage Boost": 1
     },
-    "NPC Level Range": [
-        25,
-        40
-    ],
-    "NPC Images Path": [
+    "Min Level": 25,
+    "Max Level": 40,
+    "Images Path": [
         "Wendigo.png",
         "Wendigo1.jpg"
     ],
-    "Attack Ids": [
-        1
+    "Attacks": [
+        "Thrust"
     ],
-    "Debuff Ids": [
-        0
+    "Debuffs": [
+        "Bleeding"
     ]
 }

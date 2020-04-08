@@ -6,3 +6,4 @@ python-dateutil
 requests-html
 pandas
 google-cloud-storage
+pymongo

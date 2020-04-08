@@ -1,10 +1,11 @@
 import random
 import math
+import json
+import os
 from Gladiator.Stats.GladiatorStats import GladiatorStats
 from Gladiator.AttackInformation.GladiatorAttackInformation import GladiatorAttackInformation
 from Gladiator.Equipments.GladiatorEquipments import GladiatorEquipments
-import json
-import os
+
 
 INITIAL_ATTACK_TYPES_COUNT = 3
 
@@ -15,7 +16,7 @@ class Player:
         self.debuffs = []
         self.json_dict = json.load(open(stats_path, "r"))
         self.stats = GladiatorStats(self.json_dict["Stats"])
-
+        self.attack_information = GladiatorAttackInformation()
         self.information = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                                        "Settings", "GladiatorGameSettings.json"), "r"))["game_information_texts"]
 
@@ -36,14 +37,14 @@ class Player:
         # return info
         return self.information["take_damage_text"].format(self, dmg, self, self.stats['Health'])
 
-    def damage_enemy(self, otherPlayer, damage_type_id=0):
+    def damage_enemy(self, otherPlayer, damage_type_name=""):
         inf = ""
         # roll to see if attack hit
         roll = random.randint(0, 100)
         if self.stats["Attack Chance"] < roll:
             return self.information["dodge_text"].format(otherPlayer)
 
-        dmg_type = self.attack_information.find_damage_type(damage_type_id)
+        dmg_type = self.attack_information.find_damage_type(damage_type_name)
 
         min_dmg = self.stats[dmg_type["min_damage_stat"]]
         max_dmg = self.stats[dmg_type["max_damage_stat"]]
@@ -58,26 +59,26 @@ class Player:
                 # roll for debuff effect to other player
                 if self.stats["Debuff Chance"] > random.randint(0, 100):
                     inf += otherPlayer.take_debuff(
-                        self.stats["debuff_id"])
+                        self.stats["Debuff Type"])
         except KeyError:
             pass
 
         if self.stats["Critical Damage Chance"] > crit_roll:
             crit_dmg = math.ceil(dmg * self.stats["Critical Damage Boost"])
             return inf + self.information["critical_hit_text"] + otherPlayer.take_damage(crit_dmg, dmg_type)
-        else:
-            return inf + otherPlayer.take_damage(dmg, dmg_type)
+       
+        return inf + otherPlayer.take_damage(dmg, dmg_type)
 
-    def attack(self, otherPlayer, attack_type_id=0, damage_type_id=0):
+    def attack(self, otherPlayer, attack_type_name=""):
         if not isinstance(otherPlayer, Player):
             raise ValueError(
                 "otherPlayer must be an instance of Player")
 
-        # find the attack corresponding the id
-        attack = self.attack_information.find_attack_type(attack_type_id)
+        # find the attack corresponding the name
+        attack = self.attack_information.find_attack_type(attack_type_name)
 
         self.buff(attack["buffs"])
-        inf = self.damage_enemy(otherPlayer, attack["damage_type_id"])
+        inf = self.damage_enemy(otherPlayer, attack["damage_type_name"])
         self.buff(attack["buffs"], buff_type="debuff")
         return inf
 
@@ -91,14 +92,14 @@ class Player:
         elif buff_type == "debuff":
             self.stats -= buff
 
-    def take_debuff(self, turn_debuff_id):
+    def take_debuff(self, turn_debuff_name: str):
 
-        debuff = self.attack_information.find_turn_debuff_id(turn_debuff_id)
+        debuff = self.attack_information.find_turn_debuff(turn_debuff_name)
 
         # if the given debuff is already affecting the player,
         # make it last more turns
         for dbf in self.debuffs:
-            if dbf["debuff_stats"]["debuff_id"] == debuff["debuff_stats"]["debuff_id"]:
+            if dbf["debuff_stats"]["Debuff Type"] == debuff["debuff_stats"]["Debuff Type"]:
                 dbf["lasts_turn_count"] += 1
                 break
         # if given debuff is not currently affecting the player,
@@ -122,43 +123,45 @@ class Player:
                     del self.debuffs[index]
 
             return inf
+        return ""
 
 
 class GladiatorPlayer(Player):
     def __init__(self, member):
         super().__init__(stats_path=os.path.join(os.path.dirname(
-            os.path.abspath(__file__)), "Stats", "GladiatorStats.json"))
+            os.path.abspath(__file__)), "UserProfileData", f"{member.id}.json"))
         self.member = member
         self.attack_information = GladiatorAttackInformation()
         self.equipment_information = GladiatorEquipments()
         self.permitted_attacks = self.attack_information.attack_types[:INITIAL_ATTACK_TYPES_COUNT]
 
-    def equip_item(self, equipment_id, equipment_slot_id):
-        slot = self.equipment_information.find_slot(equipment_slot_id)
+    def equip_item(self, equipment_name, equipment_slot_name):
+        slot = self.equipment_information.find_slot(equipment_slot_name)
         # if there is an equipment equipped already in the slot,
         # do nothing, and return
         if slot:
             if slot["Equipment"]:
                 return
-            else:
-                equipment = self.equipment_information.find_equipment(
-                    equipment_id)
-                if equipment:
-                    if equipment["equipment_slot_id"] == slot["id"]:
-                        self.equipment_information.update_slot(
-                            slot["id"], equipment)
-                        self.stats += equipment["buffs"]
-                        debuff = self.attack_information.find_turn_debuff_id(
-                            equipment["debuff_id"])
-                        if debuff:
-                            self.stats += debuff["debuff_stats"]
 
-    def unlock_attack_type(self, attack_type_id):
+            equipment = self.equipment_information.find_equipment(
+                equipment_name)
+            if equipment:
+                if equipment["type"] == slot["Slot Name"]:
+                    self.equipment_information.update_slot(
+                        slot["Slot Name"], equipment)
+                    self.stats += equipment["buffs"]
+                    debuff = self.attack_information.find_turn_debuff(
+                        equipment["debuff_name"])
+                    if debuff:
+                        self.stats += debuff["debuff_stats"]
+
+    def unlock_attack_type(self, attack_name):
         for i in self.permitted_attacks:
-            if i["id"] == attack_type_id:
+            if i["name"] == attack_name:
                 return
+
         self.permitted_attacks.append(
-            self.attack_information.attack_types[attack_type_id])
+            self.attack_information.find_attack_type(attack_name))
 
     def __repr__(self):
         return f"<@{self.member.id}>"
@@ -169,17 +172,16 @@ class GladiatorNPC(Player):
         super().__init__(stats_path)
         self.name = self.json_dict["Name"]
         self.image_path = os.path.join(os.path.dirname(os.path.abspath(
-            __file__)), "NPCs", "Images", random.choice(self.json_dict["NPC Images Path"]))
-        self.level = random.randint(
-            self.json_dict["NPC Level Range"][0], self.json_dict["NPC Level Range"][1])
-        self.attack_information = GladiatorAttackInformation()
+            __file__)), "NPCs", "Images", random.choice(self.json_dict["Images Path"]))
+        self.level = random.randint(self.json_dict["Min Level"], self.json_dict["Max Level"])
+        
         self.permitted_attacks = []
-        for attack_id in self.json_dict["Attack Ids"]:
+        for attack_name in self.json_dict["Attacks"]:
             self.permitted_attacks.append(
-                self.attack_information.find_attack_type(attack_id))
+                self.attack_information.find_attack_type(attack_name))
 
-        for debuff_ids in self.json_dict["Debuff Ids"]:
-            self.stats += self.attack_information.find_turn_debuff_id(debuff_ids)["debuff_stats"]
+        for debuff_name in self.json_dict["Debuffs"]:
+            self.stats += self.attack_information.find_turn_debuff(debuff_name)["debuff_stats"]
             
         self.stats += kwargs
         self.stats["Health"] += self.level

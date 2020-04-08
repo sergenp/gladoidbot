@@ -6,7 +6,7 @@ import discord
 
 from discord.ext import commands
 from Gladiator.Player import GladiatorNPC, GladiatorPlayer
-from Gladiator.GladiatorGame import GladiatorGame, GladiatorStats
+from Gladiator.GladiatorGame import GladiatorGame
 from Gladiator.Equipments.GladiatorEquipments import GladiatorEquipments
 from Gladiator.AttackInformation.GladiatorAttackInformation import GladiatorAttackInformation
 from Gladiator.Profile import GladiatorProfile
@@ -34,7 +34,7 @@ class Gladiator(commands.Cog):
     @commands.command()
     async def gamerules(self, ctx):
         channel = await ctx.message.author.create_dm()
-        await send_embed_message(channel, GladiatorGame.construct_information_message())
+        await send_embed_message(channel, GladiatorGame.construct_information_message(GladiatorProfile(ctx.message.author)))
 
     @commands.command()
     async def profile(self, ctx, userProfileToDisplay: discord.Member = None):
@@ -109,19 +109,15 @@ class Gladiator(commands.Cog):
                     crr_game = self.games[ctx.channel.id]
                     equip_inf = f"{crr_game.current_player} equips "
                     for equipment in profile.profile_stats["Inventory"]:
-                        crr_game.current_player.equip_item(
-                            equipment["id"], equipment["equipment_slot_id"])
+                        crr_game.current_player.equip_item(equipment["name"], equipment["type"])
                         try:
-                            unlock_attack = equipment["unlock_attack_id"]
+                            unlock_attack = equipment["unlock_attack_name"]
                             crr_game.current_player.unlock_attack_type(unlock_attack)
                         except KeyError:
                             pass
 
                         equip_inf += f"**{equipment['name']}** "
                     await ctx.send(equip_inf)
-                    crr_game.current_player.buff(
-                        GladiatorStats(profile.profile_stats["boosts"]))
-
                     # await send_embed_message(ctx, self.game_information["game_began_text"])
                     await self.gladiator_game_loop(ctx)
                 else:
@@ -169,18 +165,15 @@ class Gladiator(commands.Cog):
                         for profile in profiles:
                             equip_inf = f"{crr_game.current_player} equips "
                             for equipment in profile.profile_stats["Inventory"]:
-                                crr_game.current_player.equip_item(
-                                    equipment["id"], equipment["equipment_slot_id"])
-                            try:
-                                unlock_attack = equipment["unlock_attack_id"]
-                                crr_game.current_player.unlock_attack_type(unlock_attack)
-                            except KeyError:
-                                pass
+                                crr_game.current_player.equip_item(equipment["name"], equipment["type"])
+                                try:
+                                    unlock_attack = equipment["unlock_attack_name"]
+                                    crr_game.current_player.unlock_attack_type(unlock_attack)
+                                except KeyError:
+                                    pass
                             
-                            equip_inf += f"**{equipment['name']}** "
-                            
-                            crr_game.current_player.buff(
-                                GladiatorStats(profile.profile_stats["boosts"]))
+                                equip_inf += f"**{equipment['name']}** "
+
                             crr_game.switch_turns()
 
                         await send_embed_message(ctx, self.game_information["game_began_text"])
@@ -226,7 +219,7 @@ class Gladiator(commands.Cog):
                     reaction, _ = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
                     for i in game.current_player.permitted_attacks:
                         if i["reaction_emoji"] == reaction.emoji:
-                            await send_embed_message(ctx, game.attack(i["id"], i["damage_type_id"]))
+                            await send_embed_message(ctx, game.attack(i["name"]))
                             break
                     else:
                         await send_embed_message(ctx, game.attack())
@@ -252,7 +245,7 @@ class Gladiator(commands.Cog):
 
             elif isinstance(game.current_player, GladiatorNPC):
                 attack = game.current_player.get_random_attack()
-                await send_embed_message(ctx, game.attack(attack["id"], attack["damage_type_id"])) 
+                await send_embed_message(ctx, game.attack(attack["name"])) 
                 await self.gladiator_game_loop(ctx)
         else:
             #this means it is a pvp game and it ended

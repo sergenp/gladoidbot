@@ -8,12 +8,13 @@ class NPCFinder:
         for npc_path in glob.glob(os.path.join(os.path.dirname(os.path.abspath(__file__)), "*.json")):
             self.npcs.append(npc_path)
 
-    def get_npc_by_id(self, npc_id : int) -> str:
+    def get_npc_by_name(self, npc_name: str) -> str:
         '''
             return NPC file path given npc_id
         '''
         for npc in self.npcs:
+            print(npc)
             with open(npc) as f:
-                if json.load(f)["id"] == npc_id:
+                if json.load(f)["Name"] == npc_name:
                     return npc
         return None

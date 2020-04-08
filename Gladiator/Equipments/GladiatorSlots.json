@@ -1,21 +1,17 @@
 [
     {
-        "id": 1,
         "Slot Name": "Armor",
         "Equipment": null
     },
     {
-        "id": 2,
         "Slot Name": "Weapon",
         "Equipment": null
     },
     {
-        "id": 3,
         "Slot Name": "Ring",
         "Equipment": null
     },
     {
-        "id" : 4,
         "Slot Name" : "Shield",
         "Equipment" : null
     }

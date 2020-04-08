@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
+import json
+import os
 import discord
 from discord.ext import tasks, commands
 from CoronaData.corona_virus_updater import update_data, get_corona_news
-import datetime
 from Gladiator.UserProfileData.backup_user_data import download_profiles, backup_single_profile
-import json
-import os
 
 
 def get_prefix(client, message):
@@ -14,17 +13,6 @@ def get_prefix(client, message):
 
     return prefixes[str(message.guild.id)]
 
-
-bot = commands.Bot(command_prefix=get_prefix)
-
-startup_extensions = ["gen", "gladiator", "meme", "trivia", "corona"]
-
-for extension in startup_extensions:
-    try:
-        bot.load_extension(extension)
-    except Exception as e:
-        exc = '{}: {}'.format(type(e).__name__, e)
-        print('Failed to load extension {}\n{}'.format(extension, exc))
 
  # update corona virus data every x mins
 
@@ -39,22 +27,35 @@ def prefix_load_and_save(func):
     return wrapper
 
 @prefix_load_and_save
-def get_default_prefix(guild_id : int, **kwargs):
+def get_default_prefix(guild_id: int, **kwargs):
     prefix = kwargs.get("prefixes")
     prefix[str(guild_id)] = "h!"
     return prefix
 
 @prefix_load_and_save
-def change_prefix_and_save(guild_id : int, new_prefix : str, **kwargs):
+def change_prefix_and_save(guild_id: int, new_prefix: str, **kwargs):
     prefix = kwargs.get("prefixes")
     prefix[str(guild_id)] = new_prefix
     return prefix
 
 @prefix_load_and_save
-def remove_guild_from_prefix(guild_id : int, **kwargs):
+def remove_guild_from_prefix(guild_id: int, **kwargs):
     prefix = kwargs.get("prefixes")
     prefix.pop(str(guild_id))
     return prefix
+
+
+
+bot = commands.Bot(command_prefix=get_prefix)
+
+startup_extensions = ["gen", "gladiator", "meme", "trivia", "corona"]
+
+for extension in startup_extensions:
+    try:
+        bot.load_extension(extension)
+    except Exception as e:
+        exc = '{}: {}'.format(type(e).__name__, e)
+        print('Failed to load extension {}\n{}'.format(extension, exc))
 
 
 @tasks.loop(hours=0.2)
@@ -102,7 +103,7 @@ async def on_guild_remove(guild):
     remove_guild_from_prefix(guild.id)
     
 @bot.command(name="changeprefix")
-async def change_prefix(ctx, prefix : str):
+async def change_prefix(ctx, prefix: str):
     if ctx.message.author.permissions_in(ctx.channel).manage_channels:
         change_prefix_and_save(ctx.guild.id, prefix)
         await ctx.send(f"Changed bot prefix to {prefix}")
@@ -113,5 +114,4 @@ try:
     import bot_token
     bot.run(bot_token.token())
 except ModuleNotFoundError:
-    import os
     bot.run(os.environ['BOT_TOKEN'])

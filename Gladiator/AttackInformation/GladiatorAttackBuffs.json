@@ -1,7 +1,5 @@
 [
     {
-        "id": 0,
-        "damage_type_id": 0,
         "damage_type_name": "Physical",
         "name": "Thrust",
         "buffs": {
@@ -11,8 +9,6 @@
         "reaction_emoji": "\u0031\u20E3"
     },
     {
-        "id": 1,
-        "damage_type_id": 0,
         "damage_type_name": "Physical",
         "name": "Slash",
         "buffs": {
@@ -23,8 +19,6 @@
         "reaction_emoji": "\u0032\u20E3"
     },
     {
-        "id": 2,
-        "damage_type_id": 1,
         "damage_type_name": "Magical",
         "name": "Ice Shard",
         "buffs": {
@@ -35,8 +29,6 @@
         "reaction_emoji": "\u2744"
     },
     {
-        "id": 3,
-        "damage_type_id": 1,
         "damage_type_name": "Magical",
         "name": "Fireball",
         "buffs": {
@@ -48,8 +40,6 @@
         "reaction_emoji": "\uD83D\uDD25"
     },
     {
-        "id": 4,
-        "damage_type_id": 2,
         "damage_type_name": "Disease",
         "name": "Virus",
         "buffs": {
@@ -61,42 +51,33 @@
         "reaction_emoji": "\uD83E\uDDA0"
     },
     {
-        "id": 5,
-        "damage_type_id" : 0,
         "damage_type_name" : "Physical",
         "name" : "Bite",
         "buffs" : {},
         "reaction_emoji" : ""
     },
     {
-        "id" : 6,
-        "damage_type_id" : 0,
         "damage_type_name" : "Physical",
         "name" : "Scratch",
         "buffs" : {},
         "reaction_emoji" : ""
     },
     {
-        "id" : 7,
-        "damage_type_id" : 2,
         "damage_type_name" : "Disease",
         "name" : "Spit",
         "buffs" : {},
         "reaction_emoji" : ""
     },
     {
-        "id" : 8,
-        "damage_type_id" : 1,
         "damage_type_name" :"Magical",
         "name" : "Curse",
         "buffs" : {
             "Attack Chance" : 8,
             "Magic Damage" : 1
-        }
+        },
+        "reaction_emoji" : ""
     },
     {
-        "id" : 9,
-        "damage_type_id" : 0,
         "damage_type_name" : "Physical",
         "name" : "Backstab",
         "buffs" : {

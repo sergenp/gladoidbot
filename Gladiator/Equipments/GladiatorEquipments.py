@@ -9,43 +9,43 @@ class GladiatorEquipments:
         self.slots = json.load(open(os.path.join(os.path.dirname(
             os.path.abspath(__file__)), "GladiatorSlots.json"), "r"))
 
-    def find_equipment(self, equipment_id: int):
+    def find_equipment(self, equipment_name: str):
         for equipment in self.equipments:
-            if equipment["id"] == equipment_id:
+            if equipment["name"] == equipment_name:
                 return equipment
         return None
 
-    def get_equipment_with_slot_id(self, equipment_id: int, slot_id: int):
+    def get_equipment_with_slot_name(self, equipment_name: str, slot_name: str):
         for equipment in self.equipments:
-            if equipment["equipment_slot_id"] == slot_id and equipment["id"] == equipment_id:
+            if equipment["type"] == slot_name and equipment["name"] == equipment_name:
                 return equipment
         return None
 
-    def find_slot(self, slot_id: int):
+    def find_slot(self, slot_name: str):
         for slot in self.slots:
-            if slot["id"] == slot_id:
+            if slot["Slot Name"] == slot_name:
                 return slot
         return None
 
-    def update_slot(self, slot_id: int, equipment):
-        slot = self.find_slot(slot_id)
+    def update_slot(self, slot_name: str, equipment):
+        slot = self.find_slot(slot_name)
         slot["Equipment"] = equipment
 
     def get_all_slots(self):
         return self.slots
 
-    def get_all_equipments_from_slot_id(self, slot_id: int):
+    def get_all_equipments_from_slot_name(self, slot_name: str):
         equipments = []
         for equipment in self.equipments:
-            if equipment["equipment_slot_id"] == slot_id:
+            if equipment["name"] == slot_name:
                 equipments.append(equipment)
         return equipments
 
     def get_all_equipments(self):
         return self.equipments
 
-    def get_equipment_id_by_emoji(self, emoji, slot_id):
+    def get_equipment_name_by_emoji(self, emoji, slot_name):
         for eq in self.equipments:
-            if eq["reaction_emoji"] == emoji and eq["equipment_slot_id"] == slot_id:
-                return eq["id"]
+            if eq["reaction_emoji"] == emoji and eq["name"] == slot_name:
+                return eq["name"]
         return None
