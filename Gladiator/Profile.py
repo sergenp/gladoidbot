@@ -5,11 +5,10 @@ import os
 import json
 
 sys.path.append('..')
-from Gladiator.UserProfileData.backup_user_data import backup_single_profile
 from Gladiator.Equipments.GladiatorEquipments import GladiatorEquipments
-from MongoDB.Connector import GladiatorGameInformation
+from MongoDB.Connector import Connector
 
-MongoDatabase = GladiatorGameInformation()
+MongoDatabase = Connector()
 
 def save_profile(func):
     def wrapper(self, *args, **kwargs):
@@ -18,7 +17,6 @@ def save_profile(func):
                                 "UserProfileData", f"{self.profile_stats['_id']}.json")
         json.dump(self.profile_stats, open(
             filename, "w"), indent=4, sort_keys=True)
-        #backup_single_profile(filename)
         MongoDatabase.save_profile(self.profile_stats)
         return out
     return wrapper
@@ -35,12 +33,8 @@ class Profile():
         self.XP_TO_LEVEL_MULTIPLIER = profile_settings["XP_TO_LEVEL_MULTIPLIER"]
         self.XP_TO_LEVEL_WHEN_LOST_MULTIPLIER = profile_settings["XP_TO_LEVEL_WHEN_LOST_MULTIPLIER"]
         self.XP_GAIN_MULTIPLIER = profile_settings["XP_GAIN_MULTIPLIER"]
-        self.MAX_COIN_REWARD = profile_settings["MAX_COIN_REWARD"]
-        self.MIN_COIN_REWARD = profile_settings["MIN_COIN_REWARD"]
-        self.COIN_DECAY_CONSANT = profile_settings["COIN_DECAY_CONSTANT"]
         self.LEVEL_UP_DIFFICULTY_CONSTANT = profile_settings["LEVEL_UP_DIFFICULTY_CONSTANT"]
         self.LEVEL_UP_START_POINT = profile_settings["LEVEL_UP_START_POINT"]
-
         if os.path.exists(profile_path):
             self.profile_stats = json.load(open(profile_path, "r"))
         else:
@@ -50,9 +44,7 @@ class Profile():
     def create_default_profile(self, **kwargs):
         self.profile_stats = json.load(
             open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "UserProfileData", "default_profile.json"), "r"))
-        self.profile_stats["_id"] = self.profile_stats["_id"].format(
-            self.member.id)
-
+        self.profile_stats["_id"] = self.member.id
         self.profile_stats.update(kwargs)
 
     def get_level(self):
@@ -95,24 +87,21 @@ class GladiatorProfile(Profile):
                 del self.profile_stats["Inventory"][index]
                 break
         # add the equipment to the profile inventory
-        self.profile_stats["Inventory"].append(equipment)
+        self.profile_stats["Inventory"].append({"name" : equipment["name"], "type" : equipment["type"]})
         return f"Successfully bought **{equipment['name']}**. You have **{self.profile_stats['HutCoins']} HutCoins** left."
 
     def update_games(self, other_profile_level: int, won: bool, **kwargs) -> str:
         self.profile_stats["Games Played"] += 1
         if won:
             self.profile_stats["Games Won"] += 1
-            return self.gain_xp(other_profile_level, kwargs.get("XP", 0)) + self.reward_player(other_profile_level, kwargs.get("HutCoins", 0))
+            return self.gain_xp(other_profile_level, kwargs.get("XP", 0)) + self.reward_player(kwargs.get("HutCoins", 0))
        
         self.profile_stats["Games Lost"] += 1
         return self.gain_xp(other_profile_level/self.XP_TO_LEVEL_WHEN_LOST_MULTIPLIER)
 
     @save_profile
-    def reward_player(self, other_profile_level: int, bonus_coins: int = 0) -> str:
-        lvl_diff = self.get_level() - other_profile_level if self.get_level() - other_profile_level > -5 else -5
-        coin = math.ceil(self.MAX_COIN_REWARD-self.MIN_COIN_REWARD + 1 *
-                         math.exp(-self.COIN_DECAY_CONSANT*lvl_diff) + self.MIN_COIN_REWARD - 1) + bonus_coins
-        
+    def reward_player(self, bonus_coins: int = 0) -> str:
+        coin = random.randint(20, 75) + bonus_coins
         self.profile_stats["HutCoins"] += coin
         return f"**You earned {coin} HutCoins!**"
 

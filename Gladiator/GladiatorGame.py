@@ -15,7 +15,7 @@ from Gladiator.NPCs.NPCFinder import NPCFinder
 
 
 class GladiatorGame:
-    def __init__(self, player1: (GladiatorPlayer, GladiatorNPC), player2: (GladiatorPlayer, GladiatorNPC), spawn_type: dict = None):
+    def __init__(self, player1: (GladiatorPlayer, GladiatorNPC), player2: (GladiatorPlayer, GladiatorNPC), spawn_type: dict = None, **kwargs):
         self.player1 = player1
         self.player2 = player2
         self.current_player = self.player1
@@ -23,7 +23,7 @@ class GladiatorGame:
         with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "Settings", "GladiatorGameSettings.json")) as f:
             self.random_event_chance = json.load(f)["random_event_chance"]  # percent of random event chance
 
-        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "Events", "GladiatorDuelEvents.json")) as f:
+        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "Events", "Events.json")) as f:
             self.events = json.load(f)
 
         self.game_continues = True
@@ -36,13 +36,22 @@ class GladiatorGame:
         self.current_player = self.players[0]
 
     def next_turn(self):
+        turn_messages = []
         # switch the current players
         self.switch_turns()
         # return if the current_player is dead
+        dmg_per_turn = self.current_player.take_damage_per_turn()
+        if dmg_per_turn:
+            turn_messages.append(dmg_per_turn)
+
+        rand_ev = self.random_event()
+        if rand_ev:
+            turn_messages.append(rand_ev)
+
         if self.current_player.dead:
             self.game_continues = False
-        # return true because we successfully went to the other round
-        return self.game_continues
+        # return true because we successfully went to the other round, along with messages about the round
+        return self.game_continues, turn_messages
 
     def attack(self, attack_name=""):
         return self.players[0].attack(self.players[1], attack_name)
@@ -144,12 +153,6 @@ class GladiatorGame:
         npc_stats_path = NPCFinder().get_npc_by_name(random.choice(spawn_type["NPCs"]))
         # return a GladiatorNPC with the name of the json file, and the stats it has
         return GladiatorNPC(stats_path=npc_stats_path), spawn_type
-    
-    @staticmethod
-    def hunt_failed(gladiatorProfile: GladiatorProfile):
-        npc_events = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "Events", "GladiatorNPCEvents.json")))
-        rand_event = random.choice(npc_events)
-        return GladiatorGame.get_event(rand_event, gladiatorProfile)
         
     @staticmethod
     def construct_shop_message(page_name: int):

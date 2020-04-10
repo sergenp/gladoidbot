@@ -79,9 +79,8 @@ class Gladiator(commands.Cog):
                 return user == ctx.message.author and reaction.message.id == msg.id
 
             try:
-                reaction, _ = await self.bot.wait_for('reaction_add', timeout=180.0, check=check)
-                equipment_name = self.GladiatorEquipments.get_equipment_name_by_emoji(
-                    reaction.emoji, page_name)
+                reaction, _ = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
+                equipment_name = self.GladiatorEquipments.get_equipment_name_by_emoji(reaction.emoji, page_name)
                 await ctx.send(GladiatorProfile(ctx.message.author).buy_equipment(equipment_name))
 
             except asyncio.TimeoutError:
@@ -93,43 +92,36 @@ class Gladiator(commands.Cog):
             await ctx.send(self.game_information["game_is_already_commencing_text"])
             return
 
-        roll = random.randint(0, 100)
         profile = GladiatorProfile(ctx.message.author)
-        if self.settings["finding_npc_chance"] > roll:
-            random_spawn, spawn_type = GladiatorGame.hunt()
-            message = self.game_information["npc_spawned_text"].format(
-                random_spawn.level, random_spawn.name, spawn_type["Spawn Type"])
-            msg = await send_embed_message(ctx, content=message, image_url=random_spawn.image_path, image_local_file=True)
-            await msg.add_reaction("⚔️")
-            await msg.add_reaction("🏃")
+        random_spawn, spawn_type = GladiatorGame.hunt()
+        message = self.game_information["npc_spawned_text"].format(
+            random_spawn.level, random_spawn.name, spawn_type["Spawn Type"])
+        msg = await send_embed_message(ctx, content=message, image_url=random_spawn.image_path, image_local_file=True)
+        await msg.add_reaction("⚔️")
+        await msg.add_reaction("🏃")
 
-            def check(reaction, user):
-                return user == ctx.message.author and reaction.message.id == msg.id
+        def check(reaction, user):
+            return user == ctx.message.author and reaction.message.id == msg.id
 
-            try:
-                reaction, _ = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
-                if reaction.emoji == '⚔️':
-                    self.games.update({ctx.channel.id: GladiatorGame(
-                        GladiatorPlayer(ctx.message.author), random_spawn, spawn_type)})
-                    crr_game = self.games[ctx.channel.id]
-                    if len(profile.profile_stats["Inventory"]) > 0:
-                        equip_inf = f"{crr_game.current_player} equips "
-                        for equipment in profile.profile_stats["Inventory"]:
-                            crr_game.current_player.equip_item(equipment["name"], equipment["type"])
-                            if equipment["unlock_attack_name"]:
-                                crr_game.current_player.unlock_attack_type(equipment["unlock_attack_name"])
-                            equip_inf += f"**{equipment['name']}** "
-                        await ctx.send(equip_inf)
-                    await self.gladiator_game_loop(ctx)
-                else:
-                    await self.hunt(ctx)
+        try:
+            reaction, _ = await self.bot.wait_for('reaction_add', timeout=20.0, check=check)
+            if reaction.emoji == '⚔️':
+                self.games.update({ctx.channel.id: GladiatorGame(
+                    GladiatorPlayer(ctx.message.author), random_spawn, spawn_type)})
+                crr_game = self.games[ctx.channel.id]
+                if len(profile.profile_stats["Inventory"]) > 0:
+                    equip_inf = f"{crr_game.current_player} equips "
+                    for equipment in profile.profile_stats["Inventory"]:
+                        crr_game.current_player.equip_item(equipment["name"], equipment["type"])
+                        equip_inf += f"**{equipment['name']}** "
+                    await ctx.send(equip_inf)
+                await self.gladiator_game_loop(ctx)
+            else:
+                await self.hunt(ctx)
 
-            except asyncio.TimeoutError:
-                return
-        else:
-            msg = GladiatorGame.hunt_failed(
-                GladiatorProfile(ctx.message.author))
-            await send_embed_message(ctx, content=msg)
+        except asyncio.TimeoutError:
+            await msg.delete()
+            return
 
     @commands.command()
     async def challenge(self, ctx, userToChallenge: discord.Member = None):
@@ -142,12 +134,12 @@ class Gladiator(commands.Cog):
                 await ctx.send(self.game_information["game_challenge_bot_text"].format(ctx.message.author.mention))
                 return
                 
-            elif userToChallenge == ctx.message.author:
+            if userToChallenge == ctx.message.author:
                 await ctx.send(self.game_information["challenging_self_text"])
                 return
 
             msg = await ctx.send(self.game_information["game_challenge_text"].format(
-                ctx.message.author.mention, userToChallenge.mention, '👍', '👎'), delete_after=60.0)
+                ctx.message.author.mention, userToChallenge.mention, '👍', '👎'), delete_after=20.0)
             await msg.add_reaction('👍')
             await msg.add_reaction('👎')
 
@@ -155,7 +147,7 @@ class Gladiator(commands.Cog):
                 return user == userToChallenge and reaction.message.id == msg.id
 
             try:
-                reaction, user = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
+                reaction, user = await self.bot.wait_for('reaction_add', timeout=20.0, check=check)
                 if reaction.emoji == '👍':
                     self.games.update({ctx.channel.id: GladiatorGame(GladiatorPlayer(
                         ctx.message.author), GladiatorPlayer(userToChallenge))})
@@ -165,16 +157,11 @@ class Gladiator(commands.Cog):
 
                     crr_game = self.games[ctx.channel.id]
                     for profile in profiles:
-                        equip_inf = f"{crr_game.current_player} equips "
-                        for equipment in profile.profile_stats["Inventory"]:
-                            crr_game.current_player.equip_item(equipment["name"], equipment["type"])
-                            try:
-                                unlock_attack = equipment["unlock_attack_name"]
-                                crr_game.current_player.unlock_attack_type(unlock_attack)
-                            except KeyError:
-                                pass
-                        
-                            equip_inf += f"**{equipment['name']}** "
+                        if profile.profile_stats["Inventory"]:
+                            equip_inf = f"{crr_game.current_player} equips "
+                            for equipment in profile.profile_stats["Inventory"]:
+                                crr_game.current_player.equip_item(equipment["name"], equipment["type"])
+                                equip_inf += f"**{equipment['name']}** "
 
                         crr_game.switch_turns()
 
@@ -194,15 +181,12 @@ class Gladiator(commands.Cog):
 
     async def gladiator_game_loop(self, ctx):
         game = self.games[ctx.channel.id]
-        if game.next_turn():
-            dmg_per_turn = game.current_player.take_damage_per_turn()
-            if dmg_per_turn:
-                await send_embed_message(ctx, dmg_per_turn)              
-            if isinstance(game.current_player, GladiatorPlayer):
-                rand_ev = game.random_event()
-                if rand_ev:
-                    await send_embed_message(ctx, rand_ev)
+        game_continues, messages = game.next_turn()
+        if game_continues:
+            for msg in messages:
+                await send_embed_message(ctx, msg)
 
+            if isinstance(game.current_player, GladiatorPlayer):
                 attack_msg_text = self.game_information["game_turn_text"].format(
                     game.current_player)
 
@@ -218,7 +202,7 @@ class Gladiator(commands.Cog):
                     return user == game.current_player.member and reaction.message.id == attack_msg.id
 
                 try:
-                    reaction, _ = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
+                    reaction, _ = await self.bot.wait_for('reaction_add', timeout=20.0, check=check)
                     for i in game.current_player.permitted_attacks:
                         if i["reaction_emoji"] == reaction.emoji:
                             await send_embed_message(ctx, game.attack(i["name"]))
@@ -230,19 +214,7 @@ class Gladiator(commands.Cog):
                     await self.gladiator_game_loop(ctx)
 
                 except asyncio.TimeoutError:
-                    # means that this is a duel between players
-                    if isinstance(game.players[1], discord.Member):
-                        await ctx.send(self.game_information["game_end_via_timeout_text"].format(game.players[1]))
-                        loser_profile = GladiatorProfile(game.current_player.member)
-                        winner_profile = GladiatorProfile(game.players[1].member)
-                        winner_msg = winner_profile.update_games(loser_profile.get_level(), won=True)
-
-                        await send_embed_message(ctx, content=winner_msg, author_name=winner_profile.member.name, author_icon_link=winner_profile.member.avatar_url)
-                        await send_embed_message(ctx, content=loser_profile.update_games(winner_profile.get_level(), won=False), author_name=loser_profile.member.name, author_icon_link=loser_profile.member.avatar_url)
-                    # this means the current player is non NPC and timedout
-                    else:
-                        await ctx.send(self.game_information["game_end_via_timeout_text"].format(game.players[1].name))
-
+                    await ctx.send(self.game_information["game_end_via_timeout_text"])
                     del self.games[ctx.channel.id]
 
             elif isinstance(game.current_player, GladiatorNPC):

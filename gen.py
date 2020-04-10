@@ -1,4 +1,3 @@
-import discord
 from discord.ext import commands
 from util import send_embed_message, search_youtube
 from googletrans import Translator
@@ -43,7 +42,7 @@ class General(commands.Cog):
         if amount > 10:
             amount = 10
 
-        for i in range(amount):
+        for _ in range(amount):
             data = requests.get("https://api.quotable.io/random").json()
             await send_embed_message(ctx, author_name=data["author"], content=data["content"])
     

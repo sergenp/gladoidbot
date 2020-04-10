@@ -4,12 +4,14 @@ import os
 import discord
 from discord.ext import tasks, commands
 from CoronaData.corona_virus_updater import update_data, get_corona_news
-from Gladiator.UserProfileData.backup_user_data import download_profiles, backup_single_profile
+from MongoDB.Connector import Connector
 
+MongoDatabase = Connector()
+MongoDatabase.download_all_collections_to_local()
 
 def get_prefix(client, message):
-    with open("prefixes.json", "r") as f:
-        prefixes = json.load(f)
+    with open("guild_settings.json", "r") as f:
+        prefixes = json.load(f)["prefixes"]
 
     return prefixes[str(message.guild.id)]
 
@@ -18,12 +20,13 @@ def get_prefix(client, message):
 
 def prefix_load_and_save(func):
     def wrapper(*args, **kwargs):
-        with open("prefixes.json", "r") as f:
+        with open("guild_settings.json", "r") as f:
             prefixes = json.load(f)
-        new_prefix = func(*args, prefixes=prefixes, **kwargs)
-        with open("prefixes.json", "w") as t:
-            json.dump(new_prefix, t, indent=4)
-        backup_single_profile(os.path.join(os.path.dirname(os.path.abspath(__file__)), "prefixes.json"))
+        new_prefixes = func(*args, prefixes=prefixes["prefixes"], **kwargs)
+        prefixes["prefixes"] = new_prefixes 
+        with open("guild_settings.json", "w") as t:
+            json.dump(prefixes, t, indent=4)
+        MongoDatabase.save_guild_settings(prefixes)
     return wrapper
 
 @prefix_load_and_save
@@ -61,8 +64,10 @@ for extension in startup_extensions:
 @tasks.loop(hours=0.2)
 async def corona_update_task():
     news_channels = {}
-    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "CoronaData", "guild_channel_data.json")) as f:
-        news_channels = json.load(f)
+
+    with open("guild_settings.json", "r") as f:
+        news_channels = json.load(f)["corona_news_channel"]
+
     print("Updating coronavirus data")
     try:
         update_data()
@@ -89,7 +94,6 @@ async def corona_update_task():
 async def on_ready():
     print(f"Connected!\nName: {bot.user.name}\nId: {bot.user.id}\n")
     await bot.change_presence(activity=discord.Game(name=f"with {len(bot.guilds)} guilds. h!help for commands"))
-    download_profiles()
     corona_update_task.start()
 
 @bot.event

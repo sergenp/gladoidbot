@@ -150,6 +150,8 @@ class GladiatorPlayer(Player):
                 if equipment["type"] == slot["Slot Name"]:
                     self.equipment_information.update_slot(slot["Slot Name"], equipment)
                     self.stats += equipment["buffs"]
+                    if equipment["unlock_attack_name"]:
+                        self.unlock_attack_type(equipment["unlock_attack_name"])
                     debuff = self.attack_information.find_turn_debuff(equipment["debuff_name"])
                     if debuff:
                         self.stats += debuff["debuff_stats"]

@@ -1,11 +1,8 @@
-import discord
 from discord.ext import commands
-import requests
 from util import send_embed_message
 import os
 import json
-from Gladiator.UserProfileData.backup_user_data import backup_single_profile
-
+from MongoDB.Connector import Connector
 
 class Corona(commands.Cog):
     def __init__(self, bot):
@@ -50,13 +47,14 @@ class Corona(commands.Cog):
     @commands.command(name="setnewschannel", pass_context=True, description="Sets the current channel as the corona news channel.\nBot will send news about corona virus to this channel after using this command")
     async def set_channel(self, ctx):
         if ctx.message.author.permissions_in(ctx.channel).manage_channels:
+            MongoDatabase = Connector()
             news_channel_data_path = os.path.join(os.path.dirname(
-                os.path.abspath(__file__)), "CoronaData", "guild_channel_data.json")
+                os.path.abspath(__file__)), "guild_settings.json")
             data = json.load(open(news_channel_data_path, "r"))
-            data[str(ctx.guild.id)] = ctx.channel.id
+            data["corona_news_channel"][str(ctx.guild.id)] = ctx.channel.id
             with open(news_channel_data_path, "w") as f:
                 json.dump(data, f)
-            backup_single_profile(news_channel_data_path)
+            MongoDatabase.save_guild_settings(data)
             await ctx.send("Succesfully set this channel to be the corona news channel")
         else:
             await ctx.send("You don't have required permissions to do this action.")
