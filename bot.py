@@ -117,5 +117,5 @@ async def change_prefix(ctx, prefix: str):
 try:
     import bot_token
     bot.run(bot_token.token())
-except ModuleNotFoundError:
+except (ModuleNotFoundError, ImportError):
     bot.run(os.environ['BOT_TOKEN'])

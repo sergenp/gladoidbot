@@ -7,7 +7,7 @@ sys.path.append("..")
 try:
     from MongoDB import mongo_settings
     CONNECTION_STRING = mongo_settings.CONNECTION_STRING
-except ModuleNotFoundError:
+except (ModuleNotFoundError, ImportError):
     CONNECTION_STRING = os.environ["MongoDB_CONNECTION_STRING"]
     
 class Connector():
