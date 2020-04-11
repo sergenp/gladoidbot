@@ -14,6 +14,7 @@ class Player:
     def __init__(self, stats_path):
         self.dead = False
         self.debuffs = []
+        self.permitted_attacks = []
         self.json_dict = json.load(open(stats_path, "r"))
         self.stats = GladiatorStats(self.json_dict["Stats"])
         self.attack_information = GladiatorAttackInformation()
@@ -81,7 +82,7 @@ class Player:
         self.buff(attack["buffs"])
         inf = self.damage_enemy(otherPlayer, attack["damage_type_name"])
         self.buff(attack["buffs"], buff_type="debuff")
-        return f"{self} Used {attack['name']}\n" + inf
+        return f"{self} Used {attack['name']} {attack['reaction_emoji']}\n" + inf
 
 
     def die(self):
@@ -175,8 +176,6 @@ class GladiatorNPC(Player):
         self.image_path = os.path.join(os.path.dirname(os.path.abspath(
             __file__)), "NPCs", "Images", random.choice(self.json_dict["Images Path"]))
         self.level = random.randint(self.json_dict["Min Level"], self.json_dict["Max Level"])
-        
-        self.permitted_attacks = []
         for attack_name in self.json_dict["Attacks"]:
             self.permitted_attacks.append(
                 self.attack_information.find_attack_type(attack_name))

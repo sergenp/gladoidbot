@@ -89,7 +89,6 @@ async def corona_update_task():
         print(f"Failed to complete the task and error occurred\n{e}")
         return
 
-
 @bot.event
 async def on_ready():
     print(f"Connected!\nName: {bot.user.name}\nId: {bot.user.id}\n")
@@ -116,6 +115,6 @@ async def change_prefix(ctx, prefix: str):
 
 try:
     import bot_token
-    bot.run(bot_token.token())
+    bot.run(bot_token.real_token())
 except (ModuleNotFoundError, ImportError):
     bot.run(os.environ['BOT_TOKEN'])
