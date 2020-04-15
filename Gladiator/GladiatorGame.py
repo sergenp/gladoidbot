@@ -15,11 +15,10 @@ from Gladiator.NPCs.NPCFinder import NPCFinder
 
 
 class GladiatorGame:
-    def __init__(self, player1: (GladiatorPlayer, GladiatorNPC), player2: (GladiatorPlayer, GladiatorNPC), spawn_type: dict = None, **kwargs):
-        self.player1 = player1
-        self.player2 = player2
-        self.current_player = self.player1
-        self.players = collections.deque([self.player1, self.player2])
+    def __init__(self, players: [GladiatorPlayer or GladiatorNPC], spawn_type: dict = None, **kwargs):
+        self.current_player = players[0]
+        self.next_player = players[-1]
+        self.players = collections.deque(players)
         with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "Settings", "GladiatorGameSettings.json")) as f:
             self.random_event_chance = json.load(f)["random_event_chance"]  # percent of random event chance
 
@@ -32,14 +31,14 @@ class GladiatorGame:
             self.bonus_awards = spawn_type["Spawn Bonuses"]
 
     def switch_turns(self):
-        self.players.appendleft(self.players.pop())
-        self.current_player = self.players[0]
+        self.current_player = self.players.pop()
+        self.next_player = self.players[-1]
+        self.players.appendleft(self.current_player)
 
     def next_turn(self):
         turn_messages = []
         # switch the current players
         self.switch_turns()
-        # return if the current_player is dead
         dmg_per_turn = self.current_player.take_damage_per_turn()
         if dmg_per_turn:
             turn_messages.append(dmg_per_turn)
@@ -54,7 +53,7 @@ class GladiatorGame:
         return self.game_continues, turn_messages
 
     def attack(self, attack_name=""):
-        return self.players[0].attack(self.players[1], attack_name)
+        return self.current_player.attack(self.next_player, attack_name)
 
     @staticmethod
     def construct_information_message(gladiator_profile: GladiatorProfile):
@@ -137,7 +136,7 @@ class GladiatorGame:
         roll = random.randint(0, 100)
         if self.random_event_chance > roll:
             event = random.choice(self.events)
-            player_to_be_affected = random.choice([self.player1, self.player2])
+            player_to_be_affected = random.choice(self.players)
             return GladiatorGame.get_event(event, player_to_be_affected)
     
     @staticmethod

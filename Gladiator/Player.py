@@ -18,8 +18,7 @@ class Player:
         self.json_dict = json.load(open(stats_path, "r"))
         self.stats = GladiatorStats(self.json_dict["Stats"])
         self.attack_information = GladiatorAttackInformation()
-        self.information = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                                       "Settings", "GladiatorGameSettings.json"), "r"))["game_information_texts"]
+        self.information = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "Settings", "GladiatorGameSettings.json"), "r"))["game_information_texts"]
 
     def take_damage(self, damage, damage_type):
         try:
@@ -122,6 +121,10 @@ class Player:
                     self.stats['Health'] -= debuff["debuff_stats"]["Debuff Damage"]
                     inf += self.information["take_damage_per_turn_from_debuffs_text"].format(
                         self, debuff["debuff_stats"]["Debuff Damage"], debuff["debuff_stats"]["Debuff Type"], self.stats["Health"], debuff["lasts_turn_count"])
+                    
+                    if self.stats["Health"] <= 0:
+                        inf += "\n" + self.die()
+
                 else:
                     del self.debuffs[index]
 
@@ -134,7 +137,6 @@ class GladiatorPlayer(Player):
         super().__init__(stats_path=os.path.join(os.path.dirname(
             os.path.abspath(__file__)), "UserProfileData", f"{member.id}.json"))
         self.member = member
-        self.attack_information = GladiatorAttackInformation()
         self.equipment_information = GladiatorEquipments()
         self.permitted_attacks = self.attack_information.attack_types[:INITIAL_ATTACK_TYPES_COUNT]
 
@@ -184,7 +186,7 @@ class GladiatorNPC(Player):
             self.stats += self.attack_information.find_turn_debuff(debuff_name)["debuff_stats"]
             
         self.stats += kwargs
-        self.stats["Health"] += self.level
+        self.stats["Health"] += int(self.level/1.5)
     
     def get_random_attack(self):
         return random.choice(self.permitted_attacks)

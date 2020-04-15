@@ -7,7 +7,7 @@ from CoronaData.corona_virus_updater import update_data, get_corona_news
 from MongoDB.Connector import Connector
 
 MongoDatabase = Connector()
-MongoDatabase.download_all_collections_to_local()
+MongoDatabase.download_gladiator_files_to_local()
 
 def get_prefix(client, message):
     with open("guild_settings.json", "r") as f:
@@ -115,6 +115,6 @@ async def change_prefix(ctx, prefix: str):
 
 try:
     import bot_token
-    bot.run(bot_token.real_token())
+    bot.run(bot_token.token())
 except (ModuleNotFoundError, ImportError):
     bot.run(os.environ['BOT_TOKEN'])

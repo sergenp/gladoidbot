@@ -10,7 +10,7 @@ try:
 except (ModuleNotFoundError, ImportError):
     CONNECTION_STRING = os.environ["MongoDB_CONNECTION_STRING"]
     
-class Connector():
+class Connector:
     def __init__(self):
         self.client = pymongo.MongoClient(CONNECTION_STRING).HutAssistant
 
@@ -19,6 +19,9 @@ class Connector():
 
     def save_profile(self, profile_dict: dict):
         self.client.UserProfiles.find_one_and_replace({'_id' : profile_dict['_id']}, profile_dict, upsert=True)
+
+    def save_messages(self, message_dict: dict):
+        self.client.GladiatorGameMessages.insert_one(message_dict)
 
     def get_all_profiles(self) -> list:
         return list(self.client.UserProfiles.find())
@@ -57,8 +60,9 @@ class Connector():
         guild_settings.pop("_id")
         return guild_settings
 
-    def download_all_collections_to_local(self):
-        gladiator_path = os.path.abspath(os.path.join(os.path.dirname( __file__ ), "..", "Gladiator"))
+    def download_gladiator_files_to_local(self):
+        parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+        gladiator_path = os.path.join(parent_dir, "Gladiator")
         user_prof = os.path.join(gladiator_path, "UserProfileData")
         attack_inf = os.path.join(gladiator_path, "AttackInformation")
         events = os.path.join(gladiator_path, "Events")
@@ -66,7 +70,6 @@ class Connector():
         npcs = os.path.join(gladiator_path, "NPCs")
         npc_setting = os.path.join(npcs, "Settings")
         game_setting = os.path.join(gladiator_path, "Settings")
-        parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
         json.dump(self.get_attack_information(), open(os.path.join(attack_inf, "GladiatorAttackBuffs.json"), "w"), indent=4)
         json.dump(self.get_damage_types(), open(os.path.join(attack_inf, "GladiatorDamageTypes.json"),"w"), indent=4)

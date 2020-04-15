@@ -25,7 +25,10 @@ class Corona(commands.Cog):
                 return
 
             def convert_to_int(value):
-                return str(int(country_data[value])) if country_data[value] is not None else 'None'
+                try:
+                    return str(int(country_data[value])) if country_data[value] is not None else 'None'
+                except ValueError:
+                    return country_data[value]
 
             msg = f"Total Cases : **{convert_to_int('TotalCases')}**\n"
             msg += f"New Cases : **{country_data['NewCases']}**\n"
