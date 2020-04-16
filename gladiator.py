@@ -3,6 +3,7 @@ import os
 import asyncio
 import discord
 from datetime import datetime
+import textwrap
 
 from discord.ext import commands
 from Gladiator.Player import GladiatorNPC, GladiatorPlayer
@@ -35,7 +36,8 @@ class Gladiator(commands.Cog):
     @commands.command()
     async def gamerules(self, ctx):
         channel = await ctx.message.author.create_dm()
-        await send_embed_message(channel, GladiatorGame.construct_information_message(GladiatorProfile(ctx.message.author)))
+        for line in textwrap.wrap(GladiatorGame.construct_information_message(GladiatorProfile(ctx.message.author)), width=1500, replace_whitespace=False, expand_tabs=False, drop_whitespace=False,placeholder="..."):
+            await send_embed_message(channel, line)
 
     @commands.command()
     async def profile(self, ctx, userProfileToDisplay: discord.Member = None):
