@@ -24,18 +24,20 @@ class General(commands.Cog):
         else:
             await ctx.send("I couldn't find anything")
 
-    @commands.command(pass_context=True, description="Example usage:\n h!translate \'I love you\' german")
-    async def translate(self, ctx, toTranslate: str = "", toTranslateLanguage: str = "en"):
+    @commands.command(pass_context=True, description="Translates given text to english ")
+    async def translate(self, ctx, *args):
+        toTranslate = ""
+        for arg in args:
+            if isinstance(arg, str):
+                toTranslate += arg + " "
+
         if toTranslate == "":
             await send_embed_message(ctx, "Gimme something to translate")
-        try:
-            detect_language = TRANSLATOR.detect(toTranslate).lang
-            print(f"Language detected from {toTranslate}, {detect_language}")
-            translated = TRANSLATOR.translate(
-                toTranslate, src=detect_language, dest=toTranslateLanguage).text
-            await send_embed_message(ctx, f"This:\n{toTranslate.upper()}\nMeans:\n{translated.upper()}")
-        except ValueError:
-            await send_embed_message(ctx, "Error, type h!help translate")
+            return 
+        
+        detect_language = TRANSLATOR.detect(toTranslate).lang
+        translated = TRANSLATOR.translate(toTranslate, src=detect_language, dest="en").text
+        await send_embed_message(ctx, title=f"Language detected {detect_language.title()}", content=f"This:\n{toTranslate.title()}\nMeans:\n{translated.title()}")
 
     @commands.command()
     async def quote(self, ctx, amount=1):
@@ -46,3 +48,6 @@ class General(commands.Cog):
             data = requests.get("https://api.quotable.io/random").json()
             await send_embed_message(ctx, author_name=data["author"], content=data["content"])
     
+    @commands.command(description="Returns the invite link of the bot")
+    async def invite(self, ctx):
+        await ctx.send("https://discordapp.com/api/oauth2/authorize?client_id=598077927577616384&permissions=117824&scope=bot")
