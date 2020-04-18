@@ -44,7 +44,7 @@ class Profile():
     def create_default_profile(self, **kwargs):
         self.profile_stats = json.load(
             open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "UserProfileData", "default_profile.json"), "r"))
-        self.profile_stats["_id"] = self.member.id
+        self.profile_stats["_id"] = str(self.member.id)
         self.profile_stats.update(kwargs)
 
     def get_level(self):
