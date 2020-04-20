@@ -19,15 +19,5 @@ async def send_embed_message(ctx, content="", title="", colour=0x0080c0, thumbna
             em.add_field(name=k["name"], value=k["value"], inline=k["inline"])
     if isinstance(ctx, DMChannel):
         return await ctx.send(embed=em, file=f)
-    else:
-        return await ctx.message.channel.send(embed=em, file=f)
-
-
-def search_youtube(searchStr):
-    command = f"youtube-dl -e --get-id \"ytsearch1:{searchStr}\""
-    a = subprocess.check_output(
-        command, shell=True).decode("utf-8").split("\n")
-    try:
-        return f"https://www.youtube.com/watch?v={a[1]}"
-    except IndexError:
-        return None
+    
+    return await ctx.message.channel.send(embed=em, file=f)

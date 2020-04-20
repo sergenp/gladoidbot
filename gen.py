@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from util import send_embed_message, search_youtube
+from util import send_embed_message
 from googletrans import Translator
 import requests
 
@@ -14,16 +14,6 @@ def setup(bot):
 class General(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-
-    @commands.command(name="ysearch")
-    async def youtubeSearch(self, ctx, *searchStr):
-        searchStr = ' '.join(map(str, searchStr))
-        await ctx.send(f"Searching  \'{searchStr}\' on youtube...")
-        video_link = search_youtube(searchStr)
-        if video_link != None:
-            await ctx.send(f"Found : {video_link}")
-        else:
-            await ctx.send("I couldn't find anything")
 
     @commands.command(pass_context=True, description="Translates given text to english ")
     async def translate(self, ctx, *args):
