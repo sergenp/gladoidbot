@@ -1,6 +1,7 @@
 ## The Hut Assistant
 
-This README contains how to add the bot to your server, and explains its commands.
+This README contains how to add the bot to your server and what does it do. Feel free to email me if you want to help me develop this bot.
+
 
 ### How Do I add this bot to my server?
 
@@ -33,8 +34,9 @@ In future, I am planning to add more NPCs to the game.
 | General   |                                                                                                    |
 |-----------|----------------------------------------------------------------------------------------------------|
 | quote     | Gives out a random quote from a random person from history                                         |
-| translate | Example usage: h!translate 'I love you' german  h!translate [toTranslate] [toTranslateLanguage=en] |
-| ysearch   | Searchs given strings in youtube and writes out the first video it finds                           |
+| avatar    | Gives out an embed containing the mentioned user's avatar h!avatar @sergenp | 
+| invite    | Gives out the invite link of the bot |
+| translate | Translates given arguments to english |
 
 | Gladiator |                                                                                                                                        |
 |-----------|----------------------------------------------------------------------------------------------------------------------------------------|
@@ -72,15 +74,15 @@ In future, I am planning to add more NPCs to the game.
 An example of NPC spawning using this command
 
 
-![](Images/Hunt.png)
+![](https://raw.githubusercontent.com/sergenp/the_hut_bot/master/Images/Hunt.png)
 
 
 An example fight
 
-![](Images/Hunt1.png)
+![](https://github.com/sergenp/the_hut_bot/blob/master/Images/Hunt1.png?raw=true)
 
-![](Images/Hunt2.png)
+![](https://github.com/sergenp/the_hut_bot/blob/master/Images/Hunt2.png?raw=true)
 
-![](Images/Hunt3.png)
+![](https://github.com/sergenp/the_hut_bot/blob/master/Images/Hunt3.png?raw=true)
 
-![](Images/Hunt4.png)
+![](https://github.com/sergenp/the_hut_bot/blob/master/Images/Hunt4.png?raw=true)
