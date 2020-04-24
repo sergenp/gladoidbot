@@ -11,10 +11,13 @@ class Meme(commands.Cog):
 
     @commands.command(description="Gives out a random meme")
     async def meme(self, ctx):
-        json_data = requests.get("https://meme-api.herokuapp.com/gimme").json()
-        await send_embed_message(
-            ctx=ctx, content=f"r/{json_data['subreddit']}\n{json_data['postLink']}", title=json_data['title'], image_url=json_data['url'])
-    
+        if ctx.channel.is_nsfw():
+            json_data = requests.get("https://meme-api.herokuapp.com/gimme").json()
+            await send_embed_message(
+                ctx=ctx, content=f"r/{json_data['subreddit']}\n{json_data['postLink']}", title=json_data['title'], image_url=json_data['url'])
+        else:
+            await ctx.send("This commands is only available in nsfw channels")
+        
     @commands.command(name="dadjoke", description="Gives out a random dad joke")
     async def dad_joke(self, ctx):
         headers = {'Accept': 'text/plain'}
@@ -33,8 +36,7 @@ class Meme(commands.Cog):
             name = ctx.message.author.name
         
         name = name.replace(" ", "%20")
-        sex = gender.lower()
-        await send_embed_message(ctx=ctx, image_url=f"https://belikebill.ga/billgen-API.php?default=1&name={name}&sex={sex}")
+        await send_embed_message(ctx=ctx, image_url=f"https://belikebill.ga/billgen-API.php?default=1&name={name}&sex={gender.lower()}")
 
     @commands.command(description="Gives out a random star wars quote")
     async def swq(self, ctx):

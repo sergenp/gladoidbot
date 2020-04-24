@@ -47,12 +47,8 @@ def remove_guild_from_prefix(guild_id: int, **kwargs):
     prefix.pop(str(guild_id))
     return prefix
 
-
-
 bot = commands.Bot(command_prefix=get_prefix)
-
 startup_extensions = ["gen", "gladiator", "meme", "trivia", "corona"]
-
 for extension in startup_extensions:
     try:
         bot.load_extension(extension)
@@ -92,7 +88,7 @@ async def corona_update_task():
 @bot.event
 async def on_ready():
     print(f"Connected!\nName: {bot.user.name}\nId: {bot.user.id}\n")
-    await bot.change_presence(activity=discord.Game(name=f"www.hutbot.works"))
+    await bot.change_presence(activity=discord.Game(name="www.hutbot.works"))
     corona_update_task.start()
 
 @bot.event
@@ -109,7 +105,7 @@ async def change_prefix(ctx, prefix: str):
         change_prefix_and_save(ctx.guild.id, prefix)
         await ctx.send(f"Changed bot prefix to {prefix}")
     else:
-        await ctx.send(f"You don't have permission to do this action.")
+        await ctx.send("You don't have permission to do this action.")
 
 try:
     import bot_token
