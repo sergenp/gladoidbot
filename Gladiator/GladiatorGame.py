@@ -71,7 +71,7 @@ class GladiatorGame:
         with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "AttackInformation", "GladiatorDamageTypes.json")) as f:
             damage_types = json.load(f)
 
-        information_text = settings["game_information_texts"]["title_text"]
+        information_text = settings["game_information_texts"]["title_text"] + "\n"
         for k in gladiator_stats.keys():
             if "Chance" in k:
                 information_text += f"{k} = %{gladiator_stats[k]}\n"

@@ -104,7 +104,7 @@ class Gladiator(commands.Cog):
         random_spawn, spawn_type = GladiatorGame.hunt()
         message = self.game_information["npc_spawned_text"].format(
             random_spawn.level, random_spawn.name, spawn_type["Spawn Type"])
-        msg = await send_embed_message(ctx, content=message, image_url=random_spawn.image_path, image_local_file=True)
+        msg = await send_embed_message(ctx, content=message, image_url=random_spawn.image_path)
         await msg.add_reaction("⚔️")
         await msg.add_reaction("🏃")
 
@@ -171,8 +171,8 @@ class Gladiator(commands.Cog):
                             for equipment in profile.profile_stats["Inventory"]:
                                 crr_game.current_player.equip_item(equipment["name"], equipment["type"])
                                 equip_inf += f"**{equipment['name']}** "
-                                await ctx.send(equip_inf)
-                                self.games[ctx.channel.id]["Game Messages"].add_msg(equip_inf)
+                            await ctx.send(equip_inf)
+                            self.games[ctx.channel.id]["Game Messages"].add_msg(equip_inf)
                         crr_game.switch_turns()
 
                     await send_embed_message(ctx, self.game_information["game_began_text"])
@@ -247,8 +247,8 @@ class Gladiator(commands.Cog):
                 await ctx.send(self.game_information["game_over_text"].format(game.current_player, game.current_player))
                 loser_profile = GladiatorProfile(game.current_player.member)
                 winner_profile = GladiatorProfile(game.players[1].member)
-                winner_msg = winner_profile.update_games(loser_profile.get_level(), won=True)
-                loser_msg = loser_profile.update_games(winner_profile.get_level(), won=False)
+                winner_msg = winner_profile.member.name + " " + winner_profile.update_games(loser_profile.get_level(), won=True)
+                loser_msg = loser_profile.member.name + " " + loser_profile.update_games(winner_profile.get_level(), won=False)
                 await send_embed_message(ctx, content=winner_msg, author_name=winner_profile.member.name, author_icon_link=winner_profile.member.avatar_url)
                 await send_embed_message(ctx, content=loser_msg, author_name=loser_profile.member.name, author_icon_link=loser_profile.member.avatar_url)
                 game_messages.add_msg([winner_msg, loser_msg])

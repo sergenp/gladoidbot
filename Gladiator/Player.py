@@ -175,8 +175,7 @@ class GladiatorNPC(Player):
     def __init__(self, stats_path, **kwargs):
         super().__init__(stats_path)
         self.name = self.json_dict["Name"]
-        self.image_path = os.path.join(os.path.dirname(os.path.abspath(
-            __file__)), "NPCs", "Images", random.choice(self.json_dict["Images Path"]))
+        self.image_path = f"https://thehutbotweb.herokuapp.com/npcimage?name={self.name}"
         self.level = random.randint(self.json_dict["Min Level"], self.json_dict["Max Level"])
         for attack_name in self.json_dict["Attacks"]:
             self.permitted_attacks.append(
