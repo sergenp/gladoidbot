@@ -57,6 +57,16 @@ class Profile():
  
     def calculate_xp_for_next_level(self):
         return round(self.XP_TO_LEVEL_MULTIPLIER*(self.get_level()**2)*self.LEVEL_UP_DIFFICULTY_CONSTANT - (self.XP_TO_LEVEL_MULTIPLIER * self.get_level()) + self.LEVEL_UP_START_POINT) + 1
+    
+    @save_profile
+    def update_stats(self):
+        default_stats = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "UserProfileData", "default_profile.json"), "r"))["Stats"]
+
+        lvl = self.get_level()
+        for stat in default_stats.keys():
+            curr_stat = self.profile_stats["Stats"][stat]
+            curr_stat = round(curr_stat + (lvl/15)**1.1, 2)
+            self.profile_stats["Stats"][stat] = curr_stat
 
 class GladiatorProfile(Profile):
     def __init__(self, member, **kwargs):
@@ -112,13 +122,13 @@ class GladiatorProfile(Profile):
 
         self.profile_stats["XP"] += xp_gained
         msg = f"Gained {xp_gained} XP\n"
-        xp_for_next_level = self.calculate_xp_for_next_level()
-        while self.profile_stats["XP"] >= xp_for_next_level:
+        self.profile_stats["XP To Next Level"] = self.calculate_xp_for_next_level()
+        while self.profile_stats["XP"] >= self.profile_stats["XP To Next Level"]:
             self.profile_stats["Level"] += 1
-            xp_for_next_level = self.calculate_xp_for_next_level()
+            self.profile_stats["XP To Next Level"] = self.calculate_xp_for_next_level()
             msg += f"You have levelled up!\n"
-
-        self.profile_stats["XP To Next Level"] = xp_for_next_level
+            self.update_stats()
+            
         return msg
 
     def get_stats(self):

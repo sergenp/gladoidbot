@@ -10,14 +10,11 @@ from MongoDB.Connector import Connector
 MongoDatabase = Connector()
 MongoDatabase.download_gladiator_files_to_local()
 
-def get_prefix(client, message):
+def get_prefix(_, message):
     with open("guild_settings.json", "r") as f:
         prefixes = json.load(f)["prefixes"]
 
     return prefixes[str(message.guild.id)]
-
-
- # update corona virus data every x mins
 
 def prefix_load_and_save(func):
     def wrapper(*args, **kwargs):
@@ -76,8 +73,9 @@ async def corona_update_task():
             for guild in bot.guilds:
                 try:
                     channel = bot.get_channel(news_channels[str(guild.id)])
-                    for k in news:
-                        await channel.send(k)
+                    if channel:
+                        for k in news:
+                            await channel.send(k)
                 except KeyError:
                     pass
         else:

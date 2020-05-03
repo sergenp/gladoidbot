@@ -5,7 +5,6 @@ import collections
 import random
 import json
 
-from Gladiator.Stats.GladiatorStats import GladiatorStats
 from Gladiator.Player import GladiatorPlayer, GladiatorNPC
 from Gladiator.Equipments.GladiatorEquipments import GladiatorEquipments
 from Gladiator.AttackInformation.GladiatorAttackInformation import GladiatorAttackInformation
@@ -119,9 +118,9 @@ class GladiatorGame:
         elif list(event_dict["event_type"])[0] == "PVP":
             if isinstance(player_to_be_affected, GladiatorPlayer):
                 if event_buffs:
-                    buff = GladiatorStats(event_buffs)
-                    player_to_be_affected.buff(buff)
-                    event_info += str(buff)
+                    player_to_be_affected.buff(event_buffs)
+                    for k in event_buffs:
+                        event_info += f"{k} : {event_buffs[k]}\n" 
 
                 if event_dict["event_type"]["PVP"] == "unlock_attack_type":
                     player_to_be_affected.unlock_attack_type(
@@ -129,7 +128,6 @@ class GladiatorGame:
             
         return "--------------------------\n" + event_info + "\n--------------------------"
     
-
     def random_event(self):
         if not self.game_continues:
             return ""

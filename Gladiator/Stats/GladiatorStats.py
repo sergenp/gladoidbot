@@ -1,14 +1,23 @@
 import json
 import os
 
+def get_secondary_stat(main_stat_val=1, percentage_limit=10, scale_limit=0.5, divisor=1.25, round_to=1):
+    exp = scale_limit*main_stat_val/divisor
+    inner=1-(0.01/(0.01*percentage_limit))
+    return round(percentage_limit * (1-inner**exp),round_to)
+
 
 class GladiatorStats:
-    def __init__(self, stats={}, **kwargs):
+    def __init__(self, stats:dict = None, **kwargs):
+        self.update_count = 0
         self.max_stat_value = 100
         self.min_stat_value = 0
         self.stats = stats
         self.stats.update(kwargs)
-            
+        self.conversion = json.load(open(os.path.join(os.path.abspath(os.path.dirname(__file__)), "..", "Settings", "GladiatorGameSettings.json"), "r"))["secondary_stats"]
+        health_inf = self.conversion["Health"]
+        self.stats["Health"] = get_secondary_stat(self.stats["Defence"], health_inf["limit"], health_inf["scale_limit"], health_inf["divisor"], health_inf["round_to"])
+
     def __add__(self, otherStat):
         other_dict = {}
         if isinstance(otherStat, dict):
@@ -24,6 +33,7 @@ class GladiatorStats:
             except KeyError:
                 self.stats[k] = otherStat[k]
 
+        self.update_secondary_stats()
         return self
 
     def __sub__(self, otherStat):
@@ -41,6 +51,7 @@ class GladiatorStats:
             except KeyError:
                 self.stats[k] = otherStat[k]
 
+        self.update_secondary_stats()
         return self
 
     def __repr__(self):
@@ -54,3 +65,12 @@ class GladiatorStats:
 
     def __setitem__(self, key, value):
         self.stats[key] = value
+        if key != 'Health':
+            self.update_secondary_stats()
+    
+    def update_secondary_stats(self):
+        for key, val in self.conversion.items():
+            if key == 'Health':
+                continue
+            
+            self.stats[key] = get_secondary_stat(self.stats[val["primary_stat"]], val["limit"], val["scale_limit"], val["divisor"], val["round_to"])

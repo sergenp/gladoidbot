@@ -31,7 +31,8 @@ class Player:
         if self.stats["Block Chance"] > roll or dmg <= 0:
             return self.information["block_damage_text"].format(self)
 
-        self.stats["Health"] -= dmg
+        dmg = round(dmg, 2)
+        self.stats["Health"] = round(self.stats["Health"] - dmg, 2)
         if self.stats["Health"] <= 0:
             return self.die()
         # return info
@@ -88,7 +89,7 @@ class Player:
         self.dead = True
         return random.choice(self.information["death_texts"]).format(self)
 
-    def buff(self, buff: GladiatorStats, buff_type="buff"):
+    def buff(self, buff: GladiatorStats or dict, buff_type="buff"):
         if buff_type == "buff":
             self.stats += buff
         elif buff_type == "debuff":
@@ -181,12 +182,17 @@ class GladiatorNPC(Player):
             self.permitted_attacks.append(
                 self.attack_information.find_attack_type(attack_name))
 
+        for k, min_stat in dict(self.json_dict["Stats"]).items():
+            for l in range(self.level):
+                min_stat += (l/17)**1.1
+                min_stat = round(min_stat, 2)
+            self.stats[k] = min_stat
+
         for debuff_name in self.json_dict["Debuffs"]:
             self.stats += self.attack_information.find_turn_debuff(debuff_name)["debuff_stats"]
-            
+        
         self.stats += kwargs
-        self.stats["Health"] += int(self.level/1.5)
-    
+
     def get_random_attack(self):
         return random.choice(self.permitted_attacks)
 
