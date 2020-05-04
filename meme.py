@@ -3,7 +3,7 @@ from util import send_embed_message
 from discord.ext import commands
 import discord
 import random
-
+import html
 
 class Meme(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -21,7 +21,7 @@ class Meme(commands.Cog):
     @commands.command(name="dadjoke", description="Gives out a random dad joke")
     async def dad_joke(self, ctx):
         headers = {'Accept': 'text/plain'}
-        await ctx.send(requests.get("https://icanhazdadjoke.com/", headers=headers).text)
+        await ctx.send(requests.get("https://icanhazdadjoke.com/", headers=headers).text.encode().decode())
 
     @commands.command(description="Gives out a random yes/no/maybe image")
     async def yesno(self, ctx, *args):

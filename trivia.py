@@ -27,6 +27,9 @@ class Trivia(commands.Cog):
             question_data["correct_answer"])
         random.shuffle(question_data["incorrect_answers"])
         answers = question_data["incorrect_answers"]
+        for k in answers.keys():
+            answers[k] = html.unescape(answers[k])
+
         answers = dict(zip(ANSWER_EMOJIS, answers))
 
         field_list = []
