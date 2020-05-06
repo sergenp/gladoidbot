@@ -1,4 +1,4 @@
-## The Hut Assistant
+## Gladoid
 
 This README contains how to add the bot to your server and what does it do. Feel free to email me if you want to help me develop this bot.
 
@@ -13,7 +13,7 @@ to add the bot to your server
 
 ### What is this bot? What does it do?
 
-Hut Assistant essentially has been created for a private server called "The Hut". It started as a multi-functional bot
+Gladoid essentially has been created for a private server called "The Hut". It started as a multi-functional bot
 that has some utility functionality, like searching videos on youtube based on given sentence or word. 
 It has evolved into a RPG kind-of bot when I started working on a dueling system between players, which basically you challenge a discord member
 to a duel, game starts, you have certain kind of moves available to you, you react to the message the bot has send to choose

@@ -42,6 +42,10 @@ class General(commands.Cog):
     @commands.command(description="Returns the invite link of the bot")
     async def invite(self, ctx):
         await ctx.send("https://discordapp.com/api/oauth2/authorize?client_id=598077927577616384&permissions=117824&scope=bot")
+ 
+    @commands.command(description="Vote for me uwu")
+    async def vote(self, ctx):
+        await ctx.send("https://top.gg/bot/598077927577616384/vote")
 
     @commands.command(description="Shows the avatar of the user or the one mentioned")
     async def avatar(self, ctx, user:discord.Member = None):
