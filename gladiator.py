@@ -36,7 +36,7 @@ class Gladiator(commands.Cog):
     @commands.command()
     async def gamerules(self, ctx):
         channel = await ctx.message.author.create_dm()
-        for line in textwrap.wrap(GladiatorGame.construct_information_message(GladiatorProfile(ctx.message.author)), width=1500, replace_whitespace=False, expand_tabs=False, drop_whitespace=False,placeholder="..."):
+        for line in textwrap.wrap(GladiatorGame.construct_information_message(GladiatorProfile(ctx.message.author)), width=1200, replace_whitespace=False, expand_tabs=False, drop_whitespace=False,placeholder="..."):
             await send_embed_message(channel, line)
 
     @commands.command()
@@ -157,12 +157,11 @@ class Gladiator(commands.Cog):
             try:
                 reaction, user = await self.bot.wait_for('reaction_add', timeout=20.0, check=check)
                 if reaction.emoji == '👍':
+                    profiles = [GladiatorProfile(
+                        ctx.message.author), GladiatorProfile(userToChallenge)]
                     player1 = GladiatorPlayer(ctx.message.author)
                     player2 = GladiatorPlayer(userToChallenge)
                     self.create_game(ctx.channel.id, [player1, player2])
-
-                    profiles = [GladiatorProfile(
-                        ctx.message.author), GladiatorProfile(userToChallenge)]
 
                     crr_game = self.games[ctx.channel.id]["Game"]
                     for profile in profiles:
