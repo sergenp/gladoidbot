@@ -2,10 +2,17 @@
 import json
 import os
 import discord
-import ast
 from discord.ext import tasks, commands
 from CoronaData.corona_virus_updater import update_data, get_corona_news
 from MongoDB.Connector import Connector
+try:
+    import bot_token
+    bot_token.configurate()
+except (ModuleNotFoundError, ImportError):
+    pass
+
+
+TENOR_API_KEY = os.environ["TENOR_API_KEY"]
 
 MongoDatabase = Connector()
 MongoDatabase.download_gladiator_files_to_local()
@@ -46,14 +53,13 @@ def remove_guild_from_prefix(guild_id: int, **kwargs):
     return prefix
 
 bot = commands.Bot(command_prefix=get_prefix)
-startup_extensions = ["gen", "gladiator", "meme", "trivia", "corona"]
+startup_extensions = ["gen", "gladiator", "meme", "trivia", "corona", "interaction"]
 for extension in startup_extensions:
     try:
         bot.load_extension(extension)
     except Exception as e:
         exc = '{}: {}'.format(type(e).__name__, e)
         print('Failed to load extension {}\n{}'.format(extension, exc))
-
 
 @tasks.loop(hours=0.2)
 async def corona_update_task():
@@ -84,6 +90,7 @@ async def corona_update_task():
         print(f"Failed to complete the task and error occurred\n{e}")
         return
 
+
 @bot.event
 async def on_ready():
     print(f"Connected!\nName: {bot.user.name}\nId: {bot.user.id}\n")
@@ -106,48 +113,4 @@ async def change_prefix(ctx, prefix: str):
     else:
         await ctx.send("You don't have permission to do this action.")
 
-def insert_returns(body):
-    # insert return stmt if the last expression is a expression statement
-    if isinstance(body[-1], ast.Expr):
-        body[-1] = ast.Return(body[-1].value)
-        ast.fix_missing_locations(body[-1])
-
-    # for if statements, we insert returns into the body and the orelse
-    if isinstance(body[-1], ast.If):
-        insert_returns(body[-1].body)
-        insert_returns(body[-1].orelse)
-
-    # for with blocks, again we insert returns into the body
-    if isinstance(body[-1], ast.With):
-        insert_returns(body[-1].body)
-
-
-@bot.command(name="eval")
-async def eval_fn(ctx, *, cmd):
-    if ctx.author.id == 314800228480057355:
-        fn_name = "_eval_expr"
-        cmd = cmd.strip("` ")
-        # add a layer of indentation
-        cmd = "\n".join(f"    {i}" for i in cmd.splitlines())
-        # wrap in async def body
-        body = f"async def {fn_name}():\n{cmd}"
-        parsed = ast.parse(body)
-        body = parsed.body[0].body
-        insert_returns(body)
-        env = {
-            'bot': ctx.bot,
-            'discord': discord,
-            'commands': commands,
-            'ctx': ctx,
-            '__import__': __import__
-        }
-        exec(compile(parsed, filename="<ast>", mode="exec"), env)
-        result = (await eval(f"{fn_name}()", env))
-    else:
-        await ctx.send("You aren't my creator, therefore I won't do your bidding.")
-
-try:
-    import bot_token
-    bot.run(bot_token.token())
-except (ModuleNotFoundError, ImportError):
-    bot.run(os.environ['BOT_TOKEN'])
+bot.run(os.environ['BOT_TOKEN'])

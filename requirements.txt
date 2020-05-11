@@ -8,3 +8,4 @@ pandas
 pymongo
 dnspython
 pymongo[srv]
+aiohttp
