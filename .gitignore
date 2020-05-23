@@ -125,6 +125,8 @@ dmypy.json
 
 # ignore vscode
 .vscode/
+# ignore .idea
+.idea/
 
 #ignore test.py
 test.*

@@ -18,7 +18,8 @@ class Player:
         self.json_dict = json.load(open(stats_path, "r"))
         self.stats = GladiatorStats(self.json_dict["Stats"])
         self.attack_information = GladiatorAttackInformation()
-        self.information = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "Settings", "GladiatorGameSettings.json"), "r"))["game_information_texts"]
+        self.information = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "Settings",
+                                                       "GladiatorGameSettings.json"), "r"))["game_information_texts"]
 
     def take_damage(self, damage, damage_type):
         try:

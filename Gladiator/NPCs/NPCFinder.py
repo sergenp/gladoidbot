@@ -2,6 +2,7 @@ import os
 import glob
 import json
 
+
 class NPCFinder:
     def __init__(self):
         self.npcs = []

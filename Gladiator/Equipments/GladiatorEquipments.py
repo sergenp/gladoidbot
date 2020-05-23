@@ -9,19 +9,19 @@ class GladiatorEquipments:
         self.slots = json.load(open(os.path.join(os.path.dirname(
             os.path.abspath(__file__)), "GladiatorSlots.json"), "r"))
 
-    def find_equipment(self, equipment_name: str = "") -> dict:
+    def find_equipment(self, equipment_name: str = "") -> dict or None:
         for equipment in self.equipments:
             if equipment["name"] == equipment_name:
                 return equipment
         return None
 
-    def get_equipment_with_slot_name(self, equipment_name: str ="", slot_name: str="") -> dict:
+    def get_equipment_with_slot_name(self, equipment_name: str ="", slot_name: str="") -> dict or None:
         for equipment in self.equipments:
             if equipment["type"] == slot_name and equipment["name"] == equipment_name:
                 return equipment
         return None
 
-    def find_slot(self, slot_name: str = "") -> dict:
+    def find_slot(self, slot_name: str = "") -> dict or None:
         for slot in self.slots:
             if slot["Slot Name"] == slot_name:
                 return slot
