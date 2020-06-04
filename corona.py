@@ -30,13 +30,12 @@ class Corona(commands.Cog):
                 except ValueError:
                     return country_data[value]
 
-            msg = f"Total Cases : **{convert_to_int('TotalCases')}**\n"
-            msg += f"New Cases : **{country_data['NewCases']}**\n"
+            msg = f"Total Cases : **{convert_to_int('TotalConfirmed')}**\n"
+            msg += f"New Cases : **{country_data['NewConfirmed']}**\n"
             msg += f"Total Deaths : **{convert_to_int('TotalDeaths')}**\n"
             msg += f"New Deaths : **{convert_to_int('NewDeaths')}**\n"
             msg += f"Total Recovered : **{convert_to_int('TotalRecovered')}\n**"
-            msg += f"Active Cases : **{convert_to_int('ActiveCases')}\n**"
-            msg += f"Serious: **{convert_to_int('Serious')}**"
+            msg += f"New Recovered : **{convert_to_int('NewRecovered')}\n**"
 
             await send_embed_message(ctx, title=country_data["Country"], content=msg)
         else:

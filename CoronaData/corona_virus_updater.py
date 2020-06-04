@@ -7,7 +7,7 @@ from datetime import datetime
 
 session = HTMLSession()
 try:
-    os.mkdir("CoronaData/news")
+    os.mkdir(os.path.join("CoronaData", "news"))
 except (FileExistsError, FileNotFoundError):
     pass
 
@@ -18,34 +18,14 @@ header = {
 }
 
 def update_data():
-    r = session.get('https://www.worldometers.info/coronavirus/', headers=header)
 
-    title = ["Total Cases","Total Deaths","Total Recovered"]
-    count = []
-    for k in r.html.find("#maincounter-wrap"):
-        count.append(k.find("span", first=True).text)
+    r = session.get('https://api.covid19api.com/summary').json()
+      
+    with open(os.path.join('CoronaData', 'total_inf.json'), 'w') as outfile:
+        json.dump(r["Global"], outfile)
 
-    total_inf = dict(zip(title, count))
-    
-    if total_inf:
-        closed_cases = int(total_inf['Total Deaths'].replace(",","")) + int(total_inf['Total Recovered'].replace(",",""))
-        active_cases = int(total_inf['Total Cases'].replace(",","")) - closed_cases
-        death_rate = int(total_inf['Total Deaths'].replace(",","")) / closed_cases * 100
-        recovered_rate = int(total_inf['Total Recovered'].replace(",","")) / closed_cases *100
-
-        total_inf["Active Cases"] = active_cases
-        total_inf["Closed Cases"] = closed_cases
-        total_inf["Recovery Rate"] = f"%{round(recovered_rate, 2)}"
-        total_inf["Death Rate"] = f"%{round(death_rate,2)}"
-
-        with open('CoronaData/total_inf.json', 'w') as outfile:
-            json.dump(total_inf, outfile)
-
-    cv19_table = pd.read_html(r.text)[0]
-    cv19_table = cv19_table.drop("Tot Cases/1M pop", axis=1).rename(columns = {"Country,Other" : "Country", "Serious,Critical" : "Serious"})[:-1]
-    cv19_table.to_json("CoronaData/data.json", orient='records')
-
-    
+    with open(os.path.join('CoronaData', 'data.json'), "w") as outfile:
+        json.dump(r["Countries"], outfile)
 
 def get_corona_news():
     r = session.get('https://www.worldometers.info/coronavirus/', headers=header)
@@ -53,17 +33,17 @@ def get_corona_news():
     div_id = f"newsdate{now.year}-{now.month:02d}-{now.day:02d}"
     news = [x.text.replace("[source]", "") for x in r.html.find(f"#{div_id} > .news_post")]
     info = {"0" : news}
+    file_path = os.path.join('CoronaData', 'news', f'{div_id}.json')
     # lets check if there any new news
-    if os.path.exists(f'CoronaData/news/{div_id}.json'):
-        old_news = json.load(open(f'CoronaData/news/{div_id}.json', 'r'))
+    if os.path.exists(file_path):
+        old_news = json.load(open(file_path, 'r'))
         if len(old_news["0"]) == len(info["0"]):
             return False
         else:
-            with open(f'CoronaData/news/{div_id}.json', 'w') as outfile:
+            with open(file_path, 'w') as outfile:
                 json.dump(info, outfile)
             return list(set(info["0"]) - set(old_news["0"]))
     else:    
-        with open(f'CoronaData/news/{div_id}.json', 'w') as outfile:
+        with open(file_path, 'w') as outfile:
             json.dump(info, outfile)
         return news
-        

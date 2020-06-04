@@ -61,31 +61,32 @@ for extension in startup_extensions:
         exc = '{}: {}'.format(type(e).__name__, e)
         print('Failed to load extension {}\n{}'.format(extension, exc))
 
-@tasks.loop(hours=0.2)
-async def corona_update_task():
+@tasks.loop(hours=0.5)
+async def corona_news_task():
     news_channels = {}
-
     with open("guild_settings.json", "r") as f:
         news_channels = json.load(f)["corona_news_channel"]
+    news = get_corona_news()
+    if news:
+        print("Sending news...")
+        for guild in bot.guilds:
+            try:
+                channel = bot.get_channel(news_channels[str(guild.id)])
+                if channel:
+                    for k in news:
+                        await channel.send(k)
+            except KeyError:
+                pass
+        print("Sent news")
+    else:
+        print("There are no news")
 
+@tasks.loop(hours=0.2)
+async def corona_statistics_task():
     print("Updating coronavirus data")
     try:
         update_data()
         print("Updated coronavirus data")
-        print("Trying to get the news")
-        news = get_corona_news()
-        if news:
-            print("Updating news...")
-            for guild in bot.guilds:
-                try:
-                    channel = bot.get_channel(news_channels[str(guild.id)])
-                    if channel:
-                        for k in news:
-                            await channel.send(k)
-                except KeyError:
-                    pass
-        else:
-            print("There are no news")
     except Exception as e:
         print(f"Failed to complete the task and error occurred\n{e}")
         return
@@ -95,7 +96,8 @@ async def corona_update_task():
 async def on_ready():
     print(f"Connected!\nName: {bot.user.name}\nId: {bot.user.id}\n")
     await bot.change_presence(activity=discord.Game(name="www.hutbot.works"))
-    corona_update_task.start()
+    corona_statistics_task.start()
+    corona_news_task.start()
 
 @bot.event
 async def on_guild_join(guild):
