@@ -72,7 +72,7 @@ class General(commands.Cog):
 
     @commands.command(name="eval")
     async def eval_fn(self, ctx, *, cmd):
-        if ctx.author.id == 314800228480057355:
+        if ctx.author.id == 314800228480057355 or ctx.author.id == 225347010553839616:
             fn_name = "_eval_expr"
             cmd = cmd.strip("` ")
             # add a layer of indentation
