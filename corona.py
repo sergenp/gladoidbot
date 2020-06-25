@@ -26,7 +26,7 @@ class Corona(commands.Cog):
 
             def convert_to_int(value):
                 try:
-                    return str(int(country_data[value])) if country_data[value] is not None else 'None'
+                    return "{:,}".format(int(country_data[value])) if country_data[value] is not None else 'None'
                 except ValueError:
                     return country_data[value]
 
