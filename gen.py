@@ -4,6 +4,7 @@ from util import send_embed_message
 from googletrans import Translator
 import requests
 import ast
+import typing
 
 TRANSLATOR = Translator()
 
@@ -31,20 +32,28 @@ class General(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(pass_context=True, description="Translates given text to english ")
-    async def translate(self, ctx, *args):
-        toTranslate = ""
-        for arg in args:
-            if isinstance(arg, str):
-                toTranslate += arg + " "
-
-        if toTranslate == "":
+    @commands.command(pass_context=True, description="Translates given text to english\n")
+    async def translate(self, ctx, *, to_translate):
+        if to_translate == "":
             await send_embed_message(ctx, "Gimme something to translate")
             return 
-        
-        detect_language = TRANSLATOR.detect(toTranslate).lang
-        translated = TRANSLATOR.translate(toTranslate, src=detect_language, dest="en").text
-        await send_embed_message(ctx, title=f"Language detected {detect_language.title()}", content=f"This:\n{toTranslate.title()}\nMeans:\n{translated.title()}")
+
+        detect_language = TRANSLATOR.detect(to_translate).lang
+        translated = TRANSLATOR.translate(to_translate, src=detect_language, dest="en").text
+
+        field_list = [{
+                "name" : "Original Text",
+                "value" : to_translate,
+                "inline" : False
+            },
+            {
+                "name" : "Translated",
+                "value" : translated,
+                "inline" : False
+            }
+        ]
+        await send_embed_message(ctx, title=f"Language detected {detect_language.title()}",
+                                 field_list=field_list)
 
     @commands.command()
     async def quote(self, ctx, amount=1):

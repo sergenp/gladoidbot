@@ -43,7 +43,7 @@ class Corona(commands.Cog):
                 corona = json.load(f)
             msg = ""
             for k in corona:
-                msg += f"{k} : **{corona[k]}**\n"
+                msg += f"{k} : **{corona[k]:,}**\n"
             await send_embed_message(ctx, title="Total Cases", content=msg)
 
     @commands.command(name="setnewschannel", pass_context=True, description="Sets the current channel as the corona news channel.\nBot will send news about corona virus to this channel after using this command")
