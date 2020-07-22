@@ -1,5 +1,5 @@
 youtube-dl
-discord
+git+https://github.com/Rapptz/discord.py
 requests
 googletrans
 python-dateutil
