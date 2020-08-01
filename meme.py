@@ -54,5 +54,13 @@ class Meme(commands.Cog):
     async def buzzword(self, ctx):
         await ctx.send(requests.get("https://corporatebs-generator.sameerkumar.website/").json()["phrase"])
 
+    @commands.command(description="Gives out a random duck picture")
+    async def duck(self, ctx):
+        await ctx.send(requests.get("https://random-d.uk/api/v2/random").json()["url"])
+    
+    @commands.command(description="Gives out a random cat picture")
+    async def cat(self, ctx):
+        await ctx.send(requests.get("https://api.thecatapi.com/v1/images/search").json()[0]["url"])
+
 def setup(bot):
     bot.add_cog(Meme(bot))
