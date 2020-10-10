@@ -102,3 +102,4 @@ class General(commands.Cog):
             result = (await eval(f"{fn_name}()", env))
         else:
             await ctx.send("You aren't my creator, therefore I won't do your bidding.")
+

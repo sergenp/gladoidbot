@@ -107,7 +107,7 @@ class Gladiator(commands.Cog):
         random_spawn, spawn_type = GladiatorGame.hunt()
         message = self.game_information["npc_spawned_text"].format(
             random_spawn.level, random_spawn.name, spawn_type["Spawn Type"])
-        msg = await send_embed_message(ctx, content=message, image_url=random_spawn.image_path)
+        msg = await send_embed_message(ctx, content=message, image_url=random_spawn.image_path, footer_text=random_spawn.footer_text)
         await msg.add_reaction("⚔️")
         await msg.add_reaction("🏃")
 

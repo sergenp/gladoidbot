@@ -179,6 +179,7 @@ class GladiatorNPC(Player):
         self.name = self.json_dict["Name"]
         self.image_path = f"https://gladoid.herokuapp.com/npcimage?name={self.name}"
         self.level = random.randint(self.json_dict["Min Level"], self.json_dict["Max Level"])
+        self.footer_text = self.json_dict.get("FooterText", "")
         for attack_name in self.json_dict["Attacks"]:
             self.permitted_attacks.append(
                 self.attack_information.find_attack_type(attack_name))
