@@ -4,6 +4,8 @@ import random
 from util import send_embed_message
 import html
 
+from Gladiator.Profile import Profile
+
 ANSWER_EMOJIS = [u"\U0001F1E6", u"\U0001F1E7",
                  u"\U0001F1E8", u"\U0001F1E9"]
 
@@ -59,7 +61,9 @@ class Trivia(commands.Cog):
                     break
 
             if reaction.emoji == correct_answer_emoji:
-                await ctx.send("CORRECT!" + ctx.message.author.mention)
+                await ctx.send("CORRECT! " + ctx.message.author.mention)
+                user_profile = Profile(ctx.message.author)
+                await ctx.send(user_profile.event_bonus("HutCoins", 10))
             else:
                 await ctx.send(
                     f"WRONG! Correct answer is {question_data['correct_answer']}")
