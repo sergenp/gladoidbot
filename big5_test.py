@@ -14,13 +14,13 @@ class Big5TestCog(commands.Cog):
         self.bot = bot
     
     @commands.command(pass_context=True,aliases=["big5test", "b5test", "ptest"], description="A Big 5 Personality test")
-    async def big5_test(self, ctx):
+    async def b5test(self, ctx):
         tests[ctx.author.id] = Big5Test(ctx.author.id)
         await ctx.send("Successfully created a Big5 test for you, please answer the questions accordingly, note that your Big5 will be saved at the end of the test.")
         return await self.test_loop(ctx, ctx.author.id)
 
-    @commands.command(pass_context=True, aliases=["b5result", "mypersonality", "myp", "big5"], description="A Big 5 Personality test")
-    async def big5_personality(self, ctx):
+    @commands.command(pass_context=True, aliases=["b5result", "myb5", "big5"], description="A Big 5 Personality test")
+    async def myb5(self, ctx):
         res = MongoDB.get_big5_results(ctx.author.id)
         if res:
             res.pop("_id")
@@ -35,7 +35,7 @@ class Big5TestCog(commands.Cog):
         test = tests[test_id]
         curr_q = test.get_current_question()        
         em = Embed(description=curr_q.body, title=f"Question #{curr_q.Id} for {ctx.author.name}")
-        em.set_footer(text=f"1=Disagree, 3=Neutral and 5=Agree. Currently at {curr_q.Id}/50")
+        em.set_footer(text=f"1=Disagree, 3=Neutral and 5=Agree. Currently at {curr_q.Id}/50. You have a minute to answer each question")
 
         if not msg:
             msg = await ctx.send(embed=em)
@@ -48,7 +48,7 @@ class Big5TestCog(commands.Cog):
             return user == ctx.message.author and reaction.message.id == msg.id
 
         try:
-            reaction, _ = await self.bot.wait_for('reaction_add', timeout=20.0, check=check)
+            reaction, _ = await self.bot.wait_for('reaction_add', timeout=60.0, check=check)
             test.answer_question(reactions_map[reaction.emoji])
         
         except asyncio.TimeoutError:
