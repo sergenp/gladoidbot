@@ -53,7 +53,7 @@ def remove_guild_from_prefix(guild_id: int, **kwargs):
     return prefix
 
 bot = commands.Bot(command_prefix=get_prefix, help_command=commands.MinimalHelpCommand(no_category="Rest"))
-startup_extensions = ["gen", "gladiator", "meme", "trivia", "corona", "interaction"]
+startup_extensions = ["gen", "gladiator", "meme", "trivia", "corona", "interaction", "big5_test"]
 for extension in startup_extensions:
     try:
         bot.load_extension(extension)

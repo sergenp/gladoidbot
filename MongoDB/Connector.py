@@ -23,6 +23,12 @@ class Connector:
     def save_messages(self, message_dict: dict):
         self.client.GladiatorGameMessages.insert_one(message_dict)
 
+    def save_big5_results(self, score_dict):
+        self.client.Big5Tests.find_one_and_replace({'_id' : score_dict['_id']}, score_dict, upsert=True)
+
+    def get_big5_results(self, user_id):
+        return self.client.Big5Tests.find_one({"_id": user_id})
+
     def get_all_profiles(self) -> list:
         return list(self.client.UserProfiles.find())
 
