@@ -13,10 +13,10 @@ class Big5TestCog(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
     
-    @commands.command(pass_context=True,aliases=["big5test", "ptest"], description="A Big 5 Personality test")
+    @commands.command(pass_context=True,aliases=["big5test", "ptest"], description="A Big 5 Personality test, the test results will be DMed to you at the end of the test.")
     async def b5test(self, ctx):
         tests[ctx.author.id] = Big5Test(ctx.author.id)
-        await ctx.send("Successfully created a Big5 test for you, please answer the questions accordingly, note that your Big5 will be saved at the end of the test.")
+        await ctx.send("Successfully created a Big5 test for you, please answer the questions accordingly, note that your Big5 will be saved at the end of the test.**Be sure to have your DMs enabled on this server, your test scores will be DMed to you.**")
         return await self.test_loop(ctx, ctx.author.id)
 
     @commands.command(pass_context=True, aliases=["b5result"], description="A Big 5 Personality test")
@@ -24,10 +24,11 @@ class Big5TestCog(commands.Cog):
         res = MongoDB.get_big5_results(ctx.author.id)
         if res:
             res.pop("_id")
+            dm_channel = await ctx.message.author.create_dm()
             content = ""
             for k,v in res.items():
                 content += f"{k} : {v}\n"
-            await send_embed_message(ctx, content=content, title=f"{ctx.author.name}'s Big5 Score")
+            await send_embed_message(dm_channel, content=content, title="Your Big5 Score")
         else:
             await ctx.send("Couldn't find any big5 results for you, be sure to take the test first!")
 
@@ -64,7 +65,13 @@ class Big5TestCog(commands.Cog):
             content = ""
             for k,v in score_dict.items():
                 content += f"{k} : {v}\n"
-            await send_embed_message(ctx, content=content, title=f"{ctx.author.name}'s Big5 Score")
+            
+            dm_channel = await ctx.message.author.create_dm()
+            try:
+                await send_embed_message(dm_channel, content=content, title="Your Big5 Score")
+            except Exception:
+                pass
+
             score_dict["_id"] = ctx.author.id
             MongoDB.save_big5_results(score_dict)
             del tests[ctx.author.id]
