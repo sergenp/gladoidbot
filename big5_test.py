@@ -4,6 +4,7 @@ from discord.ext import commands
 from Big5Test.Test import Big5Test
 from util import send_embed_message
 from MongoDB.Connector import Connector
+import os
 
 tests = {}
 MongoDB = Connector()
@@ -15,6 +16,10 @@ class Big5TestCog(commands.Cog):
     
     @commands.command(pass_context=True,aliases=["big5test", "ptest"], description="A Big 5 Personality test, the test results will be DMed to you at the end of the test.")
     async def b5test(self, ctx):
+        if tests.get(ctx.author.id, None):
+            await ctx.send("You already have a test created. Please finish it before you create another one.")
+            return
+        
         tests[ctx.author.id] = Big5Test(ctx.author.id)
         await ctx.send("Successfully created a Big5 test for you, please answer the questions accordingly, note that your Big5 will be saved at the end of the test.**Be sure to have your DMs enabled on this server, your test scores will be DMed to you.**")
         return await self.test_loop(ctx, ctx.author.id)
@@ -60,20 +65,23 @@ class Big5TestCog(commands.Cog):
         next_q = test.get_next_question()
         if next_q:
             return await self.test_loop(ctx, test_id, msg)
+
         else:
             score_dict = test.end_test()
-            content = ""
+            content = "The results are between 0-100\n"
             for k,v in score_dict.items():
                 content += f"{k} : {v}\n"
             
-            dm_channel = await ctx.message.author.create_dm()
+            score_dict["_id"] = ctx.author.id
+            MongoDB.save_big5_results(score_dict)
+            await ctx.send("Preparing your results... You'll recieve a DM. If you don't, make sure you have your DMs enabled. Your test results are saved, you can access them via h!myb5 command")
+            await msg.delete()
             try:
-                await send_embed_message(dm_channel, content=content, title="Your Big5 Score")
+                dm_channel = await ctx.message.author.create_dm()
+                await send_embed_message(dm_channel, content=content, title="Your Big5 Score", image_local_file=True, image_url=os.path.join(os.path.dirname(os.path.abspath(__file__)),"Big5Test", "big5info.png"))
             except Exception:
                 pass
 
-            score_dict["_id"] = ctx.author.id
-            MongoDB.save_big5_results(score_dict)
             del tests[ctx.author.id]
         
 def setup(bot):
