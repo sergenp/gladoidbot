@@ -1,7 +1,6 @@
-youtube-dl
 git+https://github.com/Rapptz/discord.py
 requests
-googletrans
+google_trans_new
 python-dateutil
 requests-html
 pandas

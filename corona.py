@@ -1,8 +1,10 @@
-from discord.ext import commands
-from util import send_embed_message
 import os
 import json
+from datetime import date, datetime
+from discord.ext import commands
+from util import send_embed_message
 from MongoDB.Connector import Connector
+
 
 class Corona(commands.Cog):
     def __init__(self, bot):
@@ -43,8 +45,22 @@ class Corona(commands.Cog):
                 corona = json.load(f)
             msg = ""
             for k in corona:
+                if k == 'Date':
+                    continue
                 msg += f"{k} : **{corona[k]:,}**\n"
-            await send_embed_message(ctx, title="Total Cases", content=msg)
+            
+            date = datetime(
+                int(corona['Date'][:4]),  # year
+                int(corona['Date'][5:7]), # month
+                int(corona['Date'][8:10]), # day
+                int(corona['Date'][11:13]), # hour
+                int(corona['Date'][14:16]), # min
+                int(corona['Date'][17:19]) # sec
+            )
+            last_updated_date = date.strftime("%m-%d-%Y %H:%M:%S")
+            
+            await send_embed_message(ctx, title=f"Total Cases", 
+                                     content=msg, footer_text=f"Last updated {last_updated_date}")
 
     @commands.command(name="setnewschannel", pass_context=True, description="Sets the current channel as the corona news channel.\nBot will send news about corona virus to this channel after using this command")
     async def set_channel(self, ctx):

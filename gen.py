@@ -1,12 +1,11 @@
 import discord
 from discord.ext import commands
 from util import send_embed_message
-from googletrans import Translator
+from google_trans_new import google_translator
 import requests
 import ast
-import typing
 
-TRANSLATOR = Translator()
+TRANSLATOR = google_translator()
 
     
 def insert_returns(body):
@@ -38,8 +37,8 @@ class General(commands.Cog):
             await send_embed_message(ctx, "Gimme something to translate")
             return 
 
-        detect_language = TRANSLATOR.detect(to_translate).lang
-        translated = TRANSLATOR.translate(to_translate, src=detect_language, dest="en").text
+        detect_language = TRANSLATOR.detect(to_translate)[1]
+        translated = TRANSLATOR.translate(to_translate, lang_tgt='en')
 
         field_list = [{
                 "name" : "Original Text",

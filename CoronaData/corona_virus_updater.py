@@ -1,8 +1,6 @@
-from requests_html import HTMLSession, HTML
-import pandas as pd
+from requests_html import HTMLSession
 import os
 import json
-import requests
 from datetime import datetime
 
 session = HTMLSession()
