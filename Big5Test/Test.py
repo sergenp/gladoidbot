@@ -1,5 +1,4 @@
-from typing import List, Type, Dict, Callable, Optional, Union
-import collections
+from typing import List, Type, Dict, Callable, Union
 import json
 import pathlib
 path = pathlib.Path(__file__).parent.absolute()
@@ -128,24 +127,27 @@ class Big5Test(Test):
         O_operators = "+-+-+-++++"
         O, C, E, A, N = 8, 14, 20, 14, 38
         op_index = 0
-        for i in range(1, len(question_dct.values())):
+        for i in range(1, len(question_dct.values())+1):
             if i%5 == 1:
                 op = E_operators[op_index]
                 E = eval(f"E{op}{question_dct[i].answer}")
-            if i%5 == 2:
+            elif i%5 == 2:
                 op = A_operators[op_index]
                 A = eval(f"A{op}{question_dct[i].answer}")
-            if i%5 == 3:
+            elif i%5 == 3:
                 op = C_operators[op_index]
                 C = eval(f"C{op}{question_dct[i].answer}")
-            if i%5 == 4:
+            elif i%5 == 4:
                 op = N_operators[op_index]
                 N = eval(f"N{op}{question_dct[i].answer}")
-            if i%5 == 0:
+            elif i%5 == 0:
                 op = O_operators[op_index]
                 O = eval(f"O{op}{question_dct[i].answer}")
                 op_index += 1
         O, C, E, A, N = (O/40)*100, (C/40)*100, (E/40)*100, (A/40)*100, (N/40)*100
 
         return {"Openness":f"{O:.2f}%", "Conscientiousness":f"{C:.2f}%", "Extroversion":f"{E:.2f}%", "Agreeableness":f"{A:.2f}%", "Neuroticism":f"{N:.2f}%"}
+
+
+
 
