@@ -4,7 +4,7 @@ import asyncio
 import discord
 from datetime import datetime
 import textwrap
-
+import pathlib
 from discord.ext import commands
 from Gladiator.Player import GladiatorNPC, GladiatorPlayer
 from Gladiator.GladiatorGame import GladiatorGame
@@ -14,6 +14,7 @@ from Gladiator.MatchMessages import MatchMessages
 from Gladiator.Profile import GladiatorProfile
 from util import send_embed_message
 
+path = pathlib.Path(__file__).parent.absolute()
 
 class Gladiator(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -24,8 +25,7 @@ class Gladiator(commands.Cog):
         self.GladiatorEquipments = GladiatorEquipments()
         self.GladiatorAttackInformation = GladiatorAttackInformation()
 
-        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "Gladiator", "Settings",
-                               "GladiatorGameSettings.json")) as f:
+        with open(path / "Gladiator" / "Settings" / "GladiatorGameSettings.json", "r") as f:
             self.settings = json.load(f)
 
         self.game_information = self.settings["game_information_texts"]

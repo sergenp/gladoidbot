@@ -1,12 +1,15 @@
 import json
-import os
+import pathlib
+
+
+path = pathlib.Path(__file__).parent.absolute()
 
 class GladiatorAttackInformation:
     def __init__(self):
-        self.attack_types = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "GladiatorAttackBuffs.json"), "r"))
-        self.damage_types = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "GladiatorDamageTypes.json"), "r"))
-        self.turn_debuffs = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "GladiatorTurnDebuffs.json"), "r"))
-    
+        self.attack_types = json.load(open(path / "GladiatorAttackBuffs.json", "r"))
+        self.damage_types = json.load(open(path / "GladiatorDamageTypes.json", "r"))
+        self.turn_debuffs = json.load(open(path / "GladiatorTurnDebuffs.json", "r"))
+
     def find_attack_type(self, attack_name: str = "") -> dict or None:
         # find the attack corresponding the name
         for atk in self.attack_types:

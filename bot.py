@@ -12,8 +12,6 @@ except (ModuleNotFoundError, ImportError):
     pass
 
 
-TENOR_API_KEY = os.environ["TENOR_API_KEY"]
-
 MongoDatabase = Connector()
 MongoDatabase.download_gladiator_files_to_local()
 

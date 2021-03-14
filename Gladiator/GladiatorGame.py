@@ -1,4 +1,5 @@
 import sys
+from typing import Union
 sys.path.append('..')
 import os
 import collections
@@ -14,7 +15,7 @@ from Gladiator.NPCs.NPCFinder import NPCFinder
 
 
 class GladiatorGame:
-    def __init__(self, players: [GladiatorPlayer or GladiatorNPC], spawn_type: dict = None, **kwargs):
+    def __init__(self, players: Union[GladiatorPlayer, GladiatorNPC], spawn_type: dict = None, **kwargs):
         self.current_player = players[0]
         self.next_player = players[-1]
         self.players = collections.deque(players)
@@ -96,7 +97,7 @@ class GladiatorGame:
         return information_text
 
     @staticmethod
-    def get_event(event_dict, player_to_be_affected: (GladiatorNPC, GladiatorPlayer, GladiatorProfile)):
+    def get_event(event_dict, player_to_be_affected: Union[GladiatorNPC, GladiatorPlayer, GladiatorProfile]):
         if isinstance(player_to_be_affected, GladiatorNPC):
             return ""
 
