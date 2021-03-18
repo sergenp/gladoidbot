@@ -1,0 +1,16 @@
+{
+    "Name": "Quietus",
+    "FooterText": "NPC by heeeeeeelu#7093",
+    "Stats": {
+        "Attack": 12,
+        "Defence": -2
+    },
+    "Min Level": 20,
+    "Max Level": 35,
+    "Attacks": [
+        "Bite"
+    ],
+    "Debuffs": [
+        "Bleeding"
+    ]
+}

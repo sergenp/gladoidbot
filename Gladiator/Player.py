@@ -17,10 +17,15 @@ class Player:
         self.dead = False
         self.debuffs = []
         self.permitted_attacks = []
-        self.json_dict = json.load(open(stats_path, "r"))
+        
+        with open(stats_path) as f:
+            self.json_dict = json.load(f)
+        
         self.stats = GladiatorStats(self.json_dict["Stats"])
         self.attack_information = GladiatorAttackInformation()
-        self.information = json.load(open(path / "Settings" / "GladiatorGameSettings.json", "r"))["game_information_texts"]
+        
+        with open(path / "Settings" / "GladiatorGameSettings.json") as f:
+            self.information = json.load(f)["game_information_texts"]
 
     def take_damage(self, damage, damage_type):
         try:

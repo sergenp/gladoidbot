@@ -1,0 +1,15 @@
+{
+    "Name": "Spider",
+    "Stats": {
+        "Attack": 8,
+        "Defence": 5
+    },
+    "Min Level": 1,
+    "Max Level": 15,
+    "Attacks": [
+        "Thrust",
+        "Slash",
+        "Spit"
+    ],
+    "Debuffs": []
+}

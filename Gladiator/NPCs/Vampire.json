@@ -1,0 +1,15 @@
+{
+    "Name": "Vampire",
+    "Stats": {
+        "Attack": 12,
+        "Defence": 5
+    },
+    "Min Level": 1,
+    "Max Level": 50,
+    "Attacks": [
+        "Fireball",
+        "Ice Shard",
+        "Curse"
+    ],
+    "Debuffs": []
+}

@@ -1,0 +1,114 @@
+[
+    {
+        "name": "Spear",
+        "type": "Weapon",
+        "buffs": {
+            "Defence": 1
+        },
+        "reaction_emoji": "1\u20e3",
+        "price": 50,
+        "unlock_attack_name": "",
+        "debuff_name": ""
+    },
+    {
+        "name": "Light Armor",
+        "type": "Armor",
+        "buffs": {
+            "Defence": 1.2,
+            "Attack": 0.3
+        },
+        "reaction_emoji": "1\u20e3",
+        "price": 100,
+        "unlock_attack_name": "",
+        "debuff_name": ""
+    },
+    {
+        "name": "Heavy Armor",
+        "type": "Armor",
+        "buffs": {
+            "Defence": 3
+        },
+        "reaction_emoji": "2\u20e3",
+        "price": 200,
+        "unlock_attack_name": "",
+        "debuff_name": ""
+    },
+    {
+        "name": "Mage Robes",
+        "type": "Armor",
+        "buffs": {
+            "Attack": 1,
+            "Defence": 0.5
+        },
+        "reaction_emoji": "3\u20e3",
+        "price": 200,
+        "unlock_attack_name": "",
+        "debuff_name": ""
+    },
+    {
+        "name": "Gladius",
+        "type": "Weapon",
+        "buffs": {
+            "Attack": 3,
+            "Defence": 1
+        },
+        "reaction_emoji": "2\u20e3",
+        "price": 150,
+        "unlock_attack_name": "",
+        "debuff_name": ""
+    },
+    {
+        "name": "Axe",
+        "type": "Weapon",
+        "buffs": {
+            "Attack": 2
+        },
+        "reaction_emoji": "3\u20e3",
+        "price": 250,
+        "unlock_attack_name": "",
+        "debuff_name": "Bleeding"
+    },
+    {
+        "name": "Magic Wand",
+        "type": "Weapon",
+        "buffs": {
+            "Attack": 1.5,
+            "Defence": 1
+        },
+        "reaction_emoji": "4\u20e3",
+        "price": 250,
+        "unlock_attack_name": "",
+        "debuff_name": "Soul On Fire"
+    },
+    {
+        "name": "Warrior Ring",
+        "type": "Ring",
+        "buffs": {
+            "Attack": 2
+        },
+        "reaction_emoji": "1\u20e3",
+        "price": 400,
+        "unlock_attack_name": "",
+        "debuff_name": ""
+    },
+    {
+        "name": "Iron Shield",
+        "type": "Shield",
+        "buffs": {
+            "Defence": 2
+        },
+        "reaction_emoji": "1\u20e3",
+        "price": 500,
+        "unlock_attack_name": "",
+        "debuff_name": ""
+    },
+    {
+        "name": "Cloak",
+        "type": "Armor",
+        "buffs": {},
+        "reaction_emoji": "4\u20e3",
+        "price": 150,
+        "unlock_attack_name": "Backstab",
+        "debuff_name": ""
+    }
+]

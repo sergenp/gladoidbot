@@ -1,0 +1,15 @@
+{
+    "Name": "Scourge Consort",
+    "FooterText": "NPC by heeeeeeelu#7093",
+    "Stats": {
+        "Attack": 5,
+        "Defence": 5
+    },
+    "Min Level": 15,
+    "Max Level": 30,
+    "Attacks": [
+        "Slash",
+        "Scratch"
+    ],
+    "Debuffs": []
+}

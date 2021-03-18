@@ -12,17 +12,18 @@ from Gladiator.AttackInformation.GladiatorAttackInformation import GladiatorAtta
 from Gladiator.Profile import GladiatorProfile
 from Gladiator.NPCs.NPCFinder import NPCFinder
 
-
+import pathlib
+path = pathlib.Path(__file__).parent.absolute()
 
 class GladiatorGame:
     def __init__(self, players: Union[GladiatorPlayer, GladiatorNPC], spawn_type: dict = None, **kwargs):
         self.current_player = players[0]
         self.next_player = players[-1]
         self.players = collections.deque(players)
-        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "Settings", "GladiatorGameSettings.json")) as f:
+        with open(path / "Settings" / "GladiatorGameSettings.json") as f:
             self.random_event_chance = json.load(f)["random_event_chance"]  # percent of random event chance
 
-        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "Events", "Events.json")) as f:
+        with open(path / "Events" / "Events.json") as f:
             self.events = json.load(f)
 
         self.game_continues = True
@@ -62,13 +63,13 @@ class GladiatorGame:
         damage_types = None
         gladiator_stats = gladiator_profile.get_stats()
 
-        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "Settings", "GladiatorGameSettings.json")) as f:
+        with open(path / "Settings" / "GladiatorGameSettings.json") as f:
             settings = json.load(f)
 
-        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "AttackInformation", "GladiatorAttackBuffs.json")) as f:
+        with open(path / "AttackInformation" / "GladiatorAttackBuffs.json") as f:
             attack_types = json.load(f)
 
-        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "AttackInformation", "GladiatorDamageTypes.json")) as f:
+        with open(path / "AttackInformation", "GladiatorDamageTypes.json")) as f:
             damage_types = json.load(f)
 
         information_text = settings["game_information_texts"]["title_text"] + "\n"
@@ -140,16 +141,20 @@ class GladiatorGame:
     
     @staticmethod
     def hunt():
-        spawns = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "NPCs", "Settings", "Spawns.json")))
+        with open(path / "NPCs" / "Settings" / "Spawns.json") as f:
+            spawns = json.load(f)
         # roll for spawn
         roll = random.randint(0, 100) #
+        # get the first spawn type, which is Common spawn type
         spawn_type = spawns[0]
         for spawn in spawns:
+            # if the roll is lesser than the Spawn Chance, update the spawn_type accordingly,
+            # i.e. if roll is <10 spawn["Spawn Chance"] with chance 10 or lesser will spawn
             if roll < spawn["Spawn Chance"]:
                 spawn_type = spawn
         # get a random json file from NPCs directory given spawn type
         npc_stats_path = NPCFinder().get_npc_by_name(random.choice(spawn_type["NPCs"]))
-        # return a GladiatorNPC with the name of the json file, and the stats it has
+        # return a GladiatorNPC with the name of the json file, and the stats it has, along with spawn_type
         return GladiatorNPC(stats_path=npc_stats_path), spawn_type
         
     @staticmethod

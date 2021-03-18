@@ -1,0 +1,77 @@
+[
+    {
+        "damage_type_name": "Physical",
+        "name": "Thrust",
+        "buffs": {
+            "Attack": 2
+        },
+        "reaction_emoji": "\ud83d\ude4c"
+    },
+    {
+        "damage_type_name": "Physical",
+        "name": "Slash",
+        "buffs": {
+            "Attack": 2.5,
+            "Defence": -1
+        },
+        "reaction_emoji": "\ud83d\udd2a"
+    },
+    {
+        "damage_type_name": "Magical",
+        "name": "Ice Shard",
+        "buffs": {
+            "Attack": 2.5,
+            "Defence": -1
+        },
+        "reaction_emoji": "\u2744"
+    },
+    {
+        "damage_type_name": "Magical",
+        "name": "Fireball",
+        "buffs": {
+            "Attack": 5,
+            "Defence": -2
+        },
+        "reaction_emoji": "\ud83d\udd25"
+    },
+    {
+        "damage_type_name": "Disease",
+        "name": "Virus",
+        "buffs": {},
+        "reaction_emoji": "\ud83e\udda0"
+    },
+    {
+        "damage_type_name": "Physical",
+        "name": "Bite",
+        "buffs": {},
+        "reaction_emoji": ""
+    },
+    {
+        "damage_type_name": "Physical",
+        "name": "Scratch",
+        "buffs": {},
+        "reaction_emoji": "\ud83d\udc85"
+    },
+    {
+        "damage_type_name": "Disease",
+        "name": "Spit",
+        "buffs": {},
+        "reaction_emoji": "\ud83d\udca6"
+    },
+    {
+        "damage_type_name": "Magical",
+        "name": "Curse",
+        "buffs": {
+            "Attack": 1
+        },
+        "reaction_emoji": "\ud83d\udd2e"
+    },
+    {
+        "damage_type_name": "Physical",
+        "name": "Backstab",
+        "buffs": {
+            "Attack": 3.5
+        },
+        "reaction_emoji": "\ud83d\udde1"
+    }
+]

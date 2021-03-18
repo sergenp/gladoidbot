@@ -1,0 +1,18 @@
+{
+    "Name": "Liquidator",
+    "FooterText": "NPC by heeeeeeelu#7093",
+    "Stats": {
+        "Attack": 4,
+        "Defence": 7
+    },
+    "Min Level": 25,
+    "Max Level": 50,
+    "Attacks": [
+        "Bite",
+        "Curse",
+        "Virus"
+    ],
+    "Debuffs": [
+        "Soul On Fire"
+    ]
+}

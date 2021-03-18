@@ -1,0 +1,15 @@
+{
+    "Name": "Centipede",
+    "Stats": {
+        "Attack": 8,
+        "Defence": 3
+    },
+    "Min Level": 1,
+    "Max Level": 25,
+    "Attacks": [
+        "Thrust",
+        "Slash",
+        "Virus"
+    ],
+    "Debuffs": []
+}

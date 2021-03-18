@@ -1,0 +1,15 @@
+{
+    "Name": "Wendigo",
+    "Stats": {
+        "Attack": 12,
+        "Defence": 0
+    },
+    "Min Level": 25,
+    "Max Level": 40,
+    "Attacks": [
+        "Thrust"
+    ],
+    "Debuffs": [
+        "Bleeding"
+    ]
+}

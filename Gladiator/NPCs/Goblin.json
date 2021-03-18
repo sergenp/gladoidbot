@@ -1,0 +1,14 @@
+{
+    "Name": "Goblin",
+    "Stats": {
+        "Attack": 10,
+        "Defence": 5
+    },
+    "Min Level": 1,
+    "Max Level": 15,
+    "Attacks": [
+        "Thrust",
+        "Slash"
+    ],
+    "Debuffs": []
+}

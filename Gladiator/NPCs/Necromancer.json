@@ -1,0 +1,16 @@
+{
+    "Name": "Necromancer",
+    "Stats": {
+        "Attack": 8,
+        "Defence": 5
+    },
+    "Min Level": 5,
+    "Max Level": 25,
+    "Attacks": [
+        "Fireball",
+        "Curse"
+    ],
+    "Debuffs": [
+        "Soul On Fire"
+    ]
+}

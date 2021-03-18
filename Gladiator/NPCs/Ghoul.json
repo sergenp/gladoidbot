@@ -1,0 +1,15 @@
+{
+    "Name": "Ghoul",
+    "Stats": {
+        "Attack": 15,
+        "Defence": 2
+    },
+    "Min Level": 15,
+    "Max Level": 35,
+    "Attacks": [
+        "Thrust"
+    ],
+    "Debuffs": [
+        "Bleeding"
+    ]
+}
