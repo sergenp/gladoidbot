@@ -1,7 +1,7 @@
 import json
 from datetime import datetime
 from discord.ext import commands
-from util import send_embed_message
+from .util import send_embed_message
 from MongoDB.Connector import Connector
 import pathlib
 path = pathlib.Path(__file__).parent.absolute()

@@ -1,5 +1,5 @@
 import requests
-from util import send_embed_message
+from .util import send_embed_message
 from discord.ext import commands
 import discord
 import random

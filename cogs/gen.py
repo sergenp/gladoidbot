@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from util import send_embed_message
+from .util import send_embed_message
 from google_trans_new import google_translator
 import requests
 import ast

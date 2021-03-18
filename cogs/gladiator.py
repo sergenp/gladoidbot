@@ -12,7 +12,7 @@ from Gladiator.Equipments.GladiatorEquipments import GladiatorEquipments
 from Gladiator.AttackInformation.GladiatorAttackInformation import GladiatorAttackInformation
 from Gladiator.MatchMessages import MatchMessages
 from Gladiator.Profile import GladiatorProfile
-from util import send_embed_message
+from .util import send_embed_message
 
 path = pathlib.Path(__file__).parent.absolute()
 
@@ -25,7 +25,7 @@ class Gladiator(commands.Cog):
         self.GladiatorEquipments = GladiatorEquipments()
         self.GladiatorAttackInformation = GladiatorAttackInformation()
 
-        with open(path / "Gladiator" / "Settings" / "GladiatorGameSettings.json", "r") as f:
+        with open(path / ".." / "Gladiator" / "Settings" / "GladiatorGameSettings.json", "r") as f:
             self.settings = json.load(f)
 
         self.game_information = self.settings["game_information_texts"]
@@ -39,7 +39,7 @@ class Gladiator(commands.Cog):
         channel = await ctx.message.author.create_dm()
         for line in textwrap.wrap(GladiatorGame.construct_information_message(GladiatorProfile(ctx.message.author)),
                                   width=1200, replace_whitespace=False, expand_tabs=False, drop_whitespace=False,
-                                  placeholder="..."):
+                                  placeholder="...", fix_sentence_endings=True, break_long_words=False):
             await send_embed_message(channel, line)
 
     @commands.command()
