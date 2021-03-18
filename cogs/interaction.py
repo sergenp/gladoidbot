@@ -5,8 +5,7 @@ import os
 import random
 import aiohttp
 
-#TENOR_API_KEY = os.environ["TENOR_API_KEY"]
-TENOR_API_KEY = ""
+TENOR_API_KEY = os.environ["TENOR_API_KEY"]
 
 async def save_tenor_gifs(search):
     url = f"https://api.tenor.com/v1/search?q={search}&contentfilter=medium&media_filter=minimal&limit=20&key={TENOR_API_KEY}"
