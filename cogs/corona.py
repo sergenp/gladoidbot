@@ -1,10 +1,10 @@
-import os
 import json
-from datetime import date, datetime
+from datetime import datetime
 from discord.ext import commands
-from util import send_embed_message
+from .util import send_embed_message
 from MongoDB.Connector import Connector
-
+import pathlib
+path = pathlib.Path(__file__).parent.absolute()
 
 class Corona(commands.Cog):
     def __init__(self, bot):
@@ -14,7 +14,7 @@ class Corona(commands.Cog):
     async def virus(self, ctx, country: str = None):
         if country:
             corona = {}
-            with open(os.path.join("CoronaData", "data.json")) as f:
+            with open(path / "CoronaData" / "data.json") as f:
                 corona = json.load(f)
 
             country_data = {}
@@ -41,7 +41,7 @@ class Corona(commands.Cog):
 
             await send_embed_message(ctx, title=country_data["Country"], content=msg)
         else:
-            with open(os.path.join("CoronaData", "total_inf.json")) as f:
+            with open(path / "CoronaData" / "total_inf.json") as f:
                 corona = json.load(f)
             msg = ""
             for k in corona:
@@ -66,8 +66,7 @@ class Corona(commands.Cog):
     async def set_channel(self, ctx):
         if ctx.message.author.permissions_in(ctx.channel).manage_channels:
             MongoDatabase = Connector()
-            news_channel_data_path = os.path.join(os.path.dirname(
-                os.path.abspath(__file__)), "guild_settings.json")
+            news_channel_data_path = path / "guild_settings.json"
             data = json.load(open(news_channel_data_path, "r"))
             data["corona_news_channel"][str(ctx.guild.id)] = ctx.channel.id
             with open(news_channel_data_path, "w") as f:

@@ -4,7 +4,7 @@ import asyncio
 import discord
 from datetime import datetime
 import textwrap
-
+import pathlib
 from discord.ext import commands
 from Gladiator.Player import GladiatorNPC, GladiatorPlayer
 from Gladiator.GladiatorGame import GladiatorGame
@@ -12,8 +12,9 @@ from Gladiator.Equipments.GladiatorEquipments import GladiatorEquipments
 from Gladiator.AttackInformation.GladiatorAttackInformation import GladiatorAttackInformation
 from Gladiator.MatchMessages import MatchMessages
 from Gladiator.Profile import GladiatorProfile
-from util import send_embed_message
+from .util import send_embed_message
 
+path = pathlib.Path(__file__).parent.absolute()
 
 class Gladiator(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -24,8 +25,7 @@ class Gladiator(commands.Cog):
         self.GladiatorEquipments = GladiatorEquipments()
         self.GladiatorAttackInformation = GladiatorAttackInformation()
 
-        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "Gladiator", "Settings",
-                               "GladiatorGameSettings.json")) as f:
+        with open(path / ".." / "Gladiator" / "Settings" / "GladiatorGameSettings.json", "r") as f:
             self.settings = json.load(f)
 
         self.game_information = self.settings["game_information_texts"]
@@ -39,7 +39,7 @@ class Gladiator(commands.Cog):
         channel = await ctx.message.author.create_dm()
         for line in textwrap.wrap(GladiatorGame.construct_information_message(GladiatorProfile(ctx.message.author)),
                                   width=1200, replace_whitespace=False, expand_tabs=False, drop_whitespace=False,
-                                  placeholder="..."):
+                                  placeholder="...", fix_sentence_endings=True, break_long_words=False):
             await send_embed_message(channel, line)
 
     @commands.command()

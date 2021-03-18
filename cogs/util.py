@@ -1,8 +1,5 @@
-import discord
 from discord import Embed, DMChannel, File
 import os
-import ast
-from discord.ext import commands
 
 async def send_embed_message(ctx, content="", title="", colour=0x0080c0, thumbnail_link="", author_name="", author_icon_link="", field_list=[], title_url="", image_url = "", image_local_file=False, footer_text=""):
     em = Embed(title=title, description=content, colour=colour, url=title_url)

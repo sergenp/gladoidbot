@@ -134,3 +134,5 @@ bot_token.py
 google-credentials.json
 MongoDB/mongo_settings.py
 *.json
+!Gladiator/*/*.json
+Gladiator/UserProfileData/*.json

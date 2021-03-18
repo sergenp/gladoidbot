@@ -4,15 +4,13 @@ import os
 import discord
 from discord.ext import tasks, commands
 from CoronaData.corona_virus_updater import update_data, get_corona_news
-from MongoDB.Connector import Connector
 try:
     import bot_token
     bot_token.configurate()
 except (ModuleNotFoundError, ImportError):
     pass
+from MongoDB.Connector import Connector
 
-
-TENOR_API_KEY = os.environ["TENOR_API_KEY"]
 
 MongoDatabase = Connector()
 MongoDatabase.download_gladiator_files_to_local()
@@ -52,16 +50,18 @@ def remove_guild_from_prefix(guild_id: int, **kwargs):
     prefix.pop(str(guild_id))
     return prefix
 
+# load cogs
 bot = commands.Bot(command_prefix=get_prefix, help_command=commands.MinimalHelpCommand(no_category="Rest"))
 startup_extensions = ["gen", "gladiator", "meme", "trivia", "corona", "interaction", "big5_test"]
 for extension in startup_extensions:
     try:
-        bot.load_extension(extension)
+        bot.load_extension("cogs." + extension)
     except Exception as e:
         exc = '{}: {}'.format(type(e).__name__, e)
         print('Failed to load extension {}\n{}'.format(extension, exc))
 
-@tasks.loop(hours=0.5)
+# send corona related news to channels
+@tasks.loop(hours=1)
 async def corona_news_task():
     news_channels = {}
     with open("guild_settings.json", "r") as f:
@@ -81,7 +81,8 @@ async def corona_news_task():
     else:
         print("There are no news")
 
-@tasks.loop(hours=0.2)
+# get updated corona stats
+@tasks.loop(hours=1)
 async def corona_statistics_task():
     print("Updating coronavirus data")
     try:

@@ -1,7 +1,7 @@
 from discord.ext import commands
 import requests
 import random
-from util import send_embed_message
+from .util import send_embed_message
 import html
 
 from Gladiator.Profile import Profile

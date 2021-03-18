@@ -2,7 +2,7 @@ import asyncio
 from discord import Embed
 from discord.ext import commands
 from Big5Test.Test import Big5Test
-from util import send_embed_message
+from .util import send_embed_message
 from MongoDB.Connector import Connector
 import os
 

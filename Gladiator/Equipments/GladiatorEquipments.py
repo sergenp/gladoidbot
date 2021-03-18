@@ -1,13 +1,13 @@
 import json
-import os
+import pathlib
+
+path = pathlib.Path(__file__).parent.absolute()
 
 
 class GladiatorEquipments:
     def __init__(self):
-        self.equipments = json.load(open(os.path.join(os.path.dirname(
-            os.path.abspath(__file__)), "GladiatorEquipments.json"), "r"))
-        self.slots = json.load(open(os.path.join(os.path.dirname(
-            os.path.abspath(__file__)), "GladiatorSlots.json"), "r"))
+        self.equipments = json.load(open(path / "GladiatorEquipments.json", "r"))
+        self.slots = json.load(open(path / "GladiatorSlots.json", "r"))
 
     def find_equipment(self, equipment_name: str = "") -> dict or None:
         for equipment in self.equipments:

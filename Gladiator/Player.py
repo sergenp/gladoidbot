@@ -1,13 +1,15 @@
 import random
 import math
 import json
-import os
 from Gladiator.Stats.GladiatorStats import GladiatorStats
 from Gladiator.AttackInformation.GladiatorAttackInformation import GladiatorAttackInformation
 from Gladiator.Equipments.GladiatorEquipments import GladiatorEquipments
-
+import urllib.parse
+import pathlib
+path = pathlib.Path(__file__).parent.absolute()
 
 INITIAL_ATTACK_TYPES_COUNT = 3
+
 
 
 class Player:
@@ -15,11 +17,15 @@ class Player:
         self.dead = False
         self.debuffs = []
         self.permitted_attacks = []
-        self.json_dict = json.load(open(stats_path, "r"))
+        
+        with open(stats_path) as f:
+            self.json_dict = json.load(f)
+        
         self.stats = GladiatorStats(self.json_dict["Stats"])
         self.attack_information = GladiatorAttackInformation()
-        self.information = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "Settings",
-                                                       "GladiatorGameSettings.json"), "r"))["game_information_texts"]
+        
+        with open(path / "Settings" / "GladiatorGameSettings.json") as f:
+            self.information = json.load(f)["game_information_texts"]
 
     def take_damage(self, damage, damage_type):
         try:
@@ -136,8 +142,7 @@ class Player:
 
 class GladiatorPlayer(Player):
     def __init__(self, member):
-        super().__init__(stats_path=os.path.join(os.path.dirname(
-            os.path.abspath(__file__)), "UserProfileData", f"{member.id}.json"))
+        super().__init__(stats_path=path / "UserProfileData" / f"{member.id}.json")
         self.member = member
         self.equipment_information = GladiatorEquipments()
         self.permitted_attacks = self.attack_information.attack_types[:INITIAL_ATTACK_TYPES_COUNT]
@@ -177,7 +182,8 @@ class GladiatorNPC(Player):
     def __init__(self, stats_path, **kwargs):
         super().__init__(stats_path)
         self.name = self.json_dict["Name"]
-        self.image_path = f"https://gladoid.herokuapp.com/npcimage?name={self.name}"
+        url_encoded_name = urllib.parse.quote(self.name)
+        self.image_path = f"https://gladoid.herokuapp.com/npcimage?name={url_encoded_name}"
         self.level = random.randint(self.json_dict["Min Level"], self.json_dict["Max Level"])
         self.footer_text = self.json_dict.get("FooterText", "")
         for attack_name in self.json_dict["Attacks"]:

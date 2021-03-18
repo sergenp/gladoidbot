@@ -1,9 +1,8 @@
 import requests
-from util import send_embed_message
+from .util import send_embed_message
 from discord.ext import commands
 import discord
 import random
-import html
 
 class Meme(commands.Cog):
     def __init__(self, bot: commands.Bot):

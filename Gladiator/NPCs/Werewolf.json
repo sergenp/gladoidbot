@@ -1,0 +1,17 @@
+{
+    "Name": "Werewolf",
+    "Stats": {
+        "Attack": 15,
+        "Defence": 3
+    },
+    "Min Level": 1,
+    "Max Level": 50,
+    "Attacks": [
+        "Thrust",
+        "Bite",
+        "Scratch"
+    ],
+    "Debuffs": [
+        "Bleeding"
+    ]
+}

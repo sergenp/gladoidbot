@@ -1,20 +1,21 @@
 import sys
+sys.path.append('..')
+import os
 import random
 import math
-import os
 import json
-
-sys.path.append('..')
 from Gladiator.Equipments.GladiatorEquipments import GladiatorEquipments
 from MongoDB.Connector import Connector
+import pathlib
+
+path = pathlib.Path(__file__).parent.absolute()
 
 MongoDatabase = Connector()
 
 def save_profile(func):
     def wrapper(self, *args, **kwargs):
         out = func(self, *args, **kwargs)
-        filename = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                                "UserProfileData", f"{self.profile_stats['_id']}.json")
+        filename = path / "UserProfileData" / f"{self.profile_stats['_id']}.json"
         json.dump(self.profile_stats, open(
             filename, "w"), indent=4, sort_keys=True)
         MongoDatabase.save_profile(self.profile_stats)
@@ -25,11 +26,9 @@ def save_profile(func):
 class Profile():
     def __init__(self, member, **kwargs):
         self.member = member
-        profile_path = os.path.join(os.path.dirname(os.path.abspath(
-            __file__)), "UserProfileData", f"{self.member.id}.json")
+        profile_path = path / "UserProfileData" / f"{self.member.id}.json"
        
-        profile_settings = json.load(open(os.path.join(os.path.dirname(
-            __file__), "Settings", "GladiatorGameSettings.json"), "r"))["profile_settings"]
+        profile_settings = json.load(open(path / "Settings" / "GladiatorGameSettings.json", "r"))["profile_settings"]
         self.XP_TO_LEVEL_MULTIPLIER = profile_settings["XP_TO_LEVEL_MULTIPLIER"]
         self.XP_TO_LEVEL_WHEN_LOST_MULTIPLIER = profile_settings["XP_TO_LEVEL_WHEN_LOST_MULTIPLIER"]
         self.XP_GAIN_MULTIPLIER = profile_settings["XP_GAIN_MULTIPLIER"]
@@ -42,8 +41,7 @@ class Profile():
 
     @save_profile
     def create_default_profile(self, **kwargs):
-        self.profile_stats = json.load(
-            open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "UserProfileData", "default_profile.json"), "r"))
+        self.profile_stats = json.load(open(path / "UserProfileData" / "default_profile.json", "r"))
         self.profile_stats["_id"] = str(self.member.id)
         self.profile_stats.update(kwargs)
 
@@ -60,7 +58,7 @@ class Profile():
     
     @save_profile
     def update_stats(self):
-        default_stats = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "UserProfileData", "default_profile.json"), "r"))["Stats"]
+        default_stats = json.load(open(path / "UserProfileData" / "default_profile.json", "r"))["Stats"]
 
         lvl = self.get_level()
         for stat in default_stats.keys():

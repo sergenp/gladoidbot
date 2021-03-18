@@ -1,0 +1,17 @@
+{
+    "Name": "Rat",
+    "Stats": {
+        "Attack": 8,
+        "Defence": 5
+    },
+    "Min Level": 1,
+    "Max Level": 10,
+    "Attacks": [
+        "Thrust",
+        "Slash",
+        "Scratch"
+    ],
+    "Debuffs": [
+        "Plague"
+    ]
+}

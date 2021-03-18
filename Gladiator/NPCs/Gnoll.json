@@ -1,0 +1,15 @@
+{
+    "Name": "Gnoll",
+    "Stats": {
+        "Attack": 10,
+        "Defence": 5
+    },
+    "Min Level": 10,
+    "Max Level": 50,
+    "Attacks": [
+        "Thrust",
+        "Slash"
+    ],
+    "Debuffs": [],
+    "FooterText": "By Susan, check her website Essthemystic.tumblr.com"
+}

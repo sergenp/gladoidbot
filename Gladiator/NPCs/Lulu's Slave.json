@@ -1,0 +1,18 @@
+{
+    "Name": "Lulu's Slave",
+    "FooterText": "NPC by heeeeeeelu#7093",
+    "Stats": {
+        "Attack": 10,
+        "Defence": 5
+    },
+    "Min Level": 5,
+    "Max Level": 20,
+    "Attacks": [
+        "Thrust",
+        "Slash",
+        "Bite"
+    ],
+    "Debuffs": [
+        "Bleeding"
+    ]
+}
