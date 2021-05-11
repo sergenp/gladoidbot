@@ -1,7 +1,6 @@
 import sys
 from typing import Union
 sys.path.append('..')
-import os
 import collections
 import random
 import json
@@ -50,7 +49,8 @@ class GladiatorGame:
 
         if self.current_player.dead:
             self.game_continues = False
-        # return true because we successfully went to the other round, along with messages about the round
+        # return true/false depending 
+        # if we successfully went to the other round, along with messages about the round
         return self.game_continues, turn_messages
 
     def attack(self, attack_name=""):
@@ -143,7 +143,7 @@ class GladiatorGame:
     def hunt():
         with open(path / "NPCs" / "Settings" / "Spawns.json") as f:
             spawns = json.load(f)
-        # roll for spawn
+        # roll for spawn type
         roll = random.randint(0, 100) #
         # get the first spawn type, which is Common spawn type
         spawn_type = spawns[0]
