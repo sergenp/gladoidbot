@@ -3,14 +3,16 @@ import math
 import json
 from typing import Union
 from Gladiator.Stats.GladiatorStats import GladiatorStats
-from Gladiator.AttackInformation.GladiatorAttackInformation import GladiatorAttackInformation
+from Gladiator.AttackInformation.GladiatorAttackInformation import (
+    GladiatorAttackInformation,
+)
 from Gladiator.Equipments.GladiatorEquipments import GladiatorEquipments
 import urllib.parse
 import pathlib
+
 path = pathlib.Path(__file__).parent.absolute()
 
 INITIAL_ATTACK_TYPES_COUNT = 3
-
 
 
 class Player:
@@ -18,13 +20,13 @@ class Player:
         self.dead = False
         self.debuffs = []
         self.permitted_attacks = []
-        
+
         with open(stats_path) as f:
             self.json_dict = json.load(f)
-        
+
         self.stats = GladiatorStats(self.json_dict["Stats"])
         self.attack_information = GladiatorAttackInformation()
-        
+
         with open(path / "Settings" / "GladiatorGameSettings.json") as f:
             self.information = json.load(f)["game_information_texts"]
 
@@ -32,7 +34,9 @@ class Player:
         # calculate the damage, if damage_type can be absorbed by an armor, get that,
         # otherwise get None, self.stats won't include a key None, so it will just return the default value
         # of 0, i.e. if no armor can absord the damage in player's stats, take full damage from the attack
-        dmg = damage - self.stats.get(damage_type.get("armor_type_that_absorbs", None), 0)
+        dmg = damage - self.stats.get(
+            damage_type.get("armor_type_that_absorbs", None), 0
+        )
         # check if the damage is blocked
         roll = random.randint(0, 100)
         if self.stats["Block Chance"] > roll or dmg <= 0:
@@ -43,10 +47,12 @@ class Player:
         if self.stats["Health"] <= 0:
             return self.die()
         # return info
-        return self.information["take_damage_text"].format(self, dmg, self, self.stats['Health'])
+        return self.information["take_damage_text"].format(
+            self, dmg, self, self.stats["Health"]
+        )
 
     def damage_enemy(self, otherPlayer, damage_type_name=""):
-        inf = "" # str to return about the attack just happened 
+        inf = ""  # str to return about the attack just happened
         # roll to see if attack hit
         roll = random.randint(0, 100)
         if self.stats["Attack Chance"] < roll:
@@ -70,14 +76,17 @@ class Player:
         crit_roll = random.randint(0, 100)
         if self.stats["Critical Damage Chance"] > crit_roll:
             crit_dmg = math.ceil(dmg * self.stats["Critical Damage Boost"])
-            return inf + self.information["critical_hit_text"] + otherPlayer.take_damage(crit_dmg, dmg_type)
-       
+            return (
+                inf
+                + self.information["critical_hit_text"]
+                + otherPlayer.take_damage(crit_dmg, dmg_type)
+            )
+
         return inf + otherPlayer.take_damage(dmg, dmg_type)
 
     def attack(self, otherPlayer, attack_type_name=""):
         if not isinstance(otherPlayer, Player):
-            raise ValueError(
-                "otherPlayer must be an instance of Player")
+            raise ValueError("otherPlayer must be an instance of Player")
 
         # find the attack corresponding the name
         attack = self.attack_information.find_attack_type(attack_type_name)
@@ -89,7 +98,6 @@ class Player:
         self.buff(attack["buffs"], buff_type="debuff")
         return f"{self} Used {attack['name']} {attack['reaction_emoji']}\n" + inf
 
-
     def die(self) -> str:
         """
         Returns a random death_text from GladiatorGameSettings.json
@@ -97,7 +105,7 @@ class Player:
         self.dead = True
         return random.choice(self.information["death_texts"]).format(self)
 
-    def buff(self, buff:Union[GladiatorStats, dict], buff_type: str="buff") -> None:
+    def buff(self, buff: Union[GladiatorStats, dict], buff_type: str = "buff") -> None:
         """
         Buffs/debuffs the Gladiator
         """
@@ -115,7 +123,10 @@ class Player:
         # if the given debuff is already affecting the player,
         # make it last one more turn
         for dbf in self.debuffs:
-            if dbf["debuff_stats"]["Debuff Type"] == debuff["debuff_stats"]["Debuff Type"]:
+            if (
+                dbf["debuff_stats"]["Debuff Type"]
+                == debuff["debuff_stats"]["Debuff Type"]
+            ):
                 dbf["lasts_turn_count"] += 1
                 break
         # if given debuff is not currently affecting the player,
@@ -123,12 +134,14 @@ class Player:
         else:
             self.debuffs.append(debuff)
 
-        return self.information["take_debuff_text"].format(self, debuff["debuff_stats"]["Debuff Type"], debuff["lasts_turn_count"])
+        return self.information["take_debuff_text"].format(
+            self, debuff["debuff_stats"]["Debuff Type"], debuff["lasts_turn_count"]
+        )
 
     def take_damage_per_turn(self) -> str:
         """
         If there is a debuff applied to gladiator
-        this function makes the gladiator takes damage from it 
+        this function makes the gladiator takes damage from it
         """
         # if there is any debuffs in the list
         if len(self.debuffs) > 0:
@@ -136,10 +149,17 @@ class Player:
             for index, debuff in enumerate(self.debuffs):
                 if debuff["lasts_turn_count"] > 0:
                     debuff["lasts_turn_count"] -= 1
-                    self.stats['Health'] -= debuff["debuff_stats"]["Debuff Damage"]
-                    inf += self.information["take_damage_per_turn_from_debuffs_text"].format(
-                        self, debuff["debuff_stats"]["Debuff Damage"], debuff["debuff_stats"]["Debuff Type"], self.stats["Health"], debuff["lasts_turn_count"])
-                    
+                    self.stats["Health"] -= debuff["debuff_stats"]["Debuff Damage"]
+                    inf += self.information[
+                        "take_damage_per_turn_from_debuffs_text"
+                    ].format(
+                        self,
+                        debuff["debuff_stats"]["Debuff Damage"],
+                        debuff["debuff_stats"]["Debuff Type"],
+                        self.stats["Health"],
+                        debuff["lasts_turn_count"],
+                    )
+
                     if self.stats["Health"] <= 0:
                         inf += "\n" + self.die()
 
@@ -155,11 +175,13 @@ class GladiatorPlayer(Player):
         super().__init__(stats_path=path / "UserProfileData" / f"{member.id}.json")
         self.member = member
         self.equipment_information = GladiatorEquipments()
-        self.permitted_attacks = self.attack_information.attack_types[:INITIAL_ATTACK_TYPES_COUNT]
+        self.permitted_attacks = self.attack_information.attack_types[
+            :INITIAL_ATTACK_TYPES_COUNT
+        ]
 
-    def equip_item(self, equipment_name : str, equipment_slot_name : str) -> None:
+    def equip_item(self, equipment_name: str, equipment_slot_name: str) -> None:
         """
-        Makes GladiatorPlayer equips an item and updates the stats 
+        Makes GladiatorPlayer equips an item and updates the stats
         """
         slot = self.equipment_information.find_slot(equipment_slot_name)
         # if there is an equipment equipped already in the slot,
@@ -175,7 +197,9 @@ class GladiatorPlayer(Player):
                     self.stats += equipment["buffs"]
                     if equipment["unlock_attack_name"]:
                         self.unlock_attack_type(equipment["unlock_attack_name"])
-                    debuff = self.attack_information.find_turn_debuff(equipment["debuff_name"])
+                    debuff = self.attack_information.find_turn_debuff(
+                        equipment["debuff_name"]
+                    )
                     if debuff:
                         self.stats += debuff["debuff_stats"]
 
@@ -183,7 +207,7 @@ class GladiatorPlayer(Player):
         for i in self.permitted_attacks:
             if i["name"] == attack_name:
                 return
-            
+
         atk = self.attack_information.find_attack_type(attack_name)
         if atk:
             self.permitted_attacks.append(atk)
@@ -197,22 +221,29 @@ class GladiatorNPC(Player):
         super().__init__(stats_path)
         self.name = self.json_dict["Name"]
         url_encoded_name = urllib.parse.quote(self.name)
-        self.image_path = f"https://gladoid.herokuapp.com/npcimage?name={url_encoded_name}"
-        self.level = random.randint(self.json_dict["Min Level"], self.json_dict["Max Level"])
+        self.image_path = (
+            f"https://gladoid.herokuapp.com/npcimage?name={url_encoded_name}"
+        )
+        self.level = random.randint(
+            self.json_dict["Min Level"], self.json_dict["Max Level"]
+        )
         self.footer_text = self.json_dict.get("FooterText", "")
         for attack_name in self.json_dict["Attacks"]:
             self.permitted_attacks.append(
-                self.attack_information.find_attack_type(attack_name))
+                self.attack_information.find_attack_type(attack_name)
+            )
 
         for k, min_stat in dict(self.json_dict["Stats"]).items():
             for l in range(self.level):
-                min_stat += (l/17)**1.1
+                min_stat += (l / 17) ** 1.1
                 min_stat = round(min_stat, 2)
             self.stats[k] = min_stat
 
         for debuff_name in self.json_dict["Debuffs"]:
-            self.stats += self.attack_information.find_turn_debuff(debuff_name)["debuff_stats"]
-        
+            self.stats += self.attack_information.find_turn_debuff(debuff_name)[
+                "debuff_stats"
+            ]
+
         self.stats += kwargs
 
     def get_random_attack(self):

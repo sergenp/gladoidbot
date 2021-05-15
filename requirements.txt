@@ -9,3 +9,4 @@ dnspython
 pymongo[srv]
 aiohttp
 html5lib
+user_agent

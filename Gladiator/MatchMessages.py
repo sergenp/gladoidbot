@@ -1,9 +1,11 @@
 import sys
+
 sys.path.append("..")
 
 from MongoDB.Connector import Connector
 
 MongoDatabase = Connector()
+
 
 class MatchMessages:
     def __init__(self, players, match_date):

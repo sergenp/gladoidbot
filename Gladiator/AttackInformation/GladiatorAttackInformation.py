@@ -4,6 +4,7 @@ import pathlib
 
 path = pathlib.Path(__file__).parent.absolute()
 
+
 class GladiatorAttackInformation:
     def __init__(self):
         self.attack_types = json.load(open(path / "GladiatorAttackBuffs.json", "r"))

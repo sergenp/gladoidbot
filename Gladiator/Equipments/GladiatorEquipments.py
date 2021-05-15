@@ -16,7 +16,9 @@ class GladiatorEquipments:
                 return equipment
         return None
 
-    def get_equipment_with_slot_name(self, equipment_name: str ="", slot_name: str="") -> Union[dict, None]:
+    def get_equipment_with_slot_name(
+        self, equipment_name: str = "", slot_name: str = ""
+    ) -> Union[dict, None]:
         for equipment in self.equipments:
             if equipment["type"] == slot_name and equipment["name"] == equipment_name:
                 return equipment

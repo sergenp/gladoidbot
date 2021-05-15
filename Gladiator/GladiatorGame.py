@@ -69,7 +69,7 @@ class GladiatorGame:
         with open(path / "AttackInformation" / "GladiatorAttackBuffs.json") as f:
             attack_types = json.load(f)
 
-        with open(path / "AttackInformation", "GladiatorDamageTypes.json")) as f:
+        with open(path / "AttackInformation", "GladiatorDamageTypes.json") as f:
             damage_types = json.load(f)
 
         information_text = settings["game_information_texts"]["title_text"] + "\n"
