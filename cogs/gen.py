@@ -70,22 +70,20 @@ class General(commands.Cog):
             "https://discordapp.com/api/oauth2/authorize?client_id=598077927577616384&permissions=117824&scope=bot"
         )
 
+    @commands.command(description="Returns the website link of the bot")
+    async def web(self, ctx):
+        await ctx.send("https://gladoid.herokuapp.com/")
+
     @commands.command(description="Vote for me uwu")
     async def vote(self, ctx):
         await ctx.send("https://top.gg/bot/598077927577616384/vote")
 
     @commands.command(description="Shows the avatar of the user or the one mentioned")
     async def avatar(self, ctx, user: discord.Member = None):
-        if user:
-            await send_embed_message(
-                ctx, title=f"Showing avatar of {user.name}", image_url=user.avatar_url
-            )
-        else:
-            await send_embed_message(
-                ctx,
-                title=f"Showing avatar of {ctx.message.author.name}",
-                image_url=ctx.message.author.avatar_url,
-            )
+        user = user if user else ctx.message.author
+        await send_embed_message(
+            ctx, title=f"Showing avatar of {user.name}", image_url=user.avatar
+        )
 
     @commands.command(name="eval")
     async def eval_fn(self, ctx, *, cmd):
@@ -107,6 +105,6 @@ class General(commands.Cog):
                 "__import__": __import__,
             }
             exec(compile(parsed, filename="<ast>", mode="exec"), env)
-            result = await eval(f"{fn_name}()", env)
+            await eval(f"{fn_name}()", env)
         else:
             await ctx.send("You aren't my creator, therefore I won't do your bidding.")

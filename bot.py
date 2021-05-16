@@ -117,7 +117,7 @@ async def corona_statistics_task():
 @bot.event
 async def on_ready():
     print(f"Connected!\nName: {bot.user.name}\nId: {bot.user.id}\n")
-    await bot.change_presence(activity=discord.Game(name="www.hutbot.works"))
+    await bot.change_presence(activity=discord.Game(name="gladoid.herokuapp.com"))
     corona_statistics_task.start()
     corona_news_task.start()
 
