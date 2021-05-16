@@ -90,6 +90,9 @@ class GladiatorStats:
     def __getitem__(self, key):
         return self.stats[key]
 
+    def get(self, key, default_value):
+        return self.stats.get(key, default_value)
+
     # update secondary stats if only key isn't Health and key is either Attack or Defence
     # that would mean e.g. if an Attack value is set, the secondary stats will updated accordingly
     # if a secondary stat is updated directly, like Critical Chance, secondary stats won't be updated
