@@ -1,4 +1,4 @@
-git+https://github.com/Rapptz/discord.py
+discord.py
 requests
 google_trans_new
 python-dateutil
