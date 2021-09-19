@@ -70,10 +70,6 @@ class General(commands.Cog):
             "https://discordapp.com/api/oauth2/authorize?client_id=598077927577616384&permissions=117824&scope=bot"
         )
 
-    @commands.command(description="Returns the website link of the bot")
-    async def web(self, ctx):
-        await ctx.send("https://gladoid.herokuapp.com/")
-
     @commands.command(description="Vote for me uwu")
     async def vote(self, ctx):
         await ctx.send("https://top.gg/bot/598077927577616384/vote")

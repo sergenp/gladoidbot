@@ -93,8 +93,8 @@ async def corona_news_task():
             try:
                 channel = bot.get_channel(news_channels[str(guild.id)])
                 if channel:
-                    for k in news:
-                        await channel.send(k)
+                    k = "\n".join(news)
+                    await channel.send(k)
             except KeyError:
                 pass
         print("Sent news")

@@ -172,7 +172,6 @@ class Gladiator(commands.Cog):
 
         except asyncio.TimeoutError:
             await msg.delete()
-            return
 
     @commands.command()
     async def challenge(self, ctx, userToChallenge: discord.Member = None):
@@ -245,12 +244,8 @@ class Gladiator(commands.Cog):
                         ),
                         delete_after=10,
                     )
-
             except asyncio.TimeoutError:
                 pass
-            else:
-                pass
-
         else:
             await ctx.send(
                 self.game_information["game_challenge_user_mention_missing"].format(
