@@ -1,4 +1,5 @@
 discord.py
+discord.py[voice]
 requests
 google_trans_new
 python-dateutil
@@ -10,3 +11,5 @@ pymongo[srv]
 aiohttp
 html5lib
 user_agent
+PyNaCl
+youtube_dl

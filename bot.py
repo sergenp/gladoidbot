@@ -64,6 +64,7 @@ bot = commands.Bot(
     command_prefix=get_prefix,
     help_command=commands.MinimalHelpCommand(no_category="Rest"),
 )
+
 startup_extensions = [
     "gen",
     "gladiator",
@@ -72,6 +73,7 @@ startup_extensions = [
     "corona",
     "interaction",
     "big5_test",
+    "music",
 ]
 for extension in startup_extensions:
     try:
